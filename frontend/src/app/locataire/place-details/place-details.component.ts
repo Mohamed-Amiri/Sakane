@@ -5,13 +5,15 @@ import { FormsModule } from '@angular/forms';
 import { LocatairesService, Place, Review, Booking } from '../services/locataires.service';
 import { ReservationService } from '../services/reservation.service';
 import { ReviewService } from '../services/review.service';
+import { AvailabilityService } from '../services/availability.service';
 import { AddReviewDialogComponent } from '../../shared/add-review-dialog/add-review-dialog.component';
 import { ToastService } from '../../shared/components/toast/toast.service';
+import { MadCurrencyPipe } from '../../shared/pipes/mad-currency.pipe';
 
 @Component({
   selector: 'app-place-details',
   standalone: true,
-  imports: [CommonModule, FormsModule, AddReviewDialogComponent],
+  imports: [CommonModule, FormsModule, AddReviewDialogComponent, MadCurrencyPipe],
   templateUrl: './place-details.component.html',
   styleUrls: ['./place-details.component.scss']
 })
@@ -44,12 +46,16 @@ export class PlaceDetailsComponent implements OnInit {
   showReviewModal = false;
   bookingToReview: Booking | null = null;
 
+  // Availability
+  unavailableDates: string[] = [];
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private locatairesService: LocatairesService,
     private reservationService: ReservationService,
     private reviewService: ReviewService,
+    private availabilityService: AvailabilityService,
     private toastService: ToastService,
     private cdr: ChangeDetectorRef
   ) {
@@ -73,6 +79,24 @@ export class PlaceDetailsComponent implements OnInit {
     this.loadPlaceDetails(placeId);
     this.checkUserBookings(placeId);
     this.checkUserReviews(placeId);
+    this.loadAvailability(placeId);
+  }
+
+  loadAvailability(placeId: number): void {
+    const today = new Date();
+    const startDate = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+    const end = new Date(today.getFullYear(), today.getMonth() + 3, 0); // Current + next 2 months
+    const endDate = end.toISOString().split('T')[0];
+
+    this.availabilityService.getAvailability(placeId, startDate, endDate).subscribe({
+      next: (res) => {
+        this.unavailableDates = res.unavailableDates || [];
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error loading availability:', error);
+      }
+    });
   }
 
   loadPlaceDetails(placeId: number): void {
@@ -127,37 +151,49 @@ export class PlaceDetailsComponent implements OnInit {
 
   bookPlace(): void {
     if (!this.place || !this.checkInDate || !this.checkOutDate) {
-      alert('Veuillez remplir tous les champs requis');
+      this.toastService.error('Veuillez remplir tous les champs requis');
       return;
     }
 
     const startDate = new Date(this.checkInDate);
     const endDate = new Date(this.checkOutDate);
-    
+
     if (startDate >= endDate) {
-      alert('La date de départ doit être après la date d\'arrivée');
+      this.toastService.error('La date de départ doit être après la date d\'arrivée');
       return;
     }
 
     const today = new Date();
     today.setHours(0,0,0,0);
     if (startDate <= today) {
-      alert('La date d\'arrivée ne peut pas être dans le passé');
+      this.toastService.error('La date d\'arrivée ne peut pas être dans le passé');
       return;
     }
 
-    const bookingData = {
-      place: this.place,
-      checkInDate: this.checkInDate,
-      checkOutDate: this.checkOutDate,
-      guests: this.guests
-    };
+    // Check availability
+    let current = new Date(startDate);
+    let hasConflict = false;
+    while (current < endDate) {
+      const dateStr = current.toISOString().split('T')[0];
+      if (this.unavailableDates.includes(dateStr)) {
+        hasConflict = true;
+        break;
+      }
+      current.setDate(current.getDate() + 1);
+    }
 
-    const queryParams = {
-      placeData: encodeURIComponent(JSON.stringify(bookingData))
-    };
+    if (hasConflict) {
+      this.toastService.error('Ces dates sont déjà réservées');
+      return;
+    }
 
-    this.router.navigate(['/locataire/booking-confirm'], { queryParams });
+    this.router.navigate(['/locataire/booking-confirm', this.place.id], {
+      queryParams: {
+        checkIn: this.checkInDate,
+        checkOut: this.checkOutDate,
+        guests: this.guests
+      }
+    });
   }
 
   goBack(): void {

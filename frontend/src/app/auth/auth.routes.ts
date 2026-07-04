@@ -7,34 +7,34 @@ export const AUTH_ROUTES: Routes = [
     loadComponent: () => import('./login/login.component')
       .then(m => m.LoginComponent),
     canActivate: [NoAuthGuard],
-    title: 'Connexion - LocaSpace'
+    title: 'Connexion - Sakane'
   },
   {
     path: 'register',
     loadComponent: () => import('./register/register.component')
       .then(m => m.RegisterComponent),
     canActivate: [NoAuthGuard],
-    title: 'Inscription - LocaSpace'
+    title: 'Inscription - Sakane'
   },
   {
     path: 'forgot-password',
     loadComponent: () => import('./forgot-password/forgot-password.component')
       .then(m => m.ForgotPasswordComponent),
     canActivate: [NoAuthGuard],
-    title: 'Mot de passe oublié - LocaSpace'
+    title: 'Mot de passe oublié - Sakane'
   },
   {
     path: 'reset-password',
     loadComponent: () => import('./reset-password/reset-password.component')
       .then(m => m.ResetPasswordComponent),
     canActivate: [NoAuthGuard],
-    title: 'Réinitialisation du mot de passe - LocaSpace'
+    title: 'Réinitialisation du mot de passe - Sakane'
   },
   {
     path: 'verify-email',
     loadComponent: () => import('./verify-email/verify-email.component')
       .then(m => m.VerifyEmailComponent),
     canActivate: [NoAuthGuard],
-    title: 'Vérification email - LocaSpace'
+    title: 'Vérification email - Sakane'
   }
 ];

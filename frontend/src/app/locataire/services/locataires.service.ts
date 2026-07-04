@@ -12,10 +12,15 @@ export interface Place {
   price: number;
   location: string;
   images: string[];
+  photos?: string[];
   amenities: string[];
   rating: number;
   reviews: Review[];
   availability: boolean;
+  type?: string;
+  city?: string;
+  maxGuests?: number;
+  propertyType?: string;
 }
 
 export interface Review {
@@ -46,6 +51,7 @@ export interface Booking {
     specialRequests?: string;
   };
   paymentMethod?: string;
+  ownerMessage?: string;
 }
 
 export interface SearchFilters {
@@ -65,6 +71,8 @@ interface LieuResponse {
   adresse: string;
   valide: boolean;
   photos: string[];
+  amenities?: string[];
+  city?: string;
   owner?: {
     id: number;
     nom: string;
@@ -99,10 +107,12 @@ export class LocatairesService {
       price: lieu.prix,
       location: lieu.adresse,
       images: this.imageService.getImageUrls(lieu.photos),
-      amenities: [],
+      amenities: lieu.amenities || [],
       rating: lieu.averageRating || 4.5,
       reviews: [],
-      availability: lieu.valide === true
+      availability: lieu.valide === true,
+      type: lieu.type,
+      city: lieu.city
     };
   }
 
@@ -137,6 +147,15 @@ export class LocatairesService {
       endDate: new Date(reservation.dateFin),
       totalPrice: reservation.totalPrice || 0,
       status: this.mapBackendStatusToFrontend(reservation.statut),
+      guests: reservation.guests || 1,
+      guestInfo: {
+        name: reservation.guestName || '',
+        email: reservation.guestEmail || '',
+        phone: reservation.guestPhone || '',
+        specialRequests: reservation.specialRequests || ''
+      },
+      paymentMethod: reservation.paymentMethod || 'onsite',
+      ownerMessage: reservation.ownerMessage || reservation.message || '',
       place: reservation.lieu
         ? {
             id: reservation.lieu.id,
@@ -145,10 +164,12 @@ export class LocatairesService {
             price: reservation.lieu.prix,
             location: reservation.lieu.adresse,
             images: this.imageService.getImageUrls(reservation.lieu.photos || []),
-            amenities: [],
+            amenities: reservation.lieu.amenities || [],
             rating: reservation.lieu.averageRating || 4.5,
             reviews: [],
-            availability: reservation.lieu.valide
+            availability: reservation.lieu.valide,
+            type: reservation.lieu.type,
+            city: reservation.lieu.city
           }
         : undefined
     };

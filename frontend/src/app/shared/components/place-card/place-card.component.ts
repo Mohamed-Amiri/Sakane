@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { MadCurrencyPipe } from '../../pipes/mad-currency.pipe';
 
 export interface PlaceCardData {
   id: number;
@@ -18,11 +19,15 @@ export interface PlaceCardData {
 @Component({
   selector: 'app-place-card',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, MadCurrencyPipe],
   template: `
     <div class="place-card" [routerLink]="['/lieux', place.id]">
       <div class="card-image">
-        <img [src]="place.image" [alt]="place.name" loading="lazy">
+        <img *ngIf="!imageError" [src]="place.image" [alt]="place.name" loading="lazy" (error)="onImageError($event)">
+        <div class="fallback-image" *ngIf="imageError">
+          <i class="ph ph-image"></i>
+          <span>Photo à venir</span>
+        </div>
         <div class="card-overlay">
           <button 
             class="favorite-btn" 
@@ -52,11 +57,10 @@ export interface PlaceCardData {
       </div>
       
       <div class="card-content">
-        <div class="card-header">
+        <div class="card-header-stack">
           <h3 class="place-name">{{ place.name }}</h3>
-          <div class="place-price">
-            <div class="price-amount">{{ place.price * 10 }} DH<span class="price-period">/jour</span></div>
-            <div class="price-secondary">~{{ place.price }}€</div>
+          <div class="place-price-right">
+            <div class="price-amount">{{ place.price | madCurrency }}<span class="price-period">/jour</span></div>
           </div>
         </div>
         
@@ -69,7 +73,7 @@ export interface PlaceCardData {
         </div>
         
         <div class="place-features">
-          <span class="feature">
+          <span class="feature" *ngIf="place.capacity">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
               <circle cx="9" cy="7" r="4"/>
@@ -91,27 +95,46 @@ export interface PlaceCardData {
   `,
   styles: [`
     .place-card {
-      background: white;
-      border-radius: var(--radius-xl, 12px);
+      background: #FAFAF8;
+      border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       cursor: pointer;
-      border: 1px solid rgba(0, 0, 0, 0.05);
+      border: 1px solid transparent;
       text-decoration: none;
       color: inherit;
       display: block;
 
       &:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
-        border-color: var(--color-gold, #C9A84C);
+        transform: translateY(-3px);
+        border: 1px solid #B8960C;
       }
 
       .card-image {
         position: relative;
-        height: 240px;
+        height: 220px;
         overflow: hidden;
+
+        .fallback-image {
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(135deg, #F5EFE0 0%, #EDE4CE 100%);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 0.4rem;
+          color: rgba(13, 31, 60, 0.35);
+
+          i { font-size: 40px; }
+          span {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+          }
+        }
 
         img {
           width: 100%;
@@ -225,40 +248,40 @@ export interface PlaceCardData {
       .card-content {
         padding: 1.5rem;
 
-        .card-header {
+        .card-header-stack {
           display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
+          flex-direction: column;
           margin-bottom: 0.75rem;
 
           .place-name {
+            width: 100%;
             font-size: 1.25rem;
             font-weight: 600;
-            color: var(--color-text-primary, #0A2540);
-            margin: 0;
-            font-family: var(--font-display, 'Cormorant Garamond', serif);
+            color: #0D1F3C;
+            margin: 0 0 0.5rem 0;
+            font-family: 'Cormorant Garamond', serif;
           }
 
-          .place-price {
+          .place-price-right {
             text-align: right;
-            flex-shrink: 0;
+            align-self: flex-end;
 
             .price-amount {
               font-size: 1.125rem;
               font-weight: 700;
-              color: var(--color-navy, #0A2540);
+              color: #0D1F3C;
             }
 
             .price-period {
               font-size: 0.8125rem;
               font-weight: 400;
-              color: var(--color-text-muted, #6B7C93);
+              color: #6B7C93;
               margin-left: 2px;
             }
             
             .price-secondary {
               font-size: 0.75rem;
-              color: var(--color-text-muted, #9AADC2);
+              color: #9AADC2;
               margin-top: 2px;
             }
           }
@@ -307,7 +330,7 @@ export interface PlaceCardData {
       border-color: rgba(255, 255, 255, 0.1);
 
       &:hover {
-        border-color: rgba(124, 58, 237, 0.3);
+        border-color: rgba(201, 168, 76, 0.3);
       }
 
       .card-content {
@@ -325,7 +348,7 @@ export interface PlaceCardData {
     @media (max-width: 768px) {
       .place-card {
         .card-image {
-          height: 200px;
+          height: 180px;
         }
 
         .card-content {
@@ -356,6 +379,12 @@ export interface PlaceCardData {
 export class PlaceCardComponent {
   @Input() place!: PlaceCardData;
   @Output() toggleFavorite = new EventEmitter<number>();
+  
+  imageError = false;
+
+  onImageError(event: Event) {
+    this.imageError = true;
+  }
 
   onToggleFavorite(event: Event) {
     event.preventDefault();

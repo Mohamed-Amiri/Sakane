@@ -28,9 +28,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<Reservation> findByLieuOwner(@Param("owner") User owner);
 
     @Query("SELECT r FROM Reservation r WHERE r.lieu = :lieu AND r.statut IN ('EN_ATTENTE','CONFIRMEE') AND " +
-           "((r.dateDebut BETWEEN :dateDebut AND :dateFin) OR " +
-           "(r.dateFin BETWEEN :dateDebut AND :dateFin) OR " +
-           "(r.dateDebut <= :dateDebut AND r.dateFin >= :dateFin))")
+           "(r.dateDebut < :dateFin AND r.dateFin > :dateDebut)")
     List<Reservation> findConflictingReservations(@Param("lieu") Lieu lieu,
                                                  @Param("dateDebut") LocalDate dateDebut,
                                                  @Param("dateFin") LocalDate dateFin);

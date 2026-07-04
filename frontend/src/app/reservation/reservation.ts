@@ -8,11 +8,12 @@ import { ReservationStorageService } from './reservation-storage.service';
 import { PaymentService } from '../shared/payment/payment.service';
 import { NotificationService } from '../shared/notifications/notification.service';
 import { ToastService } from '../shared/components/toast/toast.service';
+import { MadCurrencyPipe } from '../shared/pipes/mad-currency.pipe';
 
 @Component({
   selector: 'app-reservation',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, MadCurrencyPipe],
   templateUrl: './reservation.html',
   styleUrls: ['./reservation.scss']
 })
@@ -124,12 +125,8 @@ export class ReservationComponent implements OnInit {
           this.storage.clear(this.lieu?.id || 0);
           this.toastService.success('Réservation confirmée avec succès !');
           
-          // Create booking notification
-          this.notificationService.createBookingNotification(
-            result.transactionId || 'booking_123',
-            this.reservationForm.get('personalInfo.fullName')?.value,
-            this.lieu?.titre || 'Propriété'
-          ).subscribe();
+          // Notification handled by backend
+
         } else {
           this.toastService.error(result.error || 'Erreur lors du paiement');
         }

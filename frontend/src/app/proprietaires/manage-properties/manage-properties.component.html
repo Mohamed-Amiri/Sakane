@@ -1,350 +1,126 @@
-﻿<!-- PREMIUM MANAGE PROPERTIES DESIGN -->
-<div class="premium-container">
-  
-  <!-- Premium Header -->
-  <header class="premium-header">
-    <div class="header-content">
-      <div class="title-section">
-        <div class="icon-container">
-          <i class="ph ph-buildings"></i>
-        </div>
-        <div class="title-text">
-          <h1>Mes Propriétés</h1>
-          <p>Gérez votre portefeuille immobilier avec style</p>
-        </div>
-      </div>
-      <div class="header-actions">
-        <button class="btn btn-ghost back-btn" routerLink="/proprietaires/dashboard">
-          <i class="ph ph-arrow-left"></i>
-          Tableau de bord
-        </button>
-        <button class="btn btn-primary add-btn" routerLink="/proprietaires/add-property">
-          <i class="ph ph-plus"></i>
-          Nouvelle Propriété
-        </button>
-      </div>
+<div class="manage-page">
+
+  <!-- Banner -->
+  <header class="page-banner">
+    <div class="banner-inner">
+      <h1 class="banner-title">Mes Propriétés</h1>
+      <button class="btn-gold" routerLink="/proprietaires/add-property">
+        Ajouter une propriété <i class="ph ph-arrow-right"></i>
+      </button>
     </div>
   </header>
 
-  <!-- Stats Overview -->
-  <div class="stats-container">
-    <div class="stat-card">
-      <div class="stat-icon">
-        <i class="ph ph-house"></i>
-      </div>
-      <div class="stat-content">
-        <h3>{{ properties.length }}</h3>
-        <p>Propriétés totales</p>
-      </div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon">
-        <i class="ph ph-eye"></i>
-      </div>
-      <div class="stat-content">
-        <h3>{{ getActivePropertiesCount() }}</h3>
-        <p>Propriétés actives</p>
-      </div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon">
-        <i class="ph ph-currency-eur"></i>
-      </div>
-      <div class="stat-content">
-        <h3>{{ getAveragePrice() }}€</h3>
-        <p>Prix moyen/nuit</p>
-      </div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon">
-        <i class="ph ph-chart-bar"></i>
-      </div>
-      <div class="stat-content">
-        <h3>{{ getTotalRevenue() }}€</h3>
-        <p>Revenus ce mois</p>
-      </div>
-    </div>
-  </div>
+  <main class="page-body">
 
-  <!-- Filters & Search -->
-  <div class="filters-container">
-    <div class="search-section">
-      <div class="search-field form-group">
-        <i class="ph ph-magnifying-glass search-icon"></i>
-        <input type="text" class="form-control" [(ngModel)]="searchQuery" (input)="onSearchChange()" placeholder="Titre, localisation...">
-      </div>
-    </div>
-    
-    <div class="filter-section">
-      <div class="filter-field form-group">
-        <select class="form-control" [(ngModel)]="filterType" (change)="applyFilters()">
-          <option value="">Tous les types</option>
-          <option value="apartment">Appartement</option>
-          <option value="house">Maison</option>
-          <option value="villa">Villa</option>
-          <option value="studio">Studio</option>
-          <option value="loft">Loft</option>
-        </select>
-      </div>
-      
-      <div class="filter-field form-group">
-        <select class="form-control" [(ngModel)]="filterStatus" (change)="applyFilters()">
-          <option value="">Tous statuts</option>
-          <option value="active">Actif</option>
-          <option value="inactive">Inactif</option>
-        </select>
+    <!-- Search & filter bar -->
+    <div class="filter-bar scroll-reveal" appScrollReveal *ngIf="!loading && properties.length > 0">
+      <div class="search-field">
+        <i class="ph ph-magnifying-glass"></i>
+        <input type="text" [(ngModel)]="searchQuery" (input)="onSearchChange()"
+               placeholder="Rechercher par titre ou ville…">
       </div>
 
-      <div class="view-toggle">
-        <div class="btn-group">
-          <button class="btn btn-outline" [class.active]="viewMode === 'grid'" (click)="viewMode = 'grid'; onViewModeChange()">
-            <i class="ph ph-squares-four"></i>
-          </button>
-          <button class="btn btn-outline" [class.active]="viewMode === 'list'" (click)="viewMode = 'list'; onViewModeChange()">
-            <i class="ph ph-list-bullets"></i>
-          </button>
+      <div class="type-chips">
+        <button class="f-chip" [class.active]="filterType === ''" (click)="filterType = ''; applyFilters()">Tous</button>
+        <button class="f-chip" [class.active]="filterType === 'villa'" (click)="filterType = 'villa'; applyFilters()">Villa</button>
+        <button class="f-chip" [class.active]="filterType === 'apartment'" (click)="filterType = 'apartment'; applyFilters()">Appartement</button>
+        <button class="f-chip" [class.active]="filterType === 'house'" (click)="filterType = 'house'; applyFilters()">Maison</button>
+        <button class="f-chip" [class.active]="filterType === 'studio'" (click)="filterType = 'studio'; applyFilters()">Studio</button>
+        <button class="f-chip" [class.active]="filterType === 'loft'" (click)="filterType = 'loft'; applyFilters()">Loft</button>
+        <button class="f-chip" [class.active]="filterType === 'chalet'" (click)="filterType = 'chalet'; applyFilters()">Chalet</button>
+      </div>
+
+      <div class="status-toggle">
+        <button class="s-chip" [class.active]="filterStatus === ''" (click)="filterStatus = ''; applyFilters()">Tous</button>
+        <button class="s-chip" [class.active]="filterStatus === 'active'" (click)="filterStatus = 'active'; applyFilters()">Actifs</button>
+        <button class="s-chip" [class.active]="filterStatus === 'inactive'" (click)="filterStatus = 'inactive'; applyFilters()">Inactifs</button>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="loading-state">
+      <span class="spinner"></span>
+      <p>Chargement de vos propriétés…</p>
+    </div>
+
+    <!-- Empty state (no properties at all) -->
+    <div *ngIf="!loading && properties.length === 0" class="empty-card">
+      <div class="empty-icon-circle">
+        <i class="ph ph-house-line"></i>
+      </div>
+      <div class="empty-text">
+        <h2>Vous n'avez pas encore de propriété</h2>
+        <p>Commencez par créer votre première annonce.</p>
+      </div>
+      <button class="btn-gold" routerLink="/proprietaires/add-property">
+        Ajouter une propriété <i class="ph ph-arrow-right"></i>
+      </button>
+    </div>
+
+    <!-- Property cards -->
+    <div *ngIf="!loading && filteredProperties.length > 0" class="property-list scroll-reveal" appScrollReveal>
+      <article class="property-card" *ngFor="let property of filteredProperties">
+
+        <div class="pc-image">
+          <img [src]="property.photos[0] || '/assets/images/loft.jpg'" [alt]="property.title"
+               (error)="$any($event.target).src='/assets/images/loft.jpg'">
         </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Bulk Actions -->
-  <div class="bulk-actions-container" *ngIf="selectedProperties.length > 0">
-    <div class="bulk-info">
-      <span class="selection-count">{{ selectedProperties.length }} sélectionné(s)</span>
-    </div>
-    <div class="bulk-buttons">
-      <button class="btn btn-outline" (click)="bulkActivate()">
-        <i class="ph ph-eye"></i> Activer
-      </button>
-      <button class="btn btn-outline" (click)="bulkDeactivate()">
-        <i class="ph ph-eye-slash"></i> Désactiver
-      </button>
-      <button class="btn btn-danger" (click)="bulkDelete()">
-        <i class="ph ph-trash"></i> Supprimer
-      </button>
-    </div>
-  </div>
-
-  <!-- Loading State -->
-  <div *ngIf="loading" class="loading-container">
-    <div class="loading-content">
-      <div class="spinner"></div>
-      <h3>Chargement de vos propriétés...</h3>
-      <p>Préparation de votre portefeuille</p>
-    </div>
-  </div>
-
-  <!-- Empty State -->
-  <div *ngIf="!loading && properties.length === 0" class="empty-state">
-    <div class="empty-content">
-      <div class="empty-icon">
-        <i class="ph ph-buildings"></i>
-      </div>
-      <h2>Votre portefeuille est vide</h2>
-      <p>Commencez à générer des revenus en ajoutant votre première propriété</p>
-      <button class="btn btn-primary empty-action" routerLink="/proprietaires/add-property">
-        <i class="ph ph-plus"></i> Ajouter ma première propriété
-      </button>
-    </div>
-  </div>
-
-  <!-- Properties Grid/List -->
-  <div *ngIf="!loading && filteredProperties.length > 0" class="properties-container">
-    <!-- Grid View -->
-    <div *ngIf="viewMode === 'grid'" class="properties-grid">
-      <div *ngFor="let property of filteredProperties" class="property-card-wrapper">
-        <div class="property-card" [class.selected]="isPropertySelected(property.id!)">
-          
-          <div class="selection-checkbox">
-            <input type="checkbox" class="custom-checkbox"
-              [checked]="isPropertySelected(property.id!)"
-              (change)="togglePropertySelection(property.id!, $any($event.target).checked)">
+        <div class="pc-body">
+          <div class="pc-head">
+            <h3 class="pc-title">{{ property.title }}</h3>
+            <span class="pc-status" [class.active]="property.isActive">
+              <span class="dot"></span>{{ property.isActive ? 'Actif' : 'Inactif' }}
+            </span>
           </div>
 
-          <!-- Property Image -->
-          <div class="property-image">
-            <img [src]="property.photos[0] || '/assets/images/loft.jpg'" [alt]="property.title">
-            <div class="image-overlay">
-              <div class="status-badge" [class]="property.isActive ? 'active' : 'inactive'">
-                <i [ngClass]="property.isActive ? 'ph ph-eye' : 'ph ph-eye-slash'"></i>
-                {{ property.isActive ? 'Actif' : 'Inactif' }}
-              </div>
-              <div class="quick-actions">
-                <button class="btn-mini" [routerLink]="['/proprietaires/edit-property', property.id]">
-                  <i class="ph ph-pencil-simple"></i>
-                </button>
-                <button class="btn-mini" [routerLink]="['/proprietaires/calendar', property.id]">
-                  <i class="ph ph-calendar-blank"></i>
-                </button>
-                <button class="btn-mini btn-mini-danger" (click)="deleteProperty(property)" title="Supprimer la propriété">
-                  <i class="ph ph-trash"></i>
-                </button>
-              </div>
-            </div>
+          <p class="pc-location"><i class="ph ph-map-pin"></i> {{ property.location }}</p>
+
+          <div class="pc-specs">
+            <span><i class="ph ph-users"></i> {{ property.maxGuests }} pers.</span>
+            <span><i class="ph ph-bed"></i> {{ property.bedrooms }} ch.</span>
+            <span><i class="ph ph-bathtub"></i> {{ property.bathrooms }} sdb</span>
           </div>
 
-          <!-- Property Content -->
-          <div class="property-content">
-            <div class="property-header">
-              <h3 class="property-title">{{ property.title }}</h3>
-              <div class="property-type">
-                <i [ngClass]="'ph ph-' + getPropertyTypeIcon(property.propertyType)"></i>
-                <span>{{ getPropertyTypeLabel(property.propertyType) }}</span>
-              </div>
-            </div>
+          <div class="pc-price">{{ property.price | madCurrency }}<span class="per">/jour</span></div>
+        </div>
 
-            <div class="property-location">
-              <i class="ph ph-map-pin"></i>
-              <span>{{ property.location }}</span>
-            </div>
+        <div class="pc-actions">
+          <button class="act-outline" [routerLink]="['/proprietaires/edit-property', property.id]">
+            <i class="ph ph-pencil-simple"></i> Modifier
+          </button>
+          <button class="act-outline" [routerLink]="['/proprietaires/calendar', property.id]">
+            <i class="ph ph-calendar-blank"></i> Calendrier
+          </button>
 
-            <div class="property-specs">
-              <div class="spec-item">
-                <i class="ph ph-users-three"></i>
-                <span>{{ property.maxGuests }}</span>
-              </div>
-              <div class="spec-item">
-                <i class="ph ph-bed"></i>
-                <span>{{ property.bedrooms }}</span>
-              </div>
-              <div class="spec-item">
-                <i class="ph ph-bathtub"></i>
-                <span>{{ property.bathrooms }}</span>
-              </div>
-            </div>
+          <label class="gold-switch" [title]="property.isActive ? 'Désactiver' : 'Activer'">
+            <input type="checkbox" [checked]="property.isActive" (change)="togglePropertyStatus(property)">
+            <span class="track"></span>
+            <span class="switch-label">{{ property.isActive ? 'Activé' : 'Désactivé' }}</span>
+          </label>
 
-            <div class="property-price">
-              <span class="price">{{ property.price }}€</span>
-              <span class="period">/ nuit</span>
-            </div>
-          </div>
-
-          <!-- Property Actions -->
-          <div class="property-actions">
-            <div class="primary-actions">
-              <button class="btn btn-outline btn-sm" [routerLink]="['/proprietaires/edit-property', property.id]">
-                <i class="ph ph-pencil-simple"></i>
-              </button>
-              <button class="btn btn-outline btn-sm" [routerLink]="['/proprietaires/calendar', property.id]">
-                <i class="ph ph-calendar-blank"></i>
-              </button>
-              <button class="btn btn-outline-danger btn-sm" (click)="deleteProperty(property)">
-                <i class="ph ph-trash"></i>
-              </button>
-            </div>
-            <div class="secondary-actions">
-              <label class="switch">
-                <input type="checkbox" [checked]="property.isActive" (change)="togglePropertyStatus(property)">
-                <span class="slider round"></span>
-              </label>
-              
-              <div class="dropdown" tabindex="0">
-                <button class="btn btn-icon">
-                  <i class="ph ph-dots-three-vertical"></i>
-                </button>
-                <div class="dropdown-menu">
-                  <a (click)="duplicateProperty(property)"><i class="ph ph-copy"></i> Dupliquer</a>
-                  <a (click)="viewAnalytics(property)"><i class="ph ph-chart-bar"></i> Statistiques</a>
-                  <div class="dropdown-divider"></div>
-                  <a (click)="deleteProperty(property)" class="text-danger"><i class="ph ph-trash"></i> Supprimer</a>
-                </div>
-              </div>
-            </div>
+          <ng-container *ngIf="confirmDeleteId !== property.id">
+            <button class="act-delete" (click)="deleteProperty(property)">
+              <i class="ph ph-trash"></i> Supprimer
+            </button>
+          </ng-container>
+          <div *ngIf="confirmDeleteId === property.id" class="confirm-bar">
+            <span class="confirm-msg">Supprimer ?</span>
+            <button class="confirm-yes" (click)="deleteProperty(property)">Oui</button>
+            <button class="confirm-no" (click)="cancelDelete()">Non</button>
           </div>
         </div>
-      </div>
+      </article>
     </div>
 
-    <!-- List View -->
-    <div *ngIf="viewMode === 'list'" class="properties-list">
-      <div class="list-container">
-        <table class="custom-table">
-          <thead>
-            <tr>
-              <th style="width: 50px;">
-                <input type="checkbox" class="custom-checkbox"
-                  (change)="toggleAllSelection($any($event.target).checked)"
-                  [checked]="allSelected">
-              </th>
-              <th>Propriété</th>
-              <th>Type</th>
-              <th>Caractéristiques</th>
-              <th>Prix</th>
-              <th>Statut</th>
-              <th style="text-align: right;">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let property of filteredProperties">
-              <td>
-                <input type="checkbox" class="custom-checkbox"
-                  [checked]="isPropertySelected(property.id!)"
-                  (change)="togglePropertySelection(property.id!, $any($event.target).checked)">
-              </td>
-              <td class="property-info-cell">
-                <div class="property-info">
-                  <img [src]="property.photos[0] || '/assets/images/loft.jpg'" [alt]="property.title" class="property-thumbnail">
-                  <div class="property-details">
-                    <h4>{{ property.title }}</h4>
-                    <p><i class="ph ph-map-pin"></i> {{ property.location }}</p>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div class="type-cell">
-                  <i [ngClass]="'ph ph-' + getPropertyTypeIcon(property.propertyType)"></i>
-                  {{ getPropertyTypeLabel(property.propertyType) }}
-                </div>
-              </td>
-              <td>
-                <div class="specs-cell">
-                  <span title="Invités"><i class="ph ph-users-three"></i> {{ property.maxGuests }}</span>
-                  <span title="Chambres"><i class="ph ph-bed"></i> {{ property.bedrooms }}</span>
-                  <span title="Salles de bain"><i class="ph ph-bathtub"></i> {{ property.bathrooms }}</span>
-                </div>
-              </td>
-              <td>
-                <div class="price-cell">
-                  <span class="price">{{ property.price }}€</span>
-                  <span class="period">/ nuit</span>
-                </div>
-              </td>
-              <td>
-                <label class="switch">
-                  <input type="checkbox" [checked]="property.isActive" (change)="togglePropertyStatus(property)">
-                  <span class="slider round"></span>
-                </label>
-              </td>
-              <td class="actions-cell">
-                <div class="actions-group">
-                  <button class="btn btn-icon btn-sm" [routerLink]="['/proprietaires/edit-property', property.id]">
-                    <i class="ph ph-pencil-simple"></i>
-                  </button>
-                  <button class="btn btn-icon btn-sm" [routerLink]="['/proprietaires/calendar', property.id]">
-                    <i class="ph ph-calendar-blank"></i>
-                  </button>
-                  <button class="btn btn-icon btn-sm text-danger" (click)="deleteProperty(property)">
-                    <i class="ph ph-trash"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- No Results -->
-  <div *ngIf="!loading && properties.length > 0 && filteredProperties.length === 0" class="no-results">
-    <div class="no-results-content">
-      <i class="ph ph-magnifying-glass-minus fa-3x"></i>
-      <h3>Aucun résultat trouvé</h3>
-      <p>Essayez de modifier vos critères de recherche</p>
-      <button class="btn btn-outline mt-3" (click)="clearFilters()">
+    <!-- No results after filtering -->
+    <div *ngIf="!loading && properties.length > 0 && filteredProperties.length === 0" class="no-results">
+      <i class="ph ph-magnifying-glass"></i>
+      <h3>Aucun résultat</h3>
+      <p>Essayez de modifier vos critères de recherche.</p>
+      <button class="btn-outline" (click)="clearFilters()">
         <i class="ph ph-x"></i> Effacer les filtres
       </button>
     </div>
-  </div>
+  </main>
 </div>

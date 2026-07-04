@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
-// LocaSpace App Layout — Clean SaaS Sidebar + Topbar
+// Sakane App Layout — Clean SaaS Sidebar + Topbar
 // Bold Mediterranean Design System
 // ═══════════════════════════════════════════════════════════════
 
@@ -377,8 +377,130 @@ $topbar-height: 64px;
   align-items: center;
   justify-content: center;
   padding: 0 4px;
-  border: 2px solid white;
   line-height: 1;
+}
+
+// ─── Notification Dropdown ───
+.notif-container {
+  position: relative;
+}
+
+.notif-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: -50px;
+  width: 320px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(10, 37, 64, 0.12);
+  border: 1px solid $border;
+  z-index: 200;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.open {
+    max-height: 480px;
+    opacity: 1;
+    pointer-events: all;
+    overflow-y: auto;
+  }
+
+  .notif-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem 0.75rem;
+    border-bottom: 1px solid $border;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: $primary;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+
+    .notif-mark-all {
+      background: none;
+      border: none;
+      color: $text-secondary;
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 0;
+      transition: color 0.15s;
+
+      &:hover { color: $primary; }
+    }
+  }
+
+  .notif-list {
+    .notif-item {
+      display: flex;
+      gap: 0.85rem;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid rgba(0,0,0,0.03);
+      transition: background 0.15s;
+      cursor: pointer;
+
+      &.unread {
+        background: rgba(10, 37, 64, 0.02);
+      }
+
+      &:hover { background: $bg-page; }
+
+      .notif-icon-wrapper {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        background: rgba(10, 37, 64, 0.04);
+        font-size: 1.1rem;
+
+        &.text-gold { color: $gold; background: rgba(201, 168, 76, 0.1); }
+        &.text-red { color: #EF4444; background: rgba(239, 68, 68, 0.1); }
+        &.text-navy { color: $primary; background: rgba(10, 37, 64, 0.1); }
+        &.text-grey { color: $text-secondary; }
+      }
+
+      .notif-body {
+        flex: 1;
+        min-width: 0;
+
+        .notif-title {
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: $text-primary;
+          margin: 0 0 2px;
+        }
+
+        .notif-msg {
+          font-size: 0.8rem;
+          color: $text-secondary;
+          margin: 0 0 4px;
+          line-height: 1.4;
+        }
+
+        .notif-time {
+          font-size: 0.7rem;
+          color: $text-muted;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  .notif-empty {
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    color: $text-secondary;
+    font-size: 0.875rem;
+  }
 }
 
 // ─── User Info ───

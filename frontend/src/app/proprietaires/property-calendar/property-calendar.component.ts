@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ProprietairesService, Property, CalendarEvent } from '../services/proprietaires.service';
 import { ToastService } from '../../shared/components/toast/toast.service';
+import { MadCurrencyPipe } from '../../shared/pipes/mad-currency.pipe';
 
 interface PricingRule {
   id?: number;
@@ -25,8 +26,9 @@ interface CalendarDay {
   price?: number;
   isBlocked: boolean;
   isBooked: boolean;
+  isPending?: boolean;
   isAvailable: boolean;
-  status: 'available' | 'booked' | 'blocked' | 'disabled';
+  status: 'available' | 'booked' | 'blocked' | 'disabled' | 'pending';
 }
 
 @Component({
@@ -36,7 +38,8 @@ interface CalendarDay {
     CommonModule,
     RouterModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    MadCurrencyPipe
   ],
   templateUrl: './property-calendar.component.html',
   styleUrls: ['./property-calendar.component.scss']
@@ -183,7 +186,8 @@ export class PropertyCalendarComponent implements OnInit {
       const events = this.getEventsForDate(currentDate);
       const isBlocked = events.some(e => e.type === 'blocked');
       const isBooked = events.some(e => e.type === 'booked');
-      const isAvailable = !isBlocked && !isBooked;
+      const isPending = events.some(e => e.type === 'pending');
+      const isAvailable = !isBlocked && !isBooked && !isPending;
       
       const dayData: CalendarDay = {
         date: new Date(currentDate),
@@ -195,8 +199,9 @@ export class PropertyCalendarComponent implements OnInit {
         price: this.getPriceForDate(currentDate),
         isBlocked: isBlocked,
         isBooked: isBooked,
+        isPending: isPending,
         isAvailable: isAvailable,
-        status: isBooked ? 'booked' : isBlocked ? 'blocked' : isAvailable ? 'available' : 'disabled'
+        status: isBooked ? 'booked' : isPending ? 'pending' : isBlocked ? 'blocked' : isAvailable ? 'available' : 'disabled'
       };
       
       this.calendarDays.push(dayData);
@@ -319,7 +324,6 @@ export class PropertyCalendarComponent implements OnInit {
   }
 
   private savePricingRule(rule: PricingRule): void {
-    console.log('Saving pricing rule:', rule);
   }
 
   deletePricingRule(rule: PricingRule): void {
@@ -499,6 +503,10 @@ export class PropertyCalendarComponent implements OnInit {
 
   getBlockedDaysCount(): number {
     return this.calendarDays.filter(day => day.isBlocked && day.isCurrentMonth).length;
+  }
+
+  getPendingDaysCount(): number {
+    return this.calendarDays.filter(day => day.status === 'pending' && day.isCurrentMonth).length;
   }
 
   getAveragePrice(): number {

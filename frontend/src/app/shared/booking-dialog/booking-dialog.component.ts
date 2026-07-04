@@ -2,11 +2,12 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { LocatairesService, Place, Booking } from '../../locataire/services/locataires.service';
+import { MadCurrencyPipe } from '../pipes/mad-currency.pipe';
 
 @Component({
   selector: 'app-booking-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, MadCurrencyPipe],
   templateUrl: './booking-dialog.component.html',
   styleUrls: ['./booking-dialog.component.scss']
 })

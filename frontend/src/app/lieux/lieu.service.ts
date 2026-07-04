@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, BehaviorSubject, of, throwError } from 'rxjs';
 import { map, catchError, retry } from 'rxjs/operators';
@@ -156,13 +156,11 @@ export class LieuService {
 
   // Load validated lieux from backend
   private loadValidatedLieux(): void {
-    console.log('Loading validated lieux from:', this.apiUrl);
     
     this.http.get<any>(this.apiUrl, this.httpOptions).pipe(
       retry(2),
       map(response => {
         const backendLieux = response.content || response; // Support both Page and raw array
-        console.log('Received backend lieux:', backendLieux);
         if (!Array.isArray(backendLieux)) {
           console.warn('Expected array but received:', backendLieux);
           return [];
@@ -175,7 +173,6 @@ export class LieuService {
       })
     ).subscribe({
       next: (lieux) => {
-        console.log('Transformed lieux for frontend:', lieux);
         this.lieuxSubject.next(lieux);
       },
       error: (error) => {

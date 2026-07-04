@@ -1,5 +1,5 @@
 <!-- ═══════════════════════════════════════════════════════════════
-     LocaSpace Home — Landing Page (Full French)
+     Sakane Home — Landing Page (Full French)
      ═══════════════════════════════════════════════════════════════ -->
 
 <!-- Navbar (transparent → solid on scroll) -->
@@ -9,7 +9,7 @@
       <div class="navbar-logo">
         <i class="ph ph-buildings"></i>
       </div>
-      <span class="navbar-brand-text">LocaSpace</span>
+      <span class="navbar-brand-text">Sakane</span>
     </a>
 
     <nav class="navbar-links">
@@ -19,8 +19,34 @@
     </nav>
 
     <div class="navbar-actions">
-      <a class="btn-nav-ghost" routerLink="/login">Connexion</a>
-      <a class="btn-nav-primary" routerLink="/register">S'inscrire</a>
+      <!-- Guest buttons -->
+      <ng-container *ngIf="!(authService.currentUser$ | async)">
+        <a class="btn-nav-ghost" routerLink="/login">Connexion</a>
+        <a class="btn-nav-primary" routerLink="/register">S'inscrire</a>
+      </ng-container>
+
+      <!-- Logged-in user menu -->
+      <ng-container *ngIf="authService.currentUser$ | async as user">
+        <div class="home-user-chip">
+          <span class="home-user-avatar">{{ user.firstName.charAt(0) }}{{ user.lastName ? user.lastName.charAt(0) : '' }}</span>
+          <span class="home-user-name">{{ user.firstName }}</span>
+          <i class="ph ph-caret-down"></i>
+          <div class="home-user-dropdown">
+            <a *ngIf="user.role === 'tenant'" routerLink="/locataire/dashboard">
+              <i class="ph ph-squares-four"></i> Mon espace
+            </a>
+            <a *ngIf="user.role === 'owner'" routerLink="/proprietaires/dashboard">
+              <i class="ph ph-squares-four"></i> Tableau de bord
+            </a>
+            <a routerLink="/profil">
+              <i class="ph ph-user"></i> Mon profil
+            </a>
+            <button (click)="authService.logout()">
+              <i class="ph ph-sign-out"></i> Déconnexion
+            </button>
+          </div>
+        </div>
+      </ng-container>
     </div>
 
     <button class="navbar-mobile-toggle" (click)="toggleMobileNav()" aria-label="Menu">
@@ -34,8 +60,24 @@
     <a routerLink="/about" (click)="mobileNavOpen = false">À propos</a>
     <a routerLink="/contact" (click)="mobileNavOpen = false">Contact</a>
     <div class="mobile-actions">
-      <a class="btn-nav-ghost" routerLink="/login" (click)="mobileNavOpen = false">Connexion</a>
-      <a class="btn-nav-primary" routerLink="/register" (click)="mobileNavOpen = false">S'inscrire</a>
+      <ng-container *ngIf="!(authService.currentUser$ | async)">
+        <a class="btn-nav-ghost" routerLink="/login" (click)="mobileNavOpen = false">Connexion</a>
+        <a class="btn-nav-primary" routerLink="/register" (click)="mobileNavOpen = false">S'inscrire</a>
+      </ng-container>
+      <ng-container *ngIf="authService.currentUser$ | async as user">
+        <a *ngIf="user.role === 'tenant'" routerLink="/locataire/dashboard" (click)="mobileNavOpen = false">
+          <i class="ph ph-squares-four"></i> Mon espace
+        </a>
+        <a *ngIf="user.role === 'owner'" routerLink="/proprietaires/dashboard" (click)="mobileNavOpen = false">
+          <i class="ph ph-squares-four"></i> Tableau de bord
+        </a>
+        <a routerLink="/profil" (click)="mobileNavOpen = false">
+          <i class="ph ph-user"></i> Mon profil
+        </a>
+        <button (click)="authService.logout(); mobileNavOpen = false">
+          <i class="ph ph-sign-out"></i> Déconnexion
+        </button>
+      </ng-container>
     </div>
   </div>
 </header>
@@ -55,7 +97,7 @@
       <span class="hero-title-accent fade-up-3">simplement.</span>
     </h1>
     <p class="hero-subtitle fade-up-4">
-      Des milliers d'espaces pour chaque besoin — événements, bureaux, studios, villas. 
+      Des espaces pour chaque besoin — événements, bureaux, studios, villas.
       Réservation simple et sécurisée.
     </p>
     
@@ -76,7 +118,7 @@
     <a class="category-pill" *ngFor="let cat of categories" [routerLink]="['/lieux']" [queryParams]="{type: cat.slug}">
       <i class="ph {{ cat.icon }} pill-icon"></i>
       <span class="pill-name">{{ cat.name }}</span>
-      <span class="pill-count">({{ cat.count }})</span>
+      <span class="pill-count">{{ cat.count }}</span>
     </a>
   </div>
   <div class="categories-fade-right"></div>
@@ -103,6 +145,11 @@
         </app-place-card>
       </div>
       <div class="places-fade-right"></div>
+    </div>
+    
+    <div class="scroll-hint">
+      <i class="ph ph-arrows-left-right"></i>
+      <span>Faites défiler pour voir plus</span>
     </div>
     
     <div class="section-footer">
@@ -171,19 +218,40 @@
   <div class="container">
     <div class="trust-content">
       <div class="trust-statement">
-        Plus de {{ espacesCount | number:'1.0-0' }} espaces <span class="dot">·</span> {{ clientsCount | number:'1.0-0' }} clients satisfaits <span class="dot">·</span> Note {{ noteCount | number:'1.1-1' }}/5
+        Des espaces choisis un par un —<br class="stmt-break">
+        <span class="stmt-accent">de la médina de Marrakech aux rooftops de Casablanca.</span>
       </div>
       <div class="trust-partners">
-        <div class="partner-box">Partenaire certifié</div>
-        <div class="partner-box">Agence agréée</div>
-        <div class="partner-box">Qualité garantie</div>
+        <div class="partner-box"><i class="ph ph-seal-check"></i><span>Partenaire certifié</span></div>
+        <div class="partner-box"><i class="ph ph-shield-check"></i><span>Agence agréée</span></div>
+        <div class="partner-box"><i class="ph ph-medal"></i><span>Qualité garantie</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Strip Section -->
+<section class="stats-strip-section scroll-reveal" appScrollReveal>
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <h3 class="stat-value">{{ espacesCount | number:'1.0-0' }}+</h3>
+        <span class="stat-label">Espaces listés</span>
+      </div>
+      <div class="stat-item">
+        <h3 class="stat-value">{{ clientsCount | number:'1.0-0' }}+</h3>
+        <span class="stat-label">Clients satisfaits</span>
+      </div>
+      <div class="stat-item">
+        <h3 class="stat-value">{{ noteCount | number:'1.1-1' }}<i class="ph ph-star-fill"></i></h3>
+        <span class="stat-label">Note moyenne</span>
       </div>
     </div>
   </div>
 </section>
 
 <!-- Testimonials Section -->
-<section class="testimonials-section">
+<section class="testimonials-section scroll-reveal" appScrollReveal>
   <div class="container">
     <div class="section-header">
       <div class="section-label">
@@ -194,7 +262,7 @@
       <p class="section-subtitle">Des milliers de clients satisfaits nous font confiance</p>
     </div>
     
-    <div class="testimonials-carousel">
+    <div class="testimonials-carousel" (mouseenter)="pauseCarousel()" (mouseleave)="resumeCarousel()">
       <div class="carousel-container">
         <div class="carousel-track" [style.transform]="'translateX(' + currentTransform + '%)'">
           <div class="testimonial-card" *ngFor="let testimonial of testimonials">
@@ -235,7 +303,7 @@
 </section>
 
 <!-- CTA Banner -->
-<section class="cta-section">
+<section class="cta-section scroll-reveal" appScrollReveal>
   <div class="container">
     <div class="cta-card">
       <div class="cta-content">

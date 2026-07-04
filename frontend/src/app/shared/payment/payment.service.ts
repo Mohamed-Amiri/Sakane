@@ -153,7 +153,7 @@ export class PaymentService {
   // Payment Processing
   createPaymentIntent(
     amount: number,
-    currency: string = 'EUR',
+    currency: string = 'MAD',
     metadata: PaymentIntent['metadata']
   ): Observable<PaymentIntent> {
     const paymentIntent: PaymentIntent = {
@@ -191,7 +191,7 @@ export class PaymentService {
       hostId: string;
     }
   ): Observable<PaymentResult> {
-    return this.createPaymentIntent(amount, 'EUR', bookingData).pipe(
+    return this.createPaymentIntent(amount, 'MAD', bookingData).pipe(
       switchMap(paymentIntent => this.confirmPayment(paymentIntent.id, paymentMethodId))
     );
   }
@@ -237,7 +237,7 @@ export class PaymentService {
     total: number;
   } {
     const baseAmount = basePrice * nights;
-    const serviceFee = Math.max(50, Math.round(baseAmount * 0.14)); // 14% service fee, minimum 50€
+    const serviceFee = Math.max(50, Math.round(baseAmount * 0.14)); // 14% service fee, minimum 50 DH
     const taxes = Math.round(baseAmount * 0.055); // 5.5% taxes
     const total = baseAmount + serviceFee + taxes;
 

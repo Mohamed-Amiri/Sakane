@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -41,7 +41,6 @@ export class ForgotPasswordComponent implements OnInit {
       try {
         // In a real app, this would be an actual API call
         // this.authService.forgotPassword(this.forgotPasswordForm.value.email)
-        console.log('Forgot password request:', this.forgotPasswordForm.value.email);
         
         // Show success message
         this.emailSent = true;

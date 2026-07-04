@@ -9,7 +9,7 @@ export const environment = {
   production: false,
 
   // API Configuration
-  apiUrl: 'http://localhost:8082/api',
+  apiUrl: '/api',
   apiTimeout: 30000, // 30 seconds
   apiRetryAttempts: 3,
 

@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { Title } from '@angular/platform-browser';
 
 interface Testimonial {
   quote: string;
@@ -30,7 +31,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   // Rotating testimonials
   testimonials: Testimonial[] = [
     {
-      quote: "Grâce à LocaSpace, j'ai trouvé le lieu parfait pour mon événement en quelques clics. Service au top !",
+      quote: "Grâce à Sakane, j'ai trouvé le lieu parfait pour mon événement en quelques clics. Service au top !",
       name: 'Amina Karzazi',
       role: 'Organisatrice d\'événements',
       initials: 'AK'
@@ -42,7 +43,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       initials: 'YL'
     },
     {
-      quote: "Louer mon bureau inoccupé sur LocaSpace a été une excellente source de revenus. Simple et efficace.",
+      quote: "Louer mon bureau inoccupé sur Sakane a été une excellente source de revenus. Simple et efficace.",
       name: 'Fatima Zahra',
       role: 'Propriétaire',
       initials: 'FZ'
@@ -54,13 +55,17 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private route: ActivatedRoute,
+    private titleService: Title
+  ) {
+    this.titleService.setTitle('Connexion — Sakane');
+  }
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
+      password: ['', [Validators.required]],
       rememberMe: [false]
     });
 

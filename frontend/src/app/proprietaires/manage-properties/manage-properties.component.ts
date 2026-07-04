@@ -5,6 +5,9 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ToastService } from '../../shared/components/toast/toast.service';
 import { ProprietairesService, Property } from '../services/proprietaires.service';
+import { MadCurrencyPipe } from '../../shared/pipes/mad-currency.pipe';
+import { Title } from '@angular/platform-browser';
+import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.directive';
 
 @Component({
   selector: 'app-manage-properties',
@@ -12,7 +15,9 @@ import { ProprietairesService, Property } from '../services/proprietaires.servic
   imports: [
     CommonModule,
     RouterModule,
-    FormsModule
+    FormsModule,
+    MadCurrencyPipe,
+    ScrollRevealDirective
   ],
   templateUrl: './manage-properties.component.html',
   styleUrls: ['./manage-properties.component.scss']
@@ -33,6 +38,8 @@ export class ManagePropertiesComponent implements OnInit, AfterViewInit, OnDestr
 
   // Selection and Bulk Operations
   selectedProperties: number[] = [];
+  confirmDeleteId: number | null = null;
+  confirmBulkDelete = false;
 
   // Table columns for list view
   displayedColumns: string[] = ['select', 'property', 'type', 'specs', 'price', 'status', 'actions'];
@@ -40,10 +47,13 @@ export class ManagePropertiesComponent implements OnInit, AfterViewInit, OnDestr
   constructor(
     private proprietairesService: ProprietairesService,
     private toastService: ToastService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private titleService: Title
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.titleService.setTitle('Gérer mes propriétés — Sakane');
+  }
 
   ngAfterViewInit(): void {
     // Subscribe to shared properties stream and trigger initial load
@@ -105,19 +115,26 @@ export class ManagePropertiesComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   deleteProperty(property: Property): void {
-    if (confirm(`Êtes-vous sûr de vouloir supprimer "${property.title}" ?`)) {
-      this.proprietairesService.deleteProperty(property.id!).subscribe({
-        next: () => {
-          this.properties = this.properties.filter(p => p.id !== property.id);
-          this.applyFilters(); // Refresh filtered properties
-          this.toastService.success('Propriété supprimée avec succès');
-        },
-        error: (error) => {
-          console.error('Error deleting property:', error);
-          this.toastService.error('Erreur lors de la suppression');
-        }
-      });
+    if (this.confirmDeleteId !== property.id) {
+      this.confirmDeleteId = property.id!;
+      return;
     }
+    this.confirmDeleteId = null;
+    this.proprietairesService.deleteProperty(property.id!).subscribe({
+      next: () => {
+        this.properties = this.properties.filter(p => p.id !== property.id);
+        this.applyFilters();
+        this.toastService.success('Propriété supprimée avec succès');
+      },
+      error: (error) => {
+        console.error('Error deleting property:', error);
+        this.toastService.error('Erreur lors de la suppression');
+      }
+    });
+  }
+
+  cancelDelete(): void {
+    this.confirmDeleteId = null;
   }
 
   getStatusChip(property: Property): { text: string, color: string } {
@@ -263,21 +280,28 @@ export class ManagePropertiesComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   bulkDelete(): void {
-    if (confirm(`Êtes-vous sûr de vouloir supprimer ${this.selectedProperties.length} propriété(s) ?`)) {
-      const deletePromises = this.selectedProperties.map(id => 
-        this.proprietairesService.deleteProperty(id).toPromise()
-      );
-
-      Promise.all(deletePromises).then(() => {
-        this.properties = this.properties.filter(p => !this.selectedProperties.includes(p.id!));
-        this.applyFilters();
-        this.selectedProperties = [];
-        this.toastService.success('Propriétés supprimées avec succès');
-      }).catch(error => {
-        console.error('Error deleting properties:', error);
-        this.toastService.error('Erreur lors de la suppression');
-      });
+    if (!this.confirmBulkDelete) {
+      this.confirmBulkDelete = true;
+      return;
     }
+    this.confirmBulkDelete = false;
+    const deletePromises = this.selectedProperties.map(id =>
+      this.proprietairesService.deleteProperty(id).toPromise()
+    );
+
+    Promise.all(deletePromises).then(() => {
+      this.properties = this.properties.filter(p => !this.selectedProperties.includes(p.id!));
+      this.applyFilters();
+      this.selectedProperties = [];
+      this.toastService.success('Propriétés supprimées avec succès');
+    }).catch(error => {
+      console.error('Error deleting properties:', error);
+      this.toastService.error('Erreur lors de la suppression');
+    });
+  }
+
+  cancelBulkDelete(): void {
+    this.confirmBulkDelete = false;
   }
 
   // Additional Actions

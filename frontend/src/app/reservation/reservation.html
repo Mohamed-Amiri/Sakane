@@ -69,8 +69,8 @@
   <aside class="summary-card">
     <h3>Récapitulatif</h3>
     <p><strong>{{ startDate | date:'dd/MM/yy' }}</strong> → <strong>{{ endDate | date:'dd/MM/yy' }}</strong></p>
-    <p>{{ nights }} nuits · {{ lieu.prix | currency:'EUR' }} / nuit</p>
+    <p>{{ nights }} jours · {{ lieu.prix | madCurrency }} / jour</p>
     <hr>
-    <p>Total: <strong>{{ totalPrice | currency:'EUR' }}</strong></p>
+    <p>Total: <strong>{{ totalPrice | madCurrency }}</strong></p>
   </aside>
 </div>

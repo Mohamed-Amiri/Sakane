@@ -1,1584 +1,476 @@
-﻿@use '../../../styles/variables' as *;
+@use '../../../styles/variables' as *;
 
-// --- Modern Detail Container ---
-.detail-container {
+// ═══════════════════════════════════════════════════════════════
+//  Sakane — Listing detail (Navy + Gold + Cream editorial)
+// ═══════════════════════════════════════════════════════════════
+$navy:   #0A2540;
+$navy-2: #0F3460;
+$gold:   #C9A84C;
+$gold-2: #E8C46A;
+$cream:  #FAF7F0;
+$sand:   #F0E9D6;
+$ink:    #2C3E50;
+$muted:  #6B7C93;
+$line:   rgba(10, 37, 64, 0.10);
+
+:host { display: block; background: $cream; min-height: 100vh; }
+
+.lieu-detail-page {
+  font-family: $font-body;
+  color: $ink;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1.5rem;
+  padding: 1.5rem 2rem 5rem;
 }
 
-// --- Breadcrumbs ---
-.breadcrumbs {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  font-size: 0.9rem;
-  color: $neutral-500;
-  
-  a {
-    color: $neutral-600;
-    text-decoration: none;
-    transition: color 0.2s ease;
-    
-    &:hover {
-      color: $primary-color;
-    }
+// ─── Breadcrumb ───
+.breadcrumb {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-size: 0.82rem; color: $muted; margin-bottom: 1.75rem;
+  flex-wrap: wrap;
+  svg { width: 14px; height: 14px; opacity: 0.5; }
+  .breadcrumb-link {
+    color: $muted; text-decoration: none; transition: color 180ms ease;
+    &:hover { color: $gold; }
   }
-  
-  svg {
-    color: $neutral-400;
-    flex-shrink: 0;
-  }
+  .breadcrumb-current { color: $navy; font-weight: 600; }
 }
 
-// --- Modern Header ---
+// ─── Header ───
 .detail-header {
-  margin-bottom: 2rem;
-  
   .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1rem;
-    
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 1.5rem; flex-wrap: wrap;
     h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      color: $neutral-900;
-      margin: 0;
-      max-width: 70%;
-    }
-    
-    .header-actions {
-      display: flex;
-      gap: 1rem;
-      
-      .action-btn {
-        background: transparent;
-        border: none;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: $neutral-700;
-        font-size: 0.9rem;
-        font-weight: 500;
-        padding: 0.5rem 0.75rem;
-        border-radius: $border-radius-lg;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        
-        svg {
-          flex-shrink: 0;
-        }
-        
-        &:hover {
-          background: $neutral-100;
-          color: $neutral-900;
-        }
-        
-        &.saved {
-          color: $status-error;
-          
-          svg {
-            fill: $status-error;
-          }
-        }
-      }
+      font-family: $font-display;
+      font-size: clamp(2rem, 4vw, 2.85rem);
+      font-weight: 600; line-height: 1.1; letter-spacing: -0.01em;
+      color: $navy; margin: 0;
     }
   }
-  
+
+  .header-actions { display: flex; gap: 0.6rem; flex-shrink: 0; }
+  .action-btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: none; border: 1px solid $line; border-radius: $radius-pill;
+    padding: 0.55rem 1.1rem; cursor: pointer;
+    font-family: $font-body; font-size: 0.86rem; font-weight: 600; color: $navy;
+    transition: all 180ms ease;
+    svg { width: 17px; height: 17px; }
+    &:hover { border-color: $gold; color: $gold; background: rgba(201,168,76,0.05); }
+    &.saved { border-color: $gold; color: $gold; background: rgba(201,168,76,0.08); }
+  }
+
   .header-meta {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-    color: $neutral-700;
-    font-size: 0.95rem;
-    
-    .rating-info, .location-info {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      
-      svg {
-        flex-shrink: 0;
-      }
-    }
-    
-    .rating {
-      font-weight: 600;
-    }
-    
-    .separator {
-      color: $neutral-400;
-    }
-    
-    .reviews-link {
-      color: $neutral-700;
-      text-decoration: none;
-      font-weight: 500;
-      
-      &:hover {
-        text-decoration: underline;
-      }
-    }
+    display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    .rating-info, .location-info { display: inline-flex; align-items: center; gap: 0.4rem; }
+    svg { width: 16px; height: 16px; }
+    .location-info svg { stroke: $gold; }
+    .rating { font-weight: 700; color: $navy; }
+    .separator { color: $muted; }
+    .reviews-link { color: $muted; text-decoration: none; &:hover { color: $gold; text-decoration: underline; } }
+    .location-info span { color: $ink; }
   }
 }
 
-// --- Modern Photo Gallery ---
+// ─── Photo gallery ───
 .photo-gallery {
-  margin-bottom: 3rem;
-  
+  margin: 1.75rem 0 2.5rem;
   .gallery-grid {
+    position: relative;
     display: grid;
     grid-template-columns: 2fr 1fr;
-    grid-template-rows: repeat(2, 1fr);
-    gap: 0.75rem;
-    height: 450px;
-    position: relative;
-    
-    .main-image {
-      grid-row: span 2;
-      border-radius: $border-radius-xl 0 0 $border-radius-xl;
-      overflow: hidden;
-      position: relative;
-      cursor: pointer;
-      
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.5s ease;
-      }
-      
-      &:hover img {
-        transform: scale(1.05);
-      }
-      
-      .image-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(to bottom, rgba(0,0,0,0.1), transparent 50%);
-        
-        .image-badge {
-          position: absolute;
-          top: 1rem;
-          left: 1rem;
-          background: rgba(0, 0, 0, 0.5);
-          color: white;
-          padding: 0.25rem 0.75rem;
-          border-radius: $border-radius-full;
-          font-size: 0.8rem;
-          font-weight: 500;
-        }
-      }
+    gap: 0.6rem;
+    height: 460px;
+    border-radius: $radius-xl;
+    overflow: hidden;
+  }
+
+  .main-image {
+    position: relative; cursor: pointer; overflow: hidden;
+    background: $sand;
+    img { width: 100%; height: 100%; object-fit: cover; transition: transform 500ms ease; }
+    &:hover img { transform: scale(1.04); }
+  }
+
+  .img-placeholder {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem;
+    background: linear-gradient(155deg, $navy 0%, $navy-2 100%);
+    color: rgba(245,239,224,0.85);
+    svg { color: $gold; opacity: 0.7; }
+    span { font-family: $font-display; font-size: 1.15rem; font-style: italic; }
+  }
+
+  .image-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(10,37,64,0.25), transparent 35%);
+    pointer-events: none;
+  }
+  .image-badge {
+    position: absolute; bottom: 1rem; left: 1rem;
+    background: rgba(10,37,64,0.7); backdrop-filter: blur(6px);
+    color: $cream; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em;
+    padding: 0.35rem 0.8rem; border-radius: $radius-pill;
+  }
+
+  .thumbnail-grid {
+    display: grid; grid-template-rows: 1fr 1fr; gap: 0.6rem;
+    .thumbnail {
+      position: relative; cursor: pointer; overflow: hidden; background: $sand;
+      img { width: 100%; height: 100%; object-fit: cover; transition: transform 500ms ease; }
+      &:hover img { transform: scale(1.06); }
+      &.active { outline: 3px solid $gold; outline-offset: -3px; }
     }
-    
-    .thumbnail-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-      gap: 0.75rem;
-      
-      .thumbnail {
-        position: relative;
-        overflow: hidden;
-        cursor: pointer;
-        
-        &:first-child {
-          border-radius: 0 $border-radius-xl 0 0;
-        }
-        
-        &:last-child {
-          border-radius: 0 0 $border-radius-xl 0;
-        }
-        
-        img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          transition: transform 0.5s ease;
-        }
-        
-        &:hover img {
-          transform: scale(1.05);
-        }
-        
-        .image-overlay {
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: linear-gradient(to bottom, rgba(0,0,0,0.1), transparent 50%);
-        }
-      }
-    }
-    
-    .view-all-photos {
-      position: absolute;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      background: white;
-      border: none;
-      border-radius: $border-radius-xl;
-      padding: 0.75rem 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      box-shadow: $shadow-md;
-      transition: all 0.2s ease;
-      
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: $shadow-lg;
-      }
-    }
+  }
+
+  .view-all-photos {
+    position: absolute; bottom: 1rem; right: 1rem;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: $cream; color: $navy; border: 1px solid $navy;
+    padding: 0.6rem 1.1rem; border-radius: $radius-pill;
+    font-family: $font-body; font-size: 0.84rem; font-weight: 600; cursor: pointer;
+    transition: all 180ms ease;
+    svg { width: 18px; height: 18px; }
+    &:hover { background: $navy; color: $cream; }
   }
 }
 
-// --- Modern Content Grid ---
+// ─── Content grid ───
 .detail-content-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 4rem;
+  grid-template-columns: 1fr 380px;
+  gap: 3rem;
   align-items: start;
 }
 
-// --- Content Divider ---
-.content-divider {
-  height: 1px;
-  background: $neutral-200;
-  margin: 2.5rem 0;
-}
+.content-divider { height: 1px; background: $line; margin: 2.25rem 0; }
 
-// --- Host Section ---
-.host-section {
-  .host-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    
-    .host-details {
-      h2 {
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-      }
-      
-      .host-stats {
-        color: $neutral-600;
-        font-size: 0.95rem;
-        
-        .separator {
-          margin: 0 0.5rem;
-        }
-      }
-    }
-    
-    .host-avatar-container {
-      position: relative;
-      
-      .host-avatar {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid white;
-        box-shadow: $shadow-sm;
-      }
-      
-      .host-badge {
-        position: absolute;
-        bottom: -5px;
-        right: -5px;
-        background: $primary-gradient;
-        color: white;
-        font-size: 0.7rem;
-        font-weight: 600;
-        padding: 0.25rem 0.5rem;
-        border-radius: $border-radius-full;
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
-      }
-    }
-  }
-  
-  .key-features {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-top: 2rem;
-    
-    .feature {
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-      
-      .feature-icon {
-        background: $neutral-100;
-        width: 48px;
-        height: 48px;
-        border-radius: $border-radius-lg;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: $primary-color;
-        flex-shrink: 0;
-      }
-      
-      .feature-text {
-        h4 {
-          font-size: 1rem;
-          font-weight: 600;
-          margin-bottom: 0.25rem;
-        }
-        
-        p {
-          color: $neutral-600;
-          font-size: 0.9rem;
-          line-height: 1.5;
-        }
-      }
-    }
-  }
-}
-
-// --- Description Section ---
-.description-section {
+// ─── Section headers ───
+.section-header {
+  margin-bottom: 1.25rem;
   h3 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
+    font-family: $font-display; font-size: 1.6rem; font-weight: 600;
+    color: $navy; margin: 0;
   }
-  
-  .description-content {
-    p {
-      line-height: 1.7;
-      color: $neutral-700;
-      margin-bottom: 1.5rem;
-    }
-    
-    .btn-text {
-      background: transparent;
-      border: none;
-      color: $primary-color;
-      font-weight: 600;
-      cursor: pointer;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: color 0.2s ease;
-      
-      &:hover {
-        color: $primary-color;
-        text-decoration: underline;
-      }
-    }
+  p { color: $muted; font-size: 0.92rem; margin: 0.25rem 0 0; }
+}
+
+section > h3 {
+  font-family: $font-display; font-size: 1.6rem; font-weight: 600;
+  color: $navy; margin: 0 0 1rem;
+}
+
+// ─── Host summary ───
+.host-section {
+  .host-info { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
+  .host-details h2 {
+    font-family: $font-display; font-size: 1.45rem; font-weight: 600;
+    color: $navy; margin: 0 0 0.4rem;
+  }
+  .host-stats {
+    display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+    color: $muted; font-size: 0.92rem;
+    .separator { opacity: 0.5; }
+  }
+  .host-avatar-container { position: relative; flex-shrink: 0; }
+  .host-avatar {
+    width: 64px; height: 64px; border-radius: 50%; object-fit: cover;
+    border: 2px solid $gold;
+  }
+  .host-badge {
+    position: absolute; bottom: -4px; right: -4px;
+    display: inline-flex; align-items: center; gap: 0.25rem;
+    background: $gold; color: $navy;
+    font-size: 0.6rem; font-weight: 700; padding: 0.2rem 0.45rem; border-radius: $radius-pill;
+    svg { width: 10px; height: 10px; }
   }
 }
 
-// --- Amenities Section ---
+// ─── Description ───
+.description-section {
+  .description-content p {
+    color: $ink; line-height: 1.7; font-size: 0.98rem; margin: 0;
+    white-space: pre-line;
+  }
+}
+.btn-text {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  background: none; border: none; cursor: pointer;
+  font-family: $font-body; font-size: 0.9rem; font-weight: 600; color: $navy;
+  padding: 0; margin-top: 0.75rem;
+  text-decoration: underline; text-underline-offset: 3px;
+  transition: color 180ms ease;
+  svg { width: 15px; height: 15px; }
+  &:hover { color: $gold; }
+}
+
+// ─── Amenities ───
 .amenities-section {
-  .section-header {
-    margin-bottom: 1.5rem;
-    
-    h3 {
-      font-size: 1.5rem;
-      font-weight: 600;
-    }
-  }
-  
   .amenities-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-    
-    .amenity-item {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      
-      .amenity-icon {
-        color: $neutral-700;
-      }
-      
-      span {
-        font-size: 0.95rem;
-      }
-    }
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem 1.5rem;
   }
-  
-  .btn-outline {
-    background: transparent;
-    border: 1px solid $neutral-300;
-    color: $neutral-800;
-    font-weight: 500;
-    padding: 0.75rem 1.5rem;
-    border-radius: $border-radius-xl;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    
-    &:hover {
-      background: $neutral-100;
-      border-color: $neutral-400;
-      transform: translateY(-2px);
-    }
+  .amenity-item {
+    display: flex; align-items: center; gap: 0.85rem;
+    color: $ink; font-size: 0.95rem;
+    padding: 0.5rem 0;
+  }
+  .amenity-icon {
+    width: 42px; height: 42px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(201,168,76,0.1); border-radius: $radius-lg;
+    svg { width: 22px; height: 22px; color: $gold; }
   }
 }
 
-// --- Calendar Section ---
+// ─── Outline button ───
+.btn-outline {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 1px solid $navy; color: $navy;
+  padding: 0.7rem 1.5rem; border-radius: $radius-pill;
+  font-family: $font-body; font-size: 0.88rem; font-weight: 600; cursor: pointer;
+  margin-top: 1.5rem; transition: all 180ms ease;
+  &:hover { background: $navy; color: $cream; }
+}
+
+// ─── Calendar ───
 .calendar-section {
-  .section-header {
-    margin-bottom: 1.5rem;
-    
-    h3 {
-      font-size: 1.5rem;
-      font-weight: 600;
-    }
-  }
-  
   .calendar-container {
-    margin-bottom: 1.5rem;
-    
-    .calendar-placeholder {
-      min-height: 300px;
-      border: 1px solid $neutral-200;
-      border-radius: $border-radius-xl;
-      padding: 1rem;
-    }
+    display: flex; justify-content: center;
+    padding: 1rem; background: #fff;
+    border: 1px solid $line; border-radius: $radius-xl;
   }
-  
   .calendar-legend {
-    display: flex;
-    gap: 2rem;
-    
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.9rem;
-      color: $neutral-600;
-      
-      .legend-color {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        
-        &.available {
-          background: $primary-color;
-        }
-        
-        &.booked {
-          background: $neutral-300;
-        }
-      }
-    }
+    display: flex; gap: 1.5rem; margin-top: 1rem;
+    .legend-item { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: $muted; }
+    .legend-color { width: 14px; height: 14px; border-radius: 4px; }
+    .legend-color.available { background: $gold; }
+    .legend-color.booked { background: $sand; border: 1px solid $line; }
   }
 }
 
-// --- Location Section ---
+// ─── Location / map ───
 .location-section {
-  .section-header {
-    margin-bottom: 1.5rem;
-    
-    h3 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-    
-    p {
-      color: $neutral-600;
-    }
-  }
-  
   .map-container {
-    height: 400px;
-    border-radius: $border-radius-xl;
-    overflow: hidden;
-    margin-bottom: 1.5rem;
-    border: 1px solid $neutral-200;
+    height: 360px; border-radius: $radius-xl; overflow: hidden;
+    border: 1px solid $line; margin-bottom: 1.25rem;
   }
-  
-  .location-details {
-    h4 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 0.75rem;
-    }
-    
-    p {
-      color: $neutral-600;
-      line-height: 1.6;
-    }
+  .location-details h4 {
+    font-family: $font-display; font-size: 1.2rem; font-weight: 600; color: $navy; margin: 0 0 0.5rem;
   }
+  .location-details p { color: $ink; line-height: 1.7; font-size: 0.95rem; margin: 0; }
 }
 
-// --- Reviews Section ---
+// ─── Reviews ───
 .reviews-section {
-  .section-header {
-    margin-bottom: 2rem;
-    
-    .reviews-header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      
-      svg {
-        flex-shrink: 0;
-      }
-      
-      h3 {
-        font-size: 1.5rem;
-        font-weight: 600;
-      }
-    }
+  .reviews-header {
+    display: flex; align-items: center; gap: 0.6rem;
+    h3 { font-family: $font-display; font-size: 1.6rem; font-weight: 600; color: $navy; margin: 0; }
+    svg { width: 22px; height: 22px; }
   }
-  
-  .rating-categories {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2.5rem;
-    
-    .rating-category {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      
-      .category-name {
-        flex: 1;
-        font-size: 0.95rem;
-      }
-      
-      .rating-bar-container {
-        flex: 1;
-        height: 4px;
-        background: $neutral-200;
-        border-radius: $border-radius-full;
-        overflow: hidden;
-        
-        .rating-bar {
-          height: 100%;
-          background: $neutral-700;
-          border-radius: $border-radius-full;
-        }
-      }
-      
-      .category-score {
-        font-weight: 600;
-        font-size: 0.9rem;
-      }
-    }
-  }
-  
   .reviews-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-bottom: 2rem;
-    
-    .review-card {
-      .review-header {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        margin-bottom: 1rem;
-        
-        .avatar {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          object-fit: cover;
-        }
-        
-        .review-user-info {
-          h4 {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-          }
-          
-          .review-date {
-            font-size: 0.85rem;
-            color: $neutral-500;
-          }
-        }
-      }
-      
-      .review-rating {
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
-        margin-bottom: 0.75rem;
-        font-weight: 600;
-        font-size: 0.9rem;
-      }
-      
-      .review-comment {
-        font-size: 0.95rem;
-        line-height: 1.6;
-        color: $neutral-700;
-      }
-    }
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 1.25rem;
   }
-}
-
-// --- Host Profile Section ---
-.host-profile-section {
-  .section-header {
-    margin-bottom: 1.5rem;
-    
-    h3 {
-      font-size: 1.5rem;
-      font-weight: 600;
-    }
-  }
-  
-  .host-profile {
-    background: $neutral-50;
-    border-radius: $border-radius-xl;
-    padding: 2rem;
-    
-    .host-profile-header {
-      display: flex;
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
-      
-      .host-avatar-large {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 3px solid white;
-        box-shadow: $shadow-md;
-      }
-      
-      .host-profile-info {
-        h4 {
-          font-size: 1.25rem;
-          font-weight: 600;
-          margin-bottom: 0.5rem;
-        }
-        
-        .host-since {
-          color: $neutral-600;
-          font-size: 0.9rem;
-          margin-bottom: 1rem;
-        }
-        
-        .host-stats-badges {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 1rem;
-          
-          .host-stat {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.9rem;
-            color: $neutral-700;
-            
-            svg {
-              flex-shrink: 0;
-            }
-          }
-        }
-      }
-    }
-    
-    .host-description {
-      margin-bottom: 1.5rem;
-      
-      p {
-        color: $neutral-700;
-        line-height: 1.6;
-      }
-    }
-    
-    .host-contact {
-      .btn-outline {
-        background: white;
-        border: 1px solid $neutral-300;
-        color: $neutral-800;
-        font-weight: 500;
-        padding: 0.75rem 1.5rem;
-        border-radius: $border-radius-xl;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        
-        &:hover {
-          background: $neutral-100;
-          border-color: $neutral-400;
-          transform: translateY(-2px);
-        }
-      }
-    }
-  }
-}
-
-// --- Modern Booking Sidebar ---
-.booking-sidebar {
-  position: sticky;
-  top: 2rem;
-  
-  .booking-card {
-    background: white;
-    border: 1px solid $neutral-200;
-    border-radius: $border-radius-xl;
+  .review-card {
+    background: #fff; border: 1px solid $line; border-radius: $radius-xl;
     padding: 1.5rem;
-    box-shadow: $shadow-md;
-    
-    .booking-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-      
-      .price-container {
-        .price-amount {
-          font-size: 1.5rem;
-          font-weight: 700;
-        }
-        
-        .price-period {
-          font-size: 1rem;
-          color: $neutral-600;
-        }
-      }
-      
-      .booking-rating {
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
-        font-size: 0.9rem;
-        font-weight: 500;
-        
-        .separator {
-          color: $neutral-400;
-          margin: 0 0.25rem;
-        }
-        
-        .reviews-count {
-          color: $neutral-600;
-          text-decoration: none;
-          
-          &:hover {
-            text-decoration: underline;
-          }
-        }
-      }
-    }
-    
-    .booking-form {
-      margin-bottom: 1.5rem;
-      
-      .date-range-picker {
-        border: 1px solid $neutral-300;
-        border-radius: $border-radius-xl;
-        overflow: hidden;
-        margin-bottom: 1rem;
-        
-        .date-inputs {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          
-          .date-input {
-            padding: 0.75rem 1rem;
-            
-            &.check-in {
-              border-right: 1px solid $neutral-200;
-            }
-            
-            label {
-              display: block;
-              font-size: 0.8rem;
-              font-weight: 600;
-              color: $neutral-500;
-              margin-bottom: 0.25rem;
-            }
-            
-            input {
-              width: 100%;
-              border: none;
-              background: transparent;
-              font-size: 0.95rem;
-              color: $neutral-800;
-              
-              &:focus {
-                outline: none;
-              }
-              
-              &::placeholder {
-                color: $neutral-400;
-              }
-            }
-          }
-        }
-        
-        .flatpickr-container {
-          display: none;
-        }
-      }
-      
-      .guests-selector {
-        border: 1px solid $neutral-300;
-        border-radius: $border-radius-xl;
-        padding: 0.75rem 1rem;
-        position: relative;
-        cursor: pointer;
-        
-        .guests-input {
-          label {
-            display: block;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: $neutral-500;
-            margin-bottom: 0.25rem;
-          }
-          
-          .guests-display {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.95rem;
-            color: $neutral-800;
-            
-            svg {
-              transition: transform 0.3s ease;
-              
-              &.rotated {
-                transform: rotate(180deg);
-              }
-            }
-          }
-        }
-        
-        .guests-dropdown {
-          position: absolute;
-          top: calc(100% + 0.5rem);
-          left: 0;
-          right: 0;
-          background: white;
-          border-radius: $border-radius-xl;
-          box-shadow: $shadow-lg;
-          padding: 1.5rem;
-          z-index: 10;
-          border: 1px solid $neutral-200;
-          
-          .guest-type {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            
-            &:last-of-type {
-              margin-bottom: 1rem;
-            }
-            
-            .guest-type-info {
-              h4 {
-                font-size: 1rem;
-                font-weight: 600;
-                margin-bottom: 0.25rem;
-              }
-              
-              p {
-                font-size: 0.85rem;
-                color: $neutral-500;
-              }
-            }
-            
-            .guest-counter {
-              display: flex;
-              align-items: center;
-              gap: 1rem;
-              
-              button {
-                width: 32px;
-                height: 32px;
-                border-radius: 50%;
-                border: 1px solid $neutral-300;
-                background: white;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                transition: all 0.2s ease;
-                
-                &:hover:not(:disabled) {
-                  border-color: $primary-color;
-                  color: $primary-color;
-                }
-                
-                &:disabled {
-                  opacity: 0.5;
-                  cursor: not-allowed;
-                }
-              }
-              
-              span {
-                font-weight: 500;
-                min-width: 20px;
-                text-align: center;
-              }
-            }
-          }
-          
-          .guests-dropdown-footer {
-            display: flex;
-            justify-content: flex-end;
-            
-            .btn-text {
-              background: transparent;
-              border: none;
-              color: $primary-color;
-              font-weight: 600;
-              cursor: pointer;
-              padding: 0.5rem;
-              font-size: 0.9rem;
-              text-decoration: underline;
-            }
-          }
-        }
-      }
-    }
-    
-    .btn-primary {
-      width: 100%;
-      background: $primary-gradient;
-      color: white;
-      border: none;
-      border-radius: $border-radius-xl;
-      padding: 1rem;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(10, 37, 64, 0.2);
-      
-      &:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(10, 37, 64, 0.3);
-      }
-      
-      &:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
-      }
-    }
-    
-    .booking-note {
-      text-align: center;
-      margin-top: 1rem;
-      font-size: 0.85rem;
-      color: $neutral-500;
-    }
-    
-    .price-breakdown {
-      margin-top: 1.5rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid $neutral-200;
-      
-      .price-item {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 1rem;
-        font-size: 0.95rem;
-        color: $neutral-700;
-      }
-      
-      .price-total {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 1rem;
-        padding-top: 1rem;
-        border-top: 1px solid $neutral-200;
-        font-weight: 600;
-        font-size: 1.1rem;
-      }
-    }
   }
-  
-  .report-listing {
-    margin-top: 1.5rem;
-    text-align: center;
-    
-    .btn-text {
-      background: transparent;
-      border: none;
-      color: $neutral-500;
-      font-size: 0.85rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin: 0 auto;
-      cursor: pointer;
-      transition: color 0.2s ease;
-      
-      &:hover {
-        color: $status-error;
-        text-decoration: underline;
-      }
-    }
+  .review-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+  .review-header .avatar {
+    width: 44px; height: 44px; border-radius: 50%; object-fit: cover;
+  }
+  .review-user-info h4 { font-size: 0.95rem; font-weight: 600; color: $navy; margin: 0; }
+  .review-date { font-size: 0.8rem; color: $muted; margin: 0.1rem 0 0; }
+  .review-rating {
+    display: inline-flex; align-items: center; gap: 0.3rem; margin-bottom: 0.6rem;
+    font-size: 0.85rem; font-weight: 700; color: $navy;
+    svg { width: 14px; height: 14px; }
+  }
+  .review-comment { color: $ink; line-height: 1.6; font-size: 0.92rem; margin: 0; }
+}
+
+// ─── Host profile ───
+.host-profile-section {
+  .host-profile-header { display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.25rem; }
+  .host-avatar-large {
+    width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 2px solid $gold;
+  }
+  .host-profile-info h4 {
+    font-family: $font-display; font-size: 1.4rem; font-weight: 600; color: $navy; margin: 0;
+  }
+  .host-since { color: $muted; font-size: 0.86rem; margin: 0.2rem 0 0.6rem; }
+  .host-stats-badges { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+  .host-stat {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 0.85rem; color: $ink;
+    svg { width: 15px; height: 15px; stroke: $gold; }
+  }
+  .host-description p { color: $ink; line-height: 1.7; font-size: 0.95rem; margin: 0 0 1.25rem; }
+}
+
+// ─── Booking sidebar ───
+.booking-sidebar {
+  position: sticky; top: 24px;
+}
+.booking-card {
+  background: #fff; border: 1px solid $line; border-radius: $radius-xl;
+  box-shadow: 0 8px 32px rgba(10,37,64,0.1);
+  padding: 1.5rem;
+}
+.booking-card-header {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap;
+  .price-container { display: flex; align-items: baseline; gap: 0.35rem; }
+  .price-amount { font-family: $font-display; font-size: 1.85rem; font-weight: 700; color: $navy; }
+  .price-period { color: $muted; font-size: 0.9rem; }
+  .booking-rating {
+    display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.85rem; color: $navy; font-weight: 600;
+    svg { width: 14px; height: 14px; }
+    .separator { color: $muted; font-weight: 400; }
+    .reviews-count { color: $muted; text-decoration: none; font-weight: 400; &:hover { color: $gold; } }
   }
 }
 
-// --- Custom Map Marker ---
-.custom-map-marker {
-  .marker-content {
-    background: $primary-color;
-    color: white;
-    border-radius: $border-radius-lg;
-    padding: 0.25rem 0.5rem;
-    font-weight: 600;
-    font-size: 0.85rem;
-    box-shadow: $shadow-md;
-    position: relative;
-    
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -5px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      height: 0;
-      border-left: 6px solid transparent;
-      border-right: 6px solid transparent;
-      border-top: 6px solid $primary-color;
+.booking-form {
+  border: 1px solid $line; border-radius: $radius-lg; overflow: hidden; margin-bottom: 1rem;
+}
+.date-inputs {
+  display: grid; grid-template-columns: 1fr 1fr;
+  .date-input {
+    padding: 0.7rem 0.9rem; cursor: pointer;
+    &.check-in { border-right: 1px solid $line; }
+    label { display: block; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: $navy; margin-bottom: 0.2rem; }
+    input {
+      width: 100%; border: none; outline: none; background: transparent;
+      font-family: $font-body; font-size: 0.9rem; color: $ink; cursor: pointer;
+      &::placeholder { color: $muted; }
     }
   }
 }
+.flatpickr-container { border-top: 1px solid $line; }
+.flatpickr-container:empty { border-top: none; }
 
-// --- Responsive Design ---
-@media (max-width: 1200px) {
-  .detail-content-grid {
-    gap: 3rem;
+.guests-selector {
+  position: relative; border-top: 1px solid $line; cursor: pointer;
+  .guests-input { padding: 0.7rem 0.9rem; }
+  .guests-input label { display: block; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: $navy; margin-bottom: 0.2rem; }
+  .guests-display {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 0.9rem; color: $ink;
+    svg { width: 16px; height: 16px; transition: transform 200ms ease; }
+    .rotated { transform: rotate(180deg); }
+  }
+  .guests-dropdown {
+    position: absolute; top: 100%; left: 0; right: 0; z-index: 20;
+    background: #fff; border: 1px solid $line; border-radius: $radius-lg;
+    box-shadow: 0 12px 32px rgba(10,37,64,0.15); padding: 1rem; margin-top: 0.4rem;
+  }
+  .guest-type {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.6rem 0; border-bottom: 1px solid $line;
+    &:last-of-type { border-bottom: none; }
+    h4 { font-size: 0.9rem; font-weight: 600; color: $navy; margin: 0; }
+    p { font-size: 0.78rem; color: $muted; margin: 0.1rem 0 0; }
+  }
+  .guest-counter {
+    display: inline-flex; align-items: center; gap: 0.75rem;
+    button {
+      width: 30px; height: 30px; border-radius: 50%;
+      border: 1px solid $navy; background: #fff; color: $navy; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 160ms ease;
+      svg { width: 14px; height: 14px; }
+      &:hover:not(:disabled) { background: $navy; color: #fff; }
+      &:disabled { opacity: 0.3; cursor: not-allowed; }
+    }
+    span { min-width: 18px; text-align: center; font-weight: 600; color: $navy; }
+  }
+  .guests-dropdown-footer { display: flex; justify-content: flex-end; margin-top: 0.5rem; }
+}
+
+.btn-primary {
+  width: 100%;
+  background: $navy; color: #fff; border: none;
+  padding: 0.9rem; border-radius: $radius-lg;
+  font-family: $font-body; font-size: 0.98rem; font-weight: 600; cursor: pointer;
+  transition: all 200ms ease;
+  &:hover:not(:disabled) { background: $gold; color: $navy; box-shadow: 0 6px 18px rgba(201,168,76,0.3); }
+  &:disabled { opacity: 0.55; cursor: not-allowed; }
+}
+.booking-note { text-align: center; color: $muted; font-size: 0.82rem; margin-top: 0.75rem; p { margin: 0; } }
+
+.price-breakdown {
+  margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid $line;
+  .price-item, .price-total {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.9rem; color: $ink; margin-bottom: 0.6rem;
+  }
+  .price-total {
+    margin-top: 0.75rem; padding-top: 0.85rem; border-top: 1px solid $line;
+    font-weight: 700; color: $navy; font-size: 1rem; margin-bottom: 0;
   }
 }
 
-@media (max-width: 992px) {
-  .detail-content-grid {
-    grid-template-columns: 1fr;
+.report-listing { text-align: center; margin-top: 1.25rem; }
+.report-listing .btn-text { color: $muted; margin: 0; text-decoration: none; &:hover { color: #B83232; } svg { stroke: currentColor; } }
+
+// ─── Floating mobile reserve button ───
+.floating-reservation-button {
+  display: none;
+  position: fixed; bottom: 1rem; left: 1rem; right: 1rem; z-index: 50;
+  background: $navy; color: $cream; text-align: center; text-decoration: none;
+  padding: 0.95rem; border-radius: $radius-lg; font-weight: 600;
+  box-shadow: 0 8px 24px rgba(10,37,64,0.3);
+}
+
+// ─── Not found ───
+.not-found {
+  text-align: center; padding: 5rem 2rem;
+  h2 { font-family: $font-display; color: $navy; font-size: 2rem; }
+  p { color: $muted; }
+  a { color: $gold; font-weight: 600; }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  Flatpickr — branded navy/gold/cream theme
+// ═══════════════════════════════════════════════════════════════
+:host ::ng-deep {
+  .flatpickr-calendar {
+    box-shadow: none; background: transparent; font-family: $font-body; width: 100%;
   }
-  
-  .booking-sidebar {
-    position: static;
-    margin-top: 3rem;
-    
-    .booking-card {
-      max-width: 600px;
-      margin: 0 auto;
+  .flatpickr-months {
+    .flatpickr-month { color: $navy; }
+    .flatpickr-current-month { font-family: $font-display; font-weight: 600; }
+    .flatpickr-prev-month, .flatpickr-next-month { fill: $navy; svg path { fill: $navy; } &:hover svg { fill: $gold; } }
+  }
+  .flatpickr-weekday { color: $muted; font-weight: 600; font-size: 0.74rem; }
+  .flatpickr-day {
+    color: $ink; border-radius: $radius-md;
+    &:hover { background: $sand; border-color: $sand; }
+    &.today { border-color: $gold; }
+    &.selected, &.startRange, &.endRange {
+      background: $navy; border-color: $navy; color: #fff;
+      &:hover { background: $navy; }
     }
+    &.inRange { background: rgba(201,168,76,0.18); border-color: transparent; box-shadow: -5px 0 0 rgba(201,168,76,0.18), 5px 0 0 rgba(201,168,76,0.18); }
+    &.flatpickr-disabled, &.prevMonthDay, &.nextMonthDay { color: rgba(10,37,64,0.25); }
   }
 }
 
-@media (max-width: 768px) {
-  .detail-container {
-    padding: 1rem;
-  }
-  
-  .detail-header {
-    .header-content {
-      flex-direction: column;
-      gap: 1rem;
-      
-      h1 {
-        max-width: 100%;
-        font-size: 1.75rem;
-      }
-      
-      .header-actions {
-        width: 100%;
-        justify-content: space-between;
-      }
-    }
-  }
-  
-  .photo-gallery {
-    .gallery-grid {
-      grid-template-columns: 1fr;
-      grid-template-rows: 250px repeat(4, 100px);
-      height: auto;
-      
-      .main-image {
-        grid-row: 1;
-        border-radius: $border-radius-xl $border-radius-xl 0 0;
-      }
-      
-      .thumbnail-grid {
-        grid-column: 1;
-        grid-row: 2 / span 4;
-        grid-template-columns: repeat(4, 1fr);
-        grid-template-rows: 100px;
-        
-        .thumbnail {
-          &:first-child {
-            border-radius: 0;
-          }
-          
-          &:last-child {
-            border-radius: 0 0 $border-radius-xl 0;
-          }
-          
-          &:nth-child(1) {
-            border-radius: 0 0 0 $border-radius-xl;
-          }
-        }
-      }
-    }
-  }
-  
-  .host-section {
-    .host-info {
-      flex-direction: column;
-      gap: 1.5rem;
-      align-items: flex-start;
-    }
-    
-    .key-features {
-      grid-template-columns: 1fr;
-    }
-  }
-  
-  .rating-categories {
-    grid-template-columns: 1fr;
-  }
-  
-  .reviews-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .host-profile {
-    .host-profile-header {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  }
+// ─── Responsive ───
+@media (max-width: 960px) {
+  .detail-content-grid { grid-template-columns: 1fr; }
+  .booking-sidebar { position: static; }
+  .reviews-section .reviews-grid { grid-template-columns: 1fr; }
 }
 
-@media (max-width: 480px) {
-  .photo-gallery {
-    .gallery-grid {
-      grid-template-rows: 200px repeat(2, 80px);
-      
-      .thumbnail-grid {
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(2, 80px);
-        grid-row: 2 / span 2;
-      }
-    }
-  }
-  
-  .header-meta {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-}
-
-// --- Dark Mode ---
-body.dark-mode {
-  .breadcrumbs {
-    color: $neutral-400;
-    
-    a {
-      color: $neutral-300;
-      
-      &:hover {
-        color: #C9A84C;
-      }
-    }
-  }
-  
-  .detail-header {
-    .header-content {
-      h1 {
-        color: $neutral-100;
-      }
-      
-      .header-actions {
-        .action-btn {
-          color: $neutral-300;
-          
-          &:hover {
-            background: $neutral-800;
-            color: $neutral-100;
-          }
-          
-          &.saved {
-            color: #F87171;
-          }
-        }
-      }
-    }
-    
-    .header-meta {
-      color: $neutral-300;
-      
-      .reviews-link {
-        color: $neutral-300;
-      }
-    }
-  }
-  
-  .content-divider {
-    background: $neutral-800;
-  }
-  
-  .host-section {
-    .host-details {
-      h2 {
-        color: $neutral-100;
-      }
-      
-      .host-stats {
-        color: $neutral-400;
-      }
-    }
-    
-    .key-features {
-      .feature {
-        .feature-icon {
-          background: $neutral-800;
-          color: #C9A84C;
-        }
-        
-        .feature-text {
-          h4 {
-            color: $neutral-200;
-          }
-          
-          p {
-            color: $neutral-400;
-          }
-        }
-      }
-    }
-  }
-  
-  .description-section {
-    h3 {
-      color: $neutral-100;
-    }
-    
-    .description-content {
-      p {
-        color: $neutral-300;
-      }
-      
-      .btn-text {
-        color: #C9A84C;
-      }
-    }
-  }
-  
-  .amenities-section {
-    .section-header h3 {
-      color: $neutral-100;
-    }
-    
-    .amenities-grid {
-      .amenity-item {
-        .amenity-icon {
-          color: $neutral-300;
-        }
-        
-        span {
-          color: $neutral-300;
-        }
-      }
-    }
-    
-    .btn-outline {
-      background: transparent;
-      border-color: $neutral-700;
-      color: $neutral-300;
-      
-      &:hover {
-        background: $neutral-800;
-        border-color: $neutral-600;
-      }
-    }
-  }
-  
-  .calendar-section {
-    .section-header h3 {
-      color: $neutral-100;
-    }
-    
-    .calendar-container {
-      .calendar-placeholder {
-        border-color: $neutral-700;
-        background: $neutral-800;
-      }
-    }
-    
-    .calendar-legend {
-      .legend-item {
-        color: $neutral-400;
-      }
-    }
-  }
-  
-  .location-section {
-    .section-header {
-      h3 {
-        color: $neutral-100;
-      }
-      
-      p {
-        color: $neutral-400;
-      }
-    }
-    
-    .map-container {
-      border-color: $neutral-700;
-    }
-    
-    .location-details {
-      h4 {
-        color: $neutral-200;
-      }
-      
-      p {
-        color: $neutral-400;
-      }
-    }
-  }
-  
-  .reviews-section {
-    .section-header .reviews-header h3 {
-      color: $neutral-100;
-    }
-    
-    .rating-categories {
-      .rating-category {
-        .category-name {
-          color: $neutral-300;
-        }
-        
-        .rating-bar-container {
-          background: $neutral-700;
-          
-          .rating-bar {
-            background: #C9A84C;
-          }
-        }
-      }
-    }
-    
-    .reviews-grid {
-      .review-card {
-        .review-header {
-          .review-user-info {
-            h4 {
-              color: $neutral-200;
-            }
-          }
-        }
-        
-        .review-comment {
-          color: $neutral-300;
-        }
-      }
-    }
-  }
-  
-  .host-profile-section {
-    .section-header h3 {
-      color: $neutral-100;
-    }
-    
-    .host-profile {
-      background: $neutral-900;
-      
-      .host-profile-header {
-        .host-profile-info {
-          h4 {
-            color: $neutral-100;
-          }
-          
-          .host-since {
-            color: $neutral-400;
-          }
-          
-          .host-stats-badges {
-            .host-stat {
-              color: $neutral-300;
-            }
-          }
-        }
-      }
-      
-      .host-description p {
-        color: $neutral-300;
-      }
-      
-      .host-contact {
-        .btn-outline {
-          background: $neutral-800;
-          border-color: $neutral-700;
-          color: $neutral-200;
-          
-          &:hover {
-            background: $neutral-700;
-            border-color: $neutral-600;
-          }
-        }
-      }
-    }
-  }
-  
-  .booking-sidebar {
-    .booking-card {
-      background: $neutral-900;
-      border-color: $neutral-800;
-      
-      .booking-card-header {
-        .price-container {
-          .price-amount {
-            color: $neutral-100;
-          }
-          
-          .price-period {
-            color: $neutral-400;
-          }
-        }
-      }
-      
-      .booking-form {
-        .date-range-picker {
-          border-color: $neutral-700;
-          
-          .date-inputs {
-            .date-input {
-              &.check-in {
-                border-right-color: $neutral-700;
-              }
-              
-              label {
-                color: $neutral-400;
-              }
-              
-              input {
-                color: $neutral-200;
-                
-                &::placeholder {
-                  color: $neutral-600;
-                }
-              }
-            }
-          }
-        }
-        
-        .guests-selector {
-          border-color: $neutral-700;
-          
-          .guests-input {
-            label {
-              color: $neutral-400;
-            }
-            
-            .guests-display {
-              color: $neutral-200;
-            }
-          }
-          
-          .guests-dropdown {
-            background: $neutral-800;
-            border-color: $neutral-700;
-            
-            .guest-type {
-              .guest-type-info {
-                h4 {
-                  color: $neutral-200;
-                }
-                
-                p {
-                  color: $neutral-400;
-                }
-              }
-              
-              .guest-counter {
-                button {
-                  background: $neutral-700;
-                  border-color: $neutral-600;
-                  color: $neutral-300;
-                  
-                  &:hover:not(:disabled) {
-                    border-color: #C9A84C;
-                    color: #C9A84C;
-                  }
-                }
-                
-                span {
-                  color: $neutral-300;
-                }
-              }
-            }
-            
-            .guests-dropdown-footer {
-              .btn-text {
-                color: #C9A84C;
-              }
-            }
-          }
-        }
-      }
-      
-      .btn-primary {
-        background: linear-gradient(135deg, #C9A84C, #E8C46A);
-      }
-      
-      .booking-note {
-        color: $neutral-400;
-      }
-      
-      .price-breakdown {
-        border-top-color: $neutral-700;
-        
-        .price-item {
-          color: $neutral-300;
-        }
-        
-        .price-total {
-          border-top-color: $neutral-700;
-          color: $neutral-100;
-        }
-      }
-    }
-    
-    .report-listing {
-      .btn-text {
-        color: $neutral-500;
-        
-        &:hover {
-          color: #F87171;
-        }
-      }
-    }
-  }
-  
-  .custom-map-marker {
-    .marker-content {
-      background: #C9A84C;
-      
-      &::after {
-        border-top-color: #C9A84C;
-      }
-    }
-  }
+@media (max-width: 700px) {
+  .lieu-detail-page { padding: 1rem 1.25rem 6rem; }
+  .photo-gallery .gallery-grid { grid-template-columns: 1fr; height: auto; }
+  .photo-gallery .main-image { height: 280px; }
+  .photo-gallery .thumbnail-grid { grid-template-rows: none; grid-template-columns: repeat(4, 1fr); height: 90px; }
+  .amenities-section .amenities-grid { grid-template-columns: 1fr; }
+  .floating-reservation-button { display: block; }
 }

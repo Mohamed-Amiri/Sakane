@@ -1,202 +1,132 @@
-<!-- Modern Dashboard Container -->
-<div class="modern-dashboard">
+<div class="premium-dashboard">
   <!-- Header Section -->
-  <div class="dashboard-header">
-    <h1 class="dashboard-title">Tableau de Bord</h1>
-    <div class="header-rule"></div>
-  </div>
+  <header class="dashboard-banner">
+    <div class="banner-content">
+      <div class="banner-left">
+        <h1 class="greeting">Bonjour, {{ (user$ | async)?.firstName || 'Propriétaire' }}</h1>
+        <div class="gold-separator"></div>
+      </div>
+      <div class="banner-right">
+        <span class="current-date">{{ today | date:'EEEE d MMMM y' }}</span>
+        <div class="user-avatar" *ngIf="user$ | async as user">
+          <span>{{ user.firstName ? user.firstName.charAt(0).toUpperCase() : 'P' }}</span>
+        </div>
+      </div>
+    </div>
+  </header>
 
   <!-- Loading State -->
-  <div *ngIf="loading" class="loading-overlay">
-    <div class="loading-content">
-      <div class="spinner"></div>
-      <h3>Chargement de votre tableau de bord...</h3>
-    </div>
+  <div *ngIf="loading" class="loading-state">
+    <div class="loading-spinner"></div>
+    <p>Chargement de votre tableau de bord...</p>
   </div>
 
-  <!-- Main Content -->
-  <div *ngIf="!loading" class="dashboard-content">
-    
-    <!-- Statistics Cards -->
-    <div class="stats-section">
-      <div class="stats-grid">
-        <div class="stat-card primary-card">
-          <div class="card-header">
-            <div class="icon-wrapper primary">
-              <i class="ph ph-house"></i>
-            </div>
-            <div class="card-actions">
-              <button class="action-btn" routerLink="/proprietaires/manage-properties" aria-label="Voir propriétés">
-                <i class="ph ph-caret-right"></i>
-              </button>
-            </div>
-          </div>
-          <div class="card-content">
-            <h2 class="stat-number">{{ stats.totalProperties || properties.length }}</h2>
-            <p class="stat-label">Propriétés</p>
-            <div class="stat-trend positive" *ngIf="stats.totalProperties > 0">
-              <i class="ph ph-chart-bar trend-icon"></i>
-              <span>Actif</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="stat-card warning-card">
-          <div class="card-header">
-            <div class="icon-wrapper warning">
-              <i class="ph ph-hourglass-medium"></i>
-            </div>
-            <div class="card-actions">
-              <button class="action-btn" routerLink="/proprietaires/booking-requests" aria-label="Voir demandes">
-                <i class="ph ph-caret-right"></i>
-              </button>
-            </div>
-          </div>
-          <div class="card-content">
-            <h2 class="stat-number">{{ stats.pendingRequests || 0 }}</h2>
-            <p class="stat-label">Demandes en attente</p>
-            <div class="stat-trend neutral">
-              <i class="ph ph-clock trend-icon"></i>
-              <span>Nécessite attention</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="stat-card success-card">
-          <div class="card-header">
-            <div class="icon-wrapper success">
-              <i class="ph ph-currency-eur"></i>
-            </div>
-            <div class="card-actions">
-              <button class="action-btn" aria-label="Voir détails revenus">
-                <i class="ph ph-caret-right"></i>
-              </button>
-            </div>
-          </div>
-          <div class="card-content">
-            <h2 class="stat-number">{{ stats.monthlyRevenue || 0 }}€</h2>
-            <p class="stat-label">Revenus ce mois</p>
-            <div class="stat-trend positive" *ngIf="stats.monthlyRevenue > 0">
-              <i class="ph ph-chart-bar trend-icon"></i>
-              <span>Généré ce mois</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="stat-card info-card">
-          <div class="card-header">
-            <div class="icon-wrapper info">
-              <i class="ph ph-calendar-blank"></i>
-            </div>
-            <div class="card-actions">
-              <button class="action-btn" aria-label="Voir réservations">
-                <i class="ph ph-caret-right"></i>
-              </button>
-            </div>
-          </div>
-          <div class="card-content">
-            <h2 class="stat-number">{{ stats.activeBookings || 0 }}</h2>
-            <p class="stat-label">Réservations actives</p>
-            <div class="stat-trend positive">
-              <i class="ph ph-check trend-icon"></i>
-              <span>Tout va bien</span>
-            </div>
-          </div>
+  <main *ngIf="!loading" class="dashboard-main">
+    <!-- Stats Row -->
+    <section class="stats-row scroll-reveal" appScrollReveal>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="ph ph-house"></i></div>
+        <div class="stat-info">
+          <div class="stat-value"><span class="stat-num">{{ stats.totalProperties || properties.length }}</span></div>
+          <div class="stat-label">Propriétés</div>
         </div>
       </div>
-    </div>
-
-    <!-- Quick Actions Section -->
-    <div class="actions-section">
-      <div class="section-header">
-        <h2>Actions Rapides</h2>
-        <p>Accédez rapidement aux fonctionnalités principales</p>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="ph ph-hourglass"></i></div>
+        <div class="stat-info">
+          <div class="stat-value"><span class="stat-num">{{ stats.pendingRequests || 0 }}</span></div>
+          <div class="stat-label">Demandes en attente</div>
+        </div>
       </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="ph ph-currency-circle-dollar"></i></div>
+        <div class="stat-info">
+          <div class="stat-value"><span class="stat-num">{{ stats.monthlyRevenue | number:'1.0-0' }}</span> <span class="stat-unit">DH</span></div>
+          <div class="stat-label">Revenus ce mois</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="ph ph-calendar"></i></div>
+        <div class="stat-info">
+          <div class="stat-value"><span class="stat-num">{{ stats.approvedBookings || 0 }}</span></div>
+          <div class="stat-label">Réservations actives</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Actions Rapides Section -->
+    <section class="quick-actions-section scroll-reveal" appScrollReveal>
+      <h2 class="section-title"><span class="gold-dot">●</span> Actions Rapides</h2>
       <div class="actions-grid">
-        <button class="action-button primary-action" routerLink="/proprietaires/add-property" aria-label="Ajouter une propriété">
-          <div class="action-icon">
+        <a routerLink="/proprietaires/add-property" class="action-card">
+          <div class="action-icon-wrapper">
             <i class="ph ph-house"></i>
           </div>
           <div class="action-content">
             <h3>Ajouter une Propriété</h3>
             <p>Créez une nouvelle annonce</p>
           </div>
-        </button>
+          <div class="action-arrow">&rarr;</div>
+        </a>
 
-        <button class="action-button warning-action" routerLink="/proprietaires/booking-requests" aria-label="Demandes de réservation">
-          <div class="action-icon">
+        <a routerLink="/proprietaires/booking-requests" class="action-card">
+          <div class="action-icon-wrapper">
             <i class="ph ph-bell"></i>
           </div>
           <div class="action-content">
             <h3>Demandes de Réservation</h3>
             <p>Gérez vos demandes en attente</p>
           </div>
-        </button>
+          <div class="action-arrow">&rarr;</div>
+        </a>
 
-        <button class="action-button info-action" routerLink="/proprietaires/manage-properties" aria-label="Gérer mes propriétés">
-          <div class="action-icon">
+        <a routerLink="/proprietaires/manage-properties" class="action-card">
+          <div class="action-icon-wrapper">
             <i class="ph ph-sliders"></i>
           </div>
           <div class="action-content">
             <h3>Gérer mes Propriétés</h3>
             <p>Modifiez vos annonces existantes</p>
           </div>
-        </button>
+          <div class="action-arrow">&rarr;</div>
+        </a>
       </div>
-    </div>
+    </section>
 
-    <!-- Content Grid -->
-    <div class="content-grid">
-      <!-- Properties Section -->
-      <div class="content-card properties-section">
-        <div class="card-header">
-          <div class="header-info">
-            <h3>
-              <i class="ph ph-buildings"></i>
-              Mes Propriétés
-            </h3>
-            <p>{{ properties.length }} propriété(s) au total</p>
-          </div>
-          <button routerLink="/proprietaires/manage-properties" class="view-all-btn btn-ghost">
-            Voir tout
-            <i class="ph ph-caret-right"></i>
-          </button>
+    <!-- Bottom Section -->
+    <section class="bottom-section scroll-reveal" appScrollReveal>
+      <!-- Mes Propriétés -->
+      <div class="content-panel">
+        <div class="panel-header">
+          <h3 class="panel-title">Mes Propriétés</h3>
+          <a routerLink="/proprietaires/manage-properties" class="gold-link">Voir tout &rarr;</a>
         </div>
-        
-        <div class="card-content">
-          <app-empty-state *ngIf="properties.length === 0"
-            icon="ph ph-buildings"
-            title="Aucune propriété"
-            description="Commencez par ajouter votre première propriété pour commencer à recevoir des réservations."
-            actionLabel="Ajouter ma première propriété"
-            (actionClick)="navigateToAddProperty()">
-          </app-empty-state>
-          
-          <div *ngIf="properties.length > 0" class="properties-preview">
-            <div *ngFor="let property of properties.slice(0, 2)" class="property-preview-item">
-              <div class="property-image">
-                <img [src]="property.photos[0] || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'" 
-                     [alt]="property.title"
-                     (error)="$any($event.target).src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'">
-                <div class="property-status" [class]="property.isActive ? 'active' : 'inactive'">
-                  {{ property.isActive ? 'Actif' : 'Inactif' }}
-                </div>
+        <div class="panel-body">
+          <ng-container *ngIf="properties.length === 0">
+            <div class="elegant-empty-state">
+              <div class="empty-icon-circle">
+                <i class="ph ph-buildings"></i>
               </div>
-              <div class="property-details">
-                <h4>{{ property.title }}</h4>
-                <p class="location">
-                  <i class="ph ph-map-pin"></i>
-                  {{ property.location }}
-                </p>
-                <div class="property-meta">
-                  <span class="price">{{ property.price }}€/nuit</span>
-                  <div class="property-actions">
-                    <button class="action-btn" [routerLink]="['/proprietaires/edit-property', property.id]" aria-label="Modifier">
-                      <i class="ph ph-pencil-simple"></i>
-                    </button>
-                    <button class="action-btn" [routerLink]="['/proprietaires/calendar', property.id]" aria-label="Calendrier">
-                      <i class="ph ph-calendar-blank"></i>
-                    </button>
+              <p>Aucune propriété</p>
+              <button class="gold-btn" (click)="navigateToAddProperty()">Ajouter ma première propriété</button>
+            </div>
+          </ng-container>
+          
+          <div *ngIf="properties.length > 0" class="property-list">
+            <div *ngFor="let property of properties.slice(0, 2)" class="property-item">
+              <div class="prop-image">
+                <img [src]="property.photos[0] || 'assets/images/hero-bg.png'" [alt]="property.title"
+                  (error)="$any($event.target).src='assets/images/hero-bg.png'">
+                <div class="status-badge" [class.active]="property.isActive">{{ property.isActive ? 'Actif' : 'Inactif' }}</div>
+              </div>
+              <div class="prop-details">
+                <h4 class="prop-title">{{ property.title }}</h4>
+                <p class="prop-loc"><i class="ph ph-map-pin"></i> {{ property.location }}</p>
+                <div class="prop-meta">
+                  <span class="prop-price">{{ property.price | madCurrency }}/jour</span>
+                  <div class="prop-actions">
+                    <a [routerLink]="['/proprietaires/edit-property', property.id]"><i class="ph ph-pencil-simple"></i></a>
+                    <a [routerLink]="['/proprietaires/calendar', property.id]"><i class="ph ph-calendar-blank"></i></a>
                   </div>
                 </div>
               </div>
@@ -205,93 +135,52 @@
         </div>
       </div>
 
-      <!-- Booking Requests Section -->
-      <div class="content-card requests-section">
-        <div class="card-header">
-          <div class="header-info">
-            <h3>
-              <i class="ph ph-bell"></i>
-              Demandes Récentes
-            </h3>
-            <p>{{ recentBookingRequests.length }} demande(s) récente(s)</p>
-          </div>
-          <button routerLink="/proprietaires/booking-requests" class="view-all-btn btn-ghost">
-            Voir tout
-            <i class="ph ph-caret-right"></i>
-          </button>
+      <!-- Demandes Récentes -->
+      <div class="content-panel">
+        <div class="panel-header">
+          <h3 class="panel-title">Demandes Récentes</h3>
+          <a routerLink="/proprietaires/booking-requests" class="gold-link">Voir tout &rarr;</a>
         </div>
-        
-        <div class="card-content">
-          <app-empty-state *ngIf="recentBookingRequests.length === 0"
-            icon="ph ph-bell-slash"
-            title="Aucune demande récente"
-            description="Les nouvelles demandes de réservation apparaîtront ici.">
-          </app-empty-state>
-          
-          <div *ngIf="recentBookingRequests.length > 0" class="compact-requests-preview">
-            <div *ngFor="let request of recentBookingRequests.slice(0, 3)" class="compact-request-item">
-              <div class="request-header">
-                <div class="property-info">
-                  <div class="property-icon">
-                    <i class="ph ph-house"></i>
-                  </div>
-                  <div class="property-details">
-                    <h4 class="property-title">{{ request.propertyTitle }}</h4>
-                    <div class="status-badge" [class]="request.status">
-                      <i [ngClass]="{'ph ph-clock': request.status === 'pending', 'ph ph-check-circle': request.status === 'approved', 'ph ph-x-circle': request.status === 'rejected'}"></i>
-                      <span>{{ request.status === 'pending' ? 'En attente' : request.status === 'approved' ? 'Approuvée' : 'Rejetée' }}</span>
-                    </div>
-                  </div>
+        <div class="panel-body">
+          <ng-container *ngIf="recentBookingRequests.length === 0">
+            <div class="elegant-empty-state">
+              <div class="empty-icon-circle">
+                <i class="ph ph-bell-slash"></i>
+              </div>
+              <p>Aucune demande récente</p>
+            </div>
+          </ng-container>
+
+          <div *ngIf="recentBookingRequests.length > 0" class="request-list">
+            <div *ngFor="let request of recentBookingRequests.slice(0, 3)" class="request-item">
+              <div class="req-header">
+                <div class="req-title-group">
+                  <i class="ph ph-house gold-icon-sm"></i>
+                  <h4 class="req-title">{{ request.propertyTitle }}</h4>
                 </div>
-                <div class="request-date">
-                  <span class="date-value">{{ request.createdAt | date:'dd/MM' }}</span>
+                <div class="status-pill" [ngClass]="request.status">
+                  <i [ngClass]="{'ph-clock': request.status === 'pending', 'ph-check-circle': request.status === 'approved', 'ph-x-circle': request.status === 'rejected'}" class="ph"></i>
+                  <span>{{ request.status === 'pending' ? 'En attente' : request.status === 'approved' ? 'Approuvée' : 'Rejetée' }}</span>
                 </div>
               </div>
-
-              <div class="request-details">
-                <div class="guest-info">
-                  <div class="info-item">
-                    <i class="ph ph-user"></i>
-                    <div>
-                      <strong>{{ request.tenantName }}</strong>
-                    </div>
-                  </div>
+              <div class="req-info-grid">
+                <div class="req-info-item">
+                  <i class="ph ph-user"></i>
+                  <span>{{ request.tenantName }}</span>
                 </div>
-
-                <div class="booking-info">
-                  <div class="info-item">
-                    <i class="ph ph-calendar-blank"></i>
-                    <div>
-                      <strong>{{ request.checkIn | date:'dd/MM' }} - {{ request.checkOut | date:'dd/MM' }}</strong>
-                    </div>
-                  </div>
-
-                  <div class="info-item">
-                    <i class="ph ph-bed"></i>
-                    <div>
-                      <strong>{{ calculateNights(request.checkIn, request.checkOut) }} nuit(s)</strong>
-                    </div>
-                  </div>
-
-                  <div class="info-item">
-                    <i class="ph ph-users-three"></i>
-                    <div>
-                      <strong>{{ request.guests }} invité(s)</strong>
-                    </div>
-                  </div>
-
-                  <div class="info-item price-item">
-                    <i class="ph ph-currency-eur"></i>
-                    <div>
-                      <strong>{{ request.totalPrice }}€</strong>
-                    </div>
-                  </div>
+                <div class="req-info-item">
+                  <i class="ph ph-calendar-blank"></i>
+                  <span>{{ request.checkIn | date:'dd/MM' }} - {{ request.checkOut | date:'dd/MM' }}</span>
+                </div>
+                <div class="req-info-item">
+                  <i class="ph ph-currency-circle-dollar"></i>
+                  <span class="req-price">{{ request.totalPrice | madCurrency }}</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
+    </section>
+  </main>
 </div>

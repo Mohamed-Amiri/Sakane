@@ -1,6 +1,7 @@
 package org.example.locaspace.mapper;
 
 import org.example.locaspace.dto.avis.AvisResponse;
+import org.example.locaspace.dto.lieu.LieuRequest;
 import org.example.locaspace.dto.lieu.LieuResponse;
 import org.example.locaspace.dto.reservation.ReservationResponse;
 import org.example.locaspace.dto.user.UserResponse;
@@ -88,8 +89,49 @@ public class EntityMapper {
             lieu.getPhotos(),
             owner,
             averageRating,
-            reviewCount
+            reviewCount,
+            lieu.getMaxGuests(),
+            lieu.getBedrooms(),
+            lieu.getBathrooms(),
+            lieu.getAmenities(),
+            lieu.getCity(),
+            lieu.getNeighborhood(),
+            lieu.getActive(),
+            lieu.getLatitude(),
+            lieu.getLongitude(),
+            lieu.getHouseRules(),
+            lieu.getCheckInTime(),
+            lieu.getCheckOutTime(),
+            lieu.getMinimumNights()
         );
+    }
+
+    public Lieu toLieu(LieuRequest request, LieuType type) {
+        if (request == null) {
+            return null;
+        }
+
+        return Lieu.builder()
+            .titre(request.getTitre())
+            .description(request.getDescription())
+            .type(type)
+            .prix(request.getPrix())
+            .adresse(request.getAdresse())
+            .photos(request.getPhotos())
+            .maxGuests(request.getMaxGuests())
+            .bedrooms(request.getBedrooms())
+            .bathrooms(request.getBathrooms())
+            .amenities(request.getAmenities())
+            .city(request.getCity())
+            .neighborhood(request.getNeighborhood())
+            .active(request.getActive())
+            .latitude(request.getLatitude())
+            .longitude(request.getLongitude())
+            .houseRules(request.getHouseRules())
+            .checkInTime(request.getCheckInTime())
+            .checkOutTime(request.getCheckOutTime())
+            .minimumNights(request.getMinimumNights())
+            .build();
     }
 
     public ReservationResponse toReservationResponse(Reservation reservation) {
@@ -123,16 +165,29 @@ public class EntityMapper {
                     safeList(reservation.getLieu().getPhotos()),
                     null,
                     null,
-                    null
+                    null,
+                    reservation.getLieu().getMaxGuests(),
+                    reservation.getLieu().getBedrooms(),
+                    reservation.getLieu().getBathrooms(),
+                    reservation.getLieu().getAmenities(),
+                    reservation.getLieu().getCity(),
+                    reservation.getLieu().getNeighborhood(),
+                    reservation.getLieu().getActive(),
+                    reservation.getLieu().getLatitude(),
+                    reservation.getLieu().getLongitude(),
+                    reservation.getLieu().getHouseRules(),
+                    reservation.getLieu().getCheckInTime(),
+                    reservation.getLieu().getCheckOutTime(),
+                    reservation.getLieu().getMinimumNights()
                 );
             }
 
             Long totalNights = null;
-            Double totalPrice = null;
+            Double totalPrice = reservation.getTotalPrice() != null ? reservation.getTotalPrice().doubleValue() : null;
 
             if (reservation.getDateDebut() != null && reservation.getDateFin() != null) {
                 totalNights = ChronoUnit.DAYS.between(reservation.getDateDebut(), reservation.getDateFin());
-                if (reservation.getLieu() != null && reservation.getLieu().getPrix() != null) {
+                if (totalPrice == null && reservation.getLieu() != null && reservation.getLieu().getPrix() != null) {
                     totalPrice = reservation.getLieu().getPrix().doubleValue() * totalNights;
                 }
             }
@@ -145,7 +200,18 @@ public class EntityMapper {
                 locataire,
                 lieu,
                 totalNights,
-                totalPrice
+                totalPrice,
+                reservation.getGuests(),
+                reservation.getGuestName(),
+                reservation.getGuestEmail(),
+                reservation.getGuestPhone(),
+                reservation.getSpecialRequests(),
+                reservation.getOwnerMessage(),
+                reservation.getCancellationReason(),
+                reservation.getCreatedAt(),
+                reservation.getAcceptedAt(),
+                reservation.getRejectedAt(),
+                reservation.getCancelledAt()
             );
         } catch (Exception e) {
             log.error("Error mapping reservation to response", e);
@@ -169,7 +235,20 @@ public class EntityMapper {
             lieu.getPhotos(),
             null,
             null,
-            null
+            null,
+            lieu.getMaxGuests(),
+            lieu.getBedrooms(),
+            lieu.getBathrooms(),
+            lieu.getAmenities(),
+            lieu.getCity(),
+            lieu.getNeighborhood(),
+            lieu.getActive(),
+            lieu.getLatitude(),
+            lieu.getLongitude(),
+            lieu.getHouseRules(),
+            lieu.getCheckInTime(),
+            lieu.getCheckOutTime(),
+            lieu.getMinimumNights()
         );
     }
 

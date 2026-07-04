@@ -1,11 +1,12 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Booking } from '../../locataire/services/locataires.service';
+import { MadCurrencyPipe } from '../pipes/mad-currency.pipe';
 
 @Component({
   selector: 'app-cancel-booking-dialog',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MadCurrencyPipe],
   templateUrl: './cancel-booking-dialog.component.html',
   styleUrls: ['./cancel-booking-dialog.component.scss']
 })

@@ -73,7 +73,7 @@ export class MapComponent implements AfterViewInit, OnChanges {
     this.locations.forEach(loc => {
       const marker = L ? L.marker([loc.lat, loc.lng]) : null;
       if (marker) {
-        marker.bindPopup(`<b>${loc.titre}</b><br>${loc.prix}€/nuit`);
+        marker.bindPopup(`<b>${loc.titre}</b><br>${loc.prix} DH/jour`);
         this.markers.addLayer(marker);
       }
     });

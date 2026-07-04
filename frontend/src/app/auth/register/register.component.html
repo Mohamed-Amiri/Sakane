@@ -12,9 +12,9 @@
           <div class="logo-icon">
             <i class="ph ph-buildings" aria-hidden="true"></i>
           </div>
-          <h1>LocaSpace</h1>
+          <h1>Sakane</h1>
         </div>
-        <p class="tagline">Rejoignez la communauté LocaSpace dès aujourd'hui.</p>
+        <p class="tagline">Rejoignez la communauté Sakane dès aujourd'hui.</p>
       </div>
 
       <div class="features-list">
@@ -24,7 +24,7 @@
           </div>
           <div class="feature-text">
             <strong>Recherche intelligente</strong>
-            <span>Des milliers d'espaces à portée de clic</span>
+            <span>Des espaces d'exception à portée de clic</span>
           </div>
         </div>
         <div class="feature-item">
@@ -78,16 +78,30 @@
 
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
 
-        <!-- Full Name -->
-        <div class="form-group">
-          <label for="reg-name">Nom complet</label>
-          <div class="input-wrapper" [class.error]="fullName.invalid && fullName.touched">
-            <i class="ph ph-user input-icon" aria-hidden="true"></i>
-            <input id="reg-name" type="text" placeholder="Mohamed Amiri" formControlName="fullName" aria-label="Nom complet" />
+        <!-- Name -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="reg-firstname">Prénom</label>
+            <div class="input-wrapper" [class.error]="firstName.invalid && firstName.touched">
+              <i class="ph ph-user input-icon" aria-hidden="true"></i>
+              <input id="reg-firstname" type="text" name="firstName" autocomplete="given-name" placeholder="Mohamed" formControlName="firstName" aria-label="Prénom" />
+            </div>
+            <div class="field-error" *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)">
+              <small *ngIf="firstName.errors?.['required']">Le prénom est requis.</small>
+              <small *ngIf="firstName.errors?.['minlength']">Au moins 2 caractères.</small>
+            </div>
           </div>
-          <div class="field-error" *ngIf="fullName.invalid && (fullName.dirty || fullName.touched)">
-            <small *ngIf="fullName.errors?.['required']">Le nom complet est requis.</small>
-            <small *ngIf="fullName.errors?.['minlength']">Le nom doit avoir au moins 3 caractères.</small>
+
+          <div class="form-group">
+            <label for="reg-lastname">Nom</label>
+            <div class="input-wrapper" [class.error]="lastName.invalid && lastName.touched">
+              <i class="ph ph-user input-icon" aria-hidden="true"></i>
+              <input id="reg-lastname" type="text" name="lastName" autocomplete="family-name" placeholder="Amiri" formControlName="lastName" aria-label="Nom" />
+            </div>
+            <div class="field-error" *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)">
+              <small *ngIf="lastName.errors?.['required']">Le nom est requis.</small>
+              <small *ngIf="lastName.errors?.['minlength']">Au moins 2 caractères.</small>
+            </div>
           </div>
         </div>
 
@@ -96,7 +110,7 @@
           <label for="reg-email">Adresse email</label>
           <div class="input-wrapper" [class.error]="email.invalid && email.touched">
             <i class="ph ph-envelope input-icon" aria-hidden="true"></i>
-            <input id="reg-email" type="email" placeholder="nom@exemple.com" formControlName="email" aria-label="Adresse email" />
+            <input id="reg-email" type="email" name="email" autocomplete="email" placeholder="nom@exemple.com" formControlName="email" aria-label="Adresse email" />
           </div>
           <div class="field-error" *ngIf="email.invalid && (email.dirty || email.touched)">
             <small *ngIf="email.errors?.['required']">L'email est requis.</small>
@@ -112,8 +126,10 @@
             <input 
               id="reg-password"
               [type]="showPassword ? 'text' : 'password'" 
-              placeholder="Minimum 8 caractères" 
+              placeholder="Minimum 8 caractères"
               formControlName="password"
+              name="new-password"
+              autocomplete="new-password"
               aria-label="Mot de passe"
             />
             <button type="button" class="password-toggle" (click)="togglePasswordVisibility()" [attr.aria-label]="showPassword ? 'Masquer' : 'Afficher'">
@@ -142,8 +158,10 @@
             <input 
               id="reg-confirm"
               [type]="showConfirmPassword ? 'text' : 'password'" 
-              placeholder="Répétez le mot de passe" 
+              placeholder="Répétez le mot de passe"
               formControlName="confirmPassword"
+              name="confirm-password"
+              autocomplete="new-password"
               aria-label="Confirmer le mot de passe"
             />
             <button type="button" class="password-toggle" (click)="toggleConfirmPasswordVisibility()" [attr.aria-label]="showConfirmPassword ? 'Masquer' : 'Afficher'">

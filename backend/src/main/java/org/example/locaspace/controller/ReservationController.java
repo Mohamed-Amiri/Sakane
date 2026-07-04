@@ -4,21 +4,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.example.locaspace.dto.reservation.ReservationResponse;
 import org.example.locaspace.dto.reservation.ReservationRequest;
-import org.example.locaspace.dto.lieu.LieuResponse;
-import org.example.locaspace.dto.user.UserSummaryResponse;
 import org.example.locaspace.exception.ResourceNotFoundException;
 import org.example.locaspace.mapper.EntityMapper;
 import org.example.locaspace.model.Reservation;
 import org.example.locaspace.model.User;
 import org.example.locaspace.model.Lieu;
-import org.example.locaspace.model.enums.LieuType;
 import org.example.locaspace.model.enums.ReservationStatus;
-import org.example.locaspace.model.enums.Role;
 import org.example.locaspace.security.UserDetailsServiceImpl;
 import org.example.locaspace.service.ReservationService;
 import org.example.locaspace.service.LieuService;
 import org.example.locaspace.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -101,13 +96,25 @@ public class ReservationController {
                     .locataire(tenant)
                     .dateDebut(request.getStartDate())
                     .dateFin(request.getEndDate())
+                    .guests(request.getGuests())
+                    .totalPrice(request.getTotalPrice())
+                    .guestName(request.getGuestName())
+                    .guestEmail(request.getGuestEmail())
+                    .guestPhone(request.getGuestPhone())
+                    .specialRequests(request.getSpecialRequests())
+                    .ownerMessage(request.getOwnerMessage())
+                    .cancellationReason(request.getCancellationReason())
+                    .createdAt(request.getCreatedAt())
+                    .acceptedAt(request.getAcceptedAt())
+                    .rejectedAt(request.getRejectedAt())
+                    .cancelledAt(request.getCancelledAt())
                     .build();
 
             log.debug("Creating reservation...");
             Reservation saved = reservationService.createReservation(reservation);
             log.debug("Reservation created with ID: {}", saved.getId());
             
-            ReservationResponse response = createSimpleReservationResponse(saved);
+            ReservationResponse response = entityMapper.toReservationResponse(saved);
             return ResponseEntity.ok(response);
         } catch (ResourceNotFoundException e) {
             log.error("Resource not found: {}", e.getMessage());
@@ -138,68 +145,11 @@ public class ReservationController {
     @PutMapping("/{id}/status")
     @PreAuthorize("hasRole('PROPRIETAIRE')")
     public ResponseEntity<ReservationResponse> updateReservationStatus(@PathVariable Long id,
-                                                                       @RequestBody java.util.Map<String, String> body) {
+                                                                        @RequestBody java.util.Map<String, String> body) {
         String statusStr = body.get("status");
+        String message = body.get("message");
         ReservationStatus status = ReservationStatus.valueOf(statusStr.toUpperCase());
-        Reservation updated = reservationService.updateReservationStatus(id, status);
+        Reservation updated = reservationService.updateReservationStatus(id, status, message);
         return ResponseEntity.ok(entityMapper.toReservationResponse(updated));
-    }
-    
-    // Helper method to create a simple reservation response without complex mapping
-    private ReservationResponse createSimpleReservationResponse(Reservation reservation) {
-        try {
-            // Create basic user summary
-            UserSummaryResponse locataire = null;
-            if (reservation.getLocataire() != null) {
-                locataire = new UserSummaryResponse(
-                    reservation.getLocataire().getId(),
-                    reservation.getLocataire().getNom() != null ? reservation.getLocataire().getNom() : "User " + reservation.getLocataire().getId(),
-                    reservation.getLocataire().getEmail() != null ? reservation.getLocataire().getEmail() : "",
-                    reservation.getLocataire().getRole() != null ? reservation.getLocataire().getRole().name() : "LOCATAIRE"
-                );
-            }
-            
-            // Create basic lieu response
-            LieuResponse lieu = null;
-            if (reservation.getLieu() != null) {
-                lieu = new LieuResponse(
-                    reservation.getLieu().getId(),
-                    reservation.getLieu().getTitre() != null ? reservation.getLieu().getTitre() : "Lieu " + reservation.getLieu().getId(),
-                    reservation.getLieu().getDescription(),
-                    reservation.getLieu().getType() != null ? reservation.getLieu().getType().name() : null,
-                    reservation.getLieu().getPrix(),
-                    reservation.getLieu().getAdresse(),
-                    reservation.getLieu().isValide(),
-                    null, // Skip photos for now
-                    null, // Skip owner
-                    null, // Skip rating
-                    null  // Skip review count
-                );
-            }
-            
-            // Calculate nights and price
-            Long totalNights = null;
-            Double totalPrice = null;
-            if (reservation.getDateDebut() != null && reservation.getDateFin() != null) {
-                totalNights = java.time.temporal.ChronoUnit.DAYS.between(reservation.getDateDebut(), reservation.getDateFin());
-                if (reservation.getLieu() != null && reservation.getLieu().getPrix() != null) {
-                    totalPrice = reservation.getLieu().getPrix().doubleValue() * totalNights;
-                }
-            }
-            
-            return new ReservationResponse(
-                reservation.getId(),
-                reservation.getDateDebut(),
-                reservation.getDateFin(),
-                reservation.getStatut() != null ? reservation.getStatut().name() : null,
-                locataire,
-                lieu,
-                totalNights,
-                totalPrice
-            );
-        } catch (Exception e) {
-            log.error("Error creating simple reservation response: {}", e.getMessage(), e);
-            throw new RuntimeException("Failed to create reservation response", e);
-        }
     }
 }

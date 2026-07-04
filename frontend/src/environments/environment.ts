@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8082/api',
+  apiUrl: '/api',
   apiTimeout: 30000,
   apiRetryAttempts: 3,
   mapboxToken: 'YOUR_MAPBOX_TOKEN', // Replace with actual token in production

@@ -214,8 +214,8 @@
             <div class="booking-card">
               <div class="booking-header">
                 <div class="price-section">
-                  <span class="price">{{ lieu.prix }}€</span>
-                  <span class="price-unit">par nuit</span>
+                  <span class="price">{{ lieu.prix | madCurrency }}</span>
+                  <span class="price-unit">par jour</span>
                 </div>
                 <div class="rating-section">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -330,16 +330,16 @@
                 <!-- Price Breakdown -->
                 <div class="price-breakdown" *ngIf="totalNights > 0">
                   <div class="price-line">
-                    <span>{{ lieu.prix }}€ x {{ totalNights }} nuit{{ totalNights > 1 ? 's' : '' }}</span>
-                    <span>{{ totalPrice }}€</span>
+                    <span>{{ lieu.prix | madCurrency }} x {{ totalNights }} jour{{ totalNights > 1 ? 's' : '' }}</span>
+                    <span>{{ totalPrice | madCurrency }}</span>
                   </div>
                   <div class="price-line">
-                    <span>Frais de service LocaSpace</span>
-                    <span>{{ (totalPrice * 0.1) | number:'1.0-0' }}€</span>
+                    <span>Frais de service Sakane</span>
+                    <span>{{ (totalPrice * 0.1) | number:'1.0-0' }} DH</span>
                   </div>
                   <div class="price-line total">
                     <span>Total</span>
-                    <span>{{ totalPrice + (totalPrice * 0.1) | number:'1.0-0' }}€</span>
+                    <span>{{ totalPrice + (totalPrice * 0.1) | number:'1.0-0' }} DH</span>
                   </div>
                 </div>
               </div>

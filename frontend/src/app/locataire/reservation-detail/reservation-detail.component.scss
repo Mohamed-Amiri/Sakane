@@ -1,0 +1,191 @@
+@use '../../../styles/variables' as *;
+
+// ═══════════════════════════════════════════════════════════════
+//  Sakane — Reservation detail (Navy + Gold + Cream editorial)
+// ═══════════════════════════════════════════════════════════════
+$navy:   #0A2540;
+$navy-2: #0F3460;
+$gold:   #C9A84C;
+$gold-2: #E8C46A;
+$cream:  #FAF7F0;
+$sand:   #F0E9D6;
+$ink:    #2C3E50;
+$muted:  #6B7C93;
+$line:   rgba(10, 37, 64, 0.10);
+$green:  #1A7F5A;
+$amber:  #8A6F35;
+$red:    #B83232;
+
+:host { display: block; background: $cream; min-height: 100vh; }
+
+.detail-container {
+  font-family: $font-body;
+  color: $ink;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 5rem;
+}
+
+// ─── Header ───
+.detail-header {
+  margin-bottom: 1.75rem;
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: none; border: none; cursor: pointer;
+    font-family: $font-body; font-size: 0.88rem; font-weight: 600; color: $muted;
+    padding: 0; margin-bottom: 1rem;
+    transition: color 180ms ease;
+    svg { width: 18px; height: 18px; }
+    &:hover { color: $gold; }
+  }
+  .page-title {
+    font-family: $font-display;
+    font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+    font-weight: 600; color: $navy; margin: 0;
+  }
+}
+
+// ─── Loading ───
+.loading-wrapper { display: flex; flex-direction: column; gap: 0.75rem; }
+
+// ─── Detail card (2-col) ───
+.detail-card {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+// ─── Media column ───
+.media-column {
+  background: #fff; border: 1px solid $line; border-radius: $radius-xl;
+  box-shadow: 0 8px 32px rgba(10,37,64,0.1);
+  overflow: hidden; position: sticky; top: 24px;
+}
+.image-wrapper {
+  position: relative; height: 240px; background: $sand;
+  .property-image { width: 100%; height: 100%; object-fit: cover; }
+  .image-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(155deg, $navy 0%, $navy-2 100%);
+    color: rgba(201,168,76,0.6);
+  }
+  .status-overlay-badge {
+    position: absolute; top: 1rem; left: 1rem;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.35rem 0.8rem; border-radius: $radius-pill;
+    font-size: 0.74rem; font-weight: 700;
+    background: rgba(250,247,240,0.95); backdrop-filter: blur(4px);
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; }
+    &.status-confirmed { color: $green; .status-dot { background: $green; } }
+    &.status-pending { color: $amber; .status-dot { background: $amber; } }
+    &.status-cancelled { color: $red; .status-dot { background: $red; } }
+  }
+}
+.quick-summary {
+  padding: 1.25rem;
+  h2 { font-family: $font-display; font-size: 1.4rem; font-weight: 600; color: $navy; margin: 0 0 0.6rem; }
+  .property-meta { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+  .type-badge {
+    background: rgba(201,168,76,0.12); color: $navy;
+    padding: 0.2rem 0.7rem; border-radius: $radius-pill;
+    font-size: 0.74rem; font-weight: 600;
+  }
+  .city-info { font-size: 0.84rem; color: $muted; }
+  .address-text { font-size: 0.86rem; color: $muted; margin: 0; line-height: 1.5; }
+}
+.action-footer {
+  padding: 0 1.25rem 1.25rem;
+  display: flex; flex-direction: column; gap: 0.6rem;
+}
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid transparent; border-radius: $radius-lg;
+  padding: 0.8rem 1rem; cursor: pointer;
+  font-family: $font-body; font-size: 0.9rem; font-weight: 600;
+  transition: all 180ms ease;
+  &.btn-review { background: $gold; color: $navy; &:hover { background: $gold-2; box-shadow: 0 4px 12px rgba(201,168,76,0.35); } }
+  &.btn-cancel { background: transparent; border-color: rgba(184,50,50,0.4); color: $red; &:hover:not(:disabled) { background: rgba(184,50,50,0.08); } }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+.cancelled-banner {
+  text-align: center; padding: 0.75rem;
+  background: rgba(184,50,50,0.08); color: $red;
+  border-radius: $radius-lg; font-size: 0.84rem; font-weight: 600;
+}
+
+// ─── Info column ───
+.info-column { display: flex; flex-direction: column; gap: 1.5rem; }
+.info-section {
+  background: #fff; border: 1px solid $line; border-radius: $radius-xl;
+  box-shadow: 0 2px 16px rgba(10,37,64,0.06);
+  padding: 1.5rem;
+  h3 {
+    font-family: $font-display; font-size: 1.35rem; font-weight: 600; color: $navy;
+    margin: 0 0 1.25rem;
+  }
+}
+
+.rejection-box {
+  background: rgba(184,50,50,0.06); border: 1px solid rgba(184,50,50,0.25);
+  border-radius: $radius-xl; padding: 1.25rem;
+  .box-title {
+    display: flex; align-items: center; gap: 0.5rem;
+    color: $red; font-weight: 600; font-size: 0.95rem; margin-bottom: 0.6rem;
+    svg { width: 18px; height: 18px; }
+  }
+  .rejection-reason { color: $ink; margin: 0; line-height: 1.6; font-size: 0.9rem; }
+}
+
+.grid-details { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+.grid-item { display: flex; align-items: flex-start; gap: 0.75rem; }
+.icon-box {
+  width: 42px; height: 42px; flex-shrink: 0; border-radius: $radius-lg;
+  background: rgba(201,168,76,0.1);
+  display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+}
+.item-text { display: flex; flex-direction: column; }
+.item-text .label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: $muted; }
+.item-text .value { font-size: 0.92rem; font-weight: 600; color: $navy; }
+
+.pricing-box {
+  .price-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.5rem 0; color: $ink; font-size: 0.92rem;
+    strong { color: $navy; }
+  }
+  .price-divider { height: 1px; background: $line; margin: 0.75rem 0; }
+  .price-row.total {
+    font-family: $font-display; font-size: 1.1rem;
+    .total-amount { font-size: 1.4rem; font-weight: 700; color: $navy; }
+  }
+}
+
+.guest-card .guest-details-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.guest-detail-row {
+  display: flex; justify-content: space-between; gap: 1rem;
+  padding-bottom: 0.75rem; border-bottom: 1px solid $line;
+  &:last-child { border-bottom: none; padding-bottom: 0; }
+  .detail-label { color: $muted; font-size: 0.88rem; }
+  .detail-value { color: $navy; font-weight: 600; font-size: 0.9rem; text-align: right; }
+  &.special-requests-row { flex-direction: column; gap: 0.4rem; }
+  .special-text { color: $ink; font-size: 0.9rem; line-height: 1.6; margin: 0; }
+}
+
+// ─── Entrance ───
+.animate-fade-in { animation: fadeUp 450ms ease-out; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Responsive ───
+@media (max-width: 920px) {
+  .detail-card { grid-template-columns: 1fr; }
+  .media-column { position: static; }
+}
+@media (max-width: 560px) {
+  .detail-container { padding: 1rem 1.25rem 4rem; }
+  .grid-details { grid-template-columns: 1fr; }
+}

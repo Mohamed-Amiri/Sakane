@@ -78,8 +78,8 @@ export class AddPropertyComponent implements OnInit {
       },
       price: {
         required: 'Le prix est obligatoire',
-        min: 'Le prix minimum est de 10€',
-        max: 'Le prix maximum est de 10 000€',
+        min: 'Le prix minimum est de 10 DH',
+        max: 'Le prix maximum est de 10 000 DH',
         suggestion: 'Consultez les prix similaires dans votre région'
       }
     }

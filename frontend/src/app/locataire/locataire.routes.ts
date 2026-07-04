@@ -8,38 +8,45 @@ export const LOCATAIRE_ROUTES: Routes = [
         loadComponent: () => import('./tenant-dashboard/tenant-dashboard.component').then(m => m.TenantDashboardComponent),
         canActivate: [AuthGuard],
         data: { roles: ['tenant'] },
-        title: 'Tableau de bord - LocaSpace'
+        title: 'Tableau de bord - Sakane'
     },
     {
         path: 'locataire/search',
         loadComponent: () => import('./tenant-search/tenant-search.component').then(m => m.TenantSearchComponent),
-        canActivate: [AuthGuard],
-        data: { roles: ['tenant'] },
-        title: 'Rechercher - LocaSpace'
+        title: 'Rechercher - Sakane'
     },
     {
         path: 'locataire/place/:id',
         loadComponent: () => import('./place-details/place-details.component').then(m => m.PlaceDetailsComponent),
-        title: 'Détails du logement - LocaSpace'
+        title: 'Détails du logement - Sakane'
     },
     {
-        path: 'locataire/booking-confirm',
+        path: 'locataire/booking-confirm/:id',
         loadComponent: () => import('./booking-confirm/booking-confirm.component').then(m => m.BookingConfirmComponent),
-        title: 'Confirmer la réservation - LocaSpace'
+        canActivate: [AuthGuard],
+        data: { roles: ['tenant'] },
+        title: 'Confirmer la réservation - Sakane'
     },
     {
         path: 'locataire/reservations',
         loadComponent: () => import('./reservations/reservations.component').then(m => m.ReservationsComponent),
         canActivate: [AuthGuard],
         data: { roles: ['tenant'] },
-        title: 'Mes réservations - LocaSpace'
+        title: 'Mes réservations - Sakane'
+    },
+    {
+        path: 'locataire/reservations/:id',
+        loadComponent: () => import('./reservation-detail/reservation-detail.component').then(m => m.ReservationDetailComponent),
+        canActivate: [AuthGuard],
+        data: { roles: ['tenant'] },
+        title: 'Détails de la réservation - Sakane'
     },
     {
         path: 'locataire/favorites',
         loadComponent: () => import('./favorites/favorites.component').then(m => m.FavoritesComponent),
         canActivate: [AuthGuard],
         data: { roles: ['tenant'] },
-        title: 'Mes favoris - LocaSpace'
+        title: 'Mes favoris - Sakane'
     },
     {
         path: 'locataire',

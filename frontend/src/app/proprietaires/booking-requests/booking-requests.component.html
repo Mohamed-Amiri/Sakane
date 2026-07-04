@@ -1,417 +1,174 @@
-<div class="booking-requests-container">
-  <!-- Mediterranean Header -->
-  <div class="page-header">
-    <div class="header-content">
-      <div class="header-left">
-        <div class="header-text">
-          <h1 class="page-title">Demandes de Réservation</h1>
-          <p class="page-subtitle">Gérez vos demandes de réservation en temps réel</p>
+<div class="requests-page">
+
+  <!-- Header banner -->
+  <header class="page-banner">
+    <div class="banner-inner">
+      <div class="banner-text">
+        <h1 class="banner-title">Demandes de Réservation</h1>
+        <div class="count-badges">
+          <span class="cb pending"><i class="ph ph-hourglass"></i>{{ pendingRequests.length }} en attente</span>
+          <span class="cb approved"><i class="ph ph-check-circle"></i>{{ approvedRequests.length }} confirmées</span>
+          <span class="cb rejected"><i class="ph ph-x-circle"></i>{{ rejectedRequests.length }} refusées</span>
         </div>
       </div>
-      <div class="header-actions">
-        <button class="btn btn-primary" (click)="loadBookingRequests()">
-          <i class="ph ph-arrows-clockwise"></i> Actualiser
-        </button>
-        <button class="btn btn-outline" routerLink="/proprietaires/dashboard">
-          <i class="ph ph-arrow-left"></i> Retour
-        </button>
-      </div>
+      <button class="banner-refresh" (click)="loadBookingRequests()" aria-label="Actualiser">
+        <i class="ph ph-arrows-clockwise"></i>
+        <span>Actualiser</span>
+      </button>
     </div>
+  </header>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-state">
+    <span class="spinner"></span>
+    <p>Chargement des demandes…</p>
   </div>
 
-  <!-- Enhanced Loading State -->
-  <div *ngIf="loading" class="loading-container">
-    <div class="loading-content">
-      <div class="loading-animation">
-        <div class="spinner-wrapper">
-          <div class="spinner-large"></div>
-          <div class="loading-pulse"></div>
-        </div>
+  <main *ngIf="!loading" class="page-body">
+
+    <!-- Underline tabs -->
+    <nav class="tabs">
+      <button class="tab" [class.active]="isTab(0)" (click)="setTab(0)">
+        Toutes <span class="tab-num">{{ allRequests.length }}</span>
+      </button>
+      <button class="tab" [class.active]="isTab(1)" (click)="setTab(1)">
+        En attente <span class="tab-num">{{ pendingRequests.length }}</span>
+      </button>
+      <button class="tab" [class.active]="isTab(2)" (click)="setTab(2)">
+        Confirmées <span class="tab-num">{{ approvedRequests.length }}</span>
+      </button>
+      <button class="tab" [class.active]="isTab(3)" (click)="setTab(3)">
+        Refusées <span class="tab-num">{{ rejectedRequests.length }}</span>
+      </button>
+    </nav>
+
+    <!-- Tab: Toutes -->
+    <section class="tab-pane" *ngIf="isTab(0)">
+      <ng-container *ngIf="allRequests.length === 0">
+        <ng-container *ngTemplateOutlet="emptyState; context: { label: 'Aucune demande pour le moment' }"></ng-container>
+      </ng-container>
+      <div class="cards">
+        <ng-container *ngFor="let request of allRequests">
+          <ng-container *ngTemplateOutlet="requestCard; context: { $implicit: request }"></ng-container>
+        </ng-container>
       </div>
-      <div class="loading-text">
-        <h3>Chargement des demandes</h3>
-        <p>Récupération de vos demandes de réservation...</p>
+    </section>
+
+    <!-- Tab: En attente -->
+    <section class="tab-pane" *ngIf="isTab(1)">
+      <ng-container *ngIf="pendingRequests.length === 0">
+        <ng-container *ngTemplateOutlet="emptyState; context: { label: 'Aucune demande en attente' }"></ng-container>
+      </ng-container>
+      <div class="cards">
+        <ng-container *ngFor="let request of pendingRequests">
+          <ng-container *ngTemplateOutlet="requestCard; context: { $implicit: request }"></ng-container>
+        </ng-container>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- Enhanced Content with Premium Design -->
-  <div *ngIf="!loading" class="content">
-    <!-- Quick Stats Overview -->
-    <div class="stats-overview">
-      <div class="stats-grid">
-        <div class="stat-card pending">
-          <div class="stat-icon">
-            <i class="ph ph-clock"></i>
-          </div>
-          <div class="stat-content">
-            <h3>{{ pendingRequests.length }}</h3>
-            <p>En attente</p>
-            <div class="stat-indicator"></div>
-          </div>
-        </div>
-        <div class="stat-card approved">
-          <div class="stat-icon">
-            <i class="ph ph-check-circle"></i>
-          </div>
-          <div class="stat-content">
-            <h3>{{ approvedRequests.length }}</h3>
-            <p>Approuvées</p>
-            <div class="stat-indicator"></div>
-          </div>
-        </div>
-        <div class="stat-card rejected">
-          <div class="stat-icon">
-            <i class="ph ph-x-circle"></i>
-          </div>
-          <div class="stat-content">
-            <h3>{{ rejectedRequests.length }}</h3>
-            <p>Rejetées</p>
-            <div class="stat-indicator"></div>
-          </div>
-        </div>
-        <div class="stat-card total">
-          <div class="stat-icon">
-            <i class="ph ph-chart-bar"></i>
-          </div>
-          <div class="stat-content">
-            <h3>{{ allRequests.length }}</h3>
-            <p>Total</p>
-            <div class="stat-indicator"></div>
-          </div>
-        </div>
+    <!-- Tab: Confirmées -->
+    <section class="tab-pane" *ngIf="isTab(2)">
+      <ng-container *ngIf="approvedRequests.length === 0">
+        <ng-container *ngTemplateOutlet="emptyState; context: { label: 'Aucune demande confirmée' }"></ng-container>
+      </ng-container>
+      <div class="cards">
+        <ng-container *ngFor="let request of approvedRequests">
+          <ng-container *ngTemplateOutlet="requestCard; context: { $implicit: request }"></ng-container>
+        </ng-container>
       </div>
-    </div>
+    </section>
 
-    <!-- Premium Tabbed Interface -->
-    <div class="custom-tabs">
-      <div class="tab-header">
-        <div class="tab-button" [class.active]="activeTab === 0" (click)="setTab(0)">
-          <div class="tab-label-content">
-            <div class="tab-icon pending"><i class="ph ph-clock"></i></div>
-            <span class="tab-text">En attente</span>
-            <div *ngIf="pendingRequests.length > 0" class="tab-badge pending">{{ pendingRequests.length }}</div>
-          </div>
-        </div>
-        <div class="tab-button" [class.active]="activeTab === 1" (click)="setTab(1)">
-          <div class="tab-label-content">
-            <div class="tab-icon approved"><i class="ph ph-check-circle"></i></div>
-            <span class="tab-text">Approuvées</span>
-            <div *ngIf="approvedRequests.length > 0" class="tab-badge approved">{{ approvedRequests.length }}</div>
-          </div>
-        </div>
-        <div class="tab-button" [class.active]="activeTab === 2" (click)="setTab(2)">
-          <div class="tab-label-content">
-            <div class="tab-icon rejected"><i class="ph ph-x-circle"></i></div>
-            <span class="tab-text">Rejetées</span>
-            <div *ngIf="rejectedRequests.length > 0" class="tab-badge rejected">{{ rejectedRequests.length }}</div>
-          </div>
-        </div>
+    <!-- Tab: Refusées -->
+    <section class="tab-pane" *ngIf="isTab(3)">
+      <ng-container *ngIf="rejectedRequests.length === 0">
+        <ng-container *ngTemplateOutlet="emptyState; context: { label: 'Aucune demande refusée' }"></ng-container>
+      </ng-container>
+      <div class="cards">
+        <ng-container *ngFor="let request of rejectedRequests">
+          <ng-container *ngTemplateOutlet="requestCard; context: { $implicit: request }"></ng-container>
+        </ng-container>
       </div>
-
-      <div class="tab-body">
-        <!-- Pending Requests Tab -->
-        <div class="tab-content" *ngIf="activeTab === 0">
-          <div *ngIf="pendingRequests.length === 0" class="enhanced-empty-state">
-            <div class="empty-illustration">
-              <div class="empty-icon-wrapper">
-                <i class="ph ph-clipboard-list empty-icon"></i>
-                <div class="icon-glow"></div>
-              </div>
-            </div>
-            <div class="empty-content">
-              <h3>Aucune demande en attente</h3>
-              <p>Toutes vos demandes ont été traitées avec succès</p>
-              <button class="btn btn-primary" (click)="loadBookingRequests()">
-                <i class="ph ph-arrows-clockwise"></i> Actualiser
-              </button>
-            </div>
-          </div>
-          
-          <div *ngIf="pendingRequests.length > 0" class="premium-requests-list">
-            <div *ngFor="let request of pendingRequests; let i = index" 
-                 class="premium-request-card pending" 
-                 [style.animation-delay.ms]="i * 100">
-              <div class="card-header">
-                <div class="status-indicator pending"></div>
-                <div class="card-content">
-                  <div class="request-header">
-                    <div class="property-info">
-                      <div class="property-icon">
-                        <i class="ph ph-house"></i>
-                      </div>
-                      <div class="property-details">
-                        <h3 class="property-title">{{ request.propertyTitle }}</h3>
-                        <div class="status-badge pending">
-                          <i class="ph ph-{{ getStatusIcon(request.status) }}"></i>
-                          <span>{{ getStatusText(request.status) }}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="request-date">
-                      <div class="date-container">
-                        <span class="date-label">Demande du</span>
-                        <span class="date-value">{{ formatDate(request.createdAt) }}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                <div class="request-details">
-                  <div class="guest-info">
-                    <div class="info-item">
-                      <i class="ph ph-user text-primary"></i>
-                      <div>
-                        <strong>{{ request.tenantName }}</strong>
-                        <span class="email">{{ request.tenantEmail }}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="booking-info">
-                    <div class="info-item">
-                      <i class="ph ph-calendar-blank text-primary"></i>
-                      <div>
-                        <strong>{{ formatDate(request.checkIn) }} - {{ formatDate(request.checkOut) }}</strong>
-                      </div>
-                    </div>
-
-                    <div class="info-item">
-                      <i class="ph ph-moon text-primary"></i>
-                      <div>
-                        <strong>{{ calculateNights(request.checkIn, request.checkOut) }} nuit(s)</strong>
-                      </div>
-                    </div>
-
-                    <div class="info-item">
-                      <i class="ph ph-users-three text-primary"></i>
-                      <div>
-                        <strong>{{ request.guests }} invité(s)</strong>
-                      </div>
-                    </div>
-
-                    <div class="info-item">
-                      <i class="ph ph-currency-eur text-primary"></i>
-                      <div>
-                        <strong>{{ request.totalPrice }}€</strong>
-                        <span class="total-label">Total</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                  <div *ngIf="request.message" class="message-section">
-                    <div class="message-header">
-                      <i class="ph ph-chat-dots"></i>
-                      <span>Message du locataire</span>
-                    </div>
-                    <div class="message-content">
-                      <p>{{ request.message }}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="card-actions">
-                <div class="action-buttons">
-                  <button class="btn btn-success approve-btn" (click)="approveRequest(request)">
-                    <div class="btn-content">
-                      <i class="ph ph-check-circle"></i>
-                      <span> Accepter</span>
-                    </div>
-                    <div class="btn-glow"></div>
-                  </button>
-                  <button class="btn btn-outline-danger reject-btn" (click)="rejectRequest(request)">
-                    <div class="btn-content">
-                      <i class="ph ph-x-circle"></i>
-                      <span> Refuser</span>
-                    </div>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Approved Requests Tab -->
-        <div class="tab-content" *ngIf="activeTab === 1">
-          <div *ngIf="approvedRequests.length === 0" class="enhanced-empty-state">
-            <div class="empty-illustration">
-              <div class="empty-icon-wrapper">
-                <i class="ph ph-check-circle empty-icon text-success"></i>
-                <div class="icon-glow approved"></div>
-              </div>
-            </div>
-            <div class="empty-content">
-              <h3>Aucune demande approuvée</h3>
-              <p>Les demandes que vous approuvez apparaîtront ici</p>
-            </div>
-          </div>
-          
-          <div *ngIf="approvedRequests.length > 0" class="premium-requests-list">
-            <div *ngFor="let request of approvedRequests; let i = index" 
-                 class="premium-request-card approved" 
-                 [style.animation-delay.ms]="i * 100">
-              <div class="card-header">
-                <div class="status-indicator approved"></div>
-                <div class="card-content">
-                  <div class="request-header">
-                    <div class="property-info">
-                      <div class="property-icon">
-                        <i class="ph ph-house"></i>
-                      </div>
-                      <div class="property-details">
-                        <h3 class="property-title">{{ request.propertyTitle }}</h3>
-                        <div class="status-badge approved">
-                          <i class="ph ph-{{ getStatusIcon(request.status) }}"></i>
-                          <span>{{ getStatusText(request.status) }}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="request-date">
-                      <div class="date-container">
-                        <span class="date-label">Approuvée le</span>
-                        <span class="date-value">{{ formatDate(request.createdAt) }}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="request-details">
-                    <div class="guest-info">
-                      <div class="info-item">
-                        <i class="ph ph-user text-primary"></i>
-                        <div>
-                          <strong>{{ request.tenantName }}</strong>
-                          <span class="email">{{ request.tenantEmail }}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="booking-info">
-                      <div class="info-item">
-                        <i class="ph ph-calendar-blank text-primary"></i>
-                        <div>
-                          <strong>{{ formatDate(request.checkIn) }} - {{ formatDate(request.checkOut) }}</strong>
-                          <span class="nights">{{ calculateNights(request.checkIn, request.checkOut) }} nuit(s)</span>
-                        </div>
-                      </div>
-
-                      <div class="info-item">
-                        <i class="ph ph-users-three text-primary"></i>
-                        <div>
-                          <strong>{{ request.guests }} invité(s)</strong>
-                        </div>
-                      </div>
-
-                      <div class="info-item">
-                        <i class="ph ph-currency-eur text-primary"></i>
-                        <div>
-                          <strong>{{ request.totalPrice }}€</strong>
-                          <span class="total-label">Total</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Rejected Requests Tab -->
-        <div class="tab-content" *ngIf="activeTab === 2">
-          <div *ngIf="rejectedRequests.length === 0" class="enhanced-empty-state">
-            <div class="empty-illustration">
-              <div class="empty-icon-wrapper">
-                <i class="ph ph-x-circle empty-icon text-danger"></i>
-                <div class="icon-glow rejected"></div>
-              </div>
-            </div>
-            <div class="empty-content">
-              <h3>Aucune demande rejetée</h3>
-              <p>Les demandes que vous rejetez apparaîtront ici</p>
-            </div>
-          </div>
-          
-          <div *ngIf="rejectedRequests.length > 0" class="premium-requests-list">
-            <div *ngFor="let request of rejectedRequests; let i = index" 
-                 class="premium-request-card rejected" 
-                 [style.animation-delay.ms]="i * 100">
-              <div class="card-header">
-                <div class="status-indicator rejected"></div>
-                <div class="card-content">
-                  <div class="request-header">
-                    <div class="property-info">
-                      <div class="property-icon">
-                        <i class="ph ph-house"></i>
-                      </div>
-                      <div class="property-details">
-                        <h3 class="property-title">{{ request.propertyTitle }}</h3>
-                        <div class="status-badge rejected">
-                          <i class="ph ph-{{ getStatusIcon(request.status) }}"></i>
-                          <span>{{ getStatusText(request.status) }}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="request-date">
-                      <div class="date-container">
-                        <span class="date-label">Rejetée le</span>
-                        <span class="date-value">{{ formatDate(request.createdAt) }}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="request-details">
-                    <div class="guest-info">
-                      <div class="info-item">
-                        <i class="ph ph-user text-primary"></i>
-                        <div>
-                          <strong>{{ request.tenantName }}</strong>
-                          <span class="email">{{ request.tenantEmail }}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="booking-info">
-                      <div class="info-item">
-                        <i class="ph ph-calendar-blank text-primary"></i>
-                        <div>
-                          <strong>{{ formatDate(request.checkIn) }} - {{ formatDate(request.checkOut) }}</strong>
-                          <span class="nights">{{ calculateNights(request.checkIn, request.checkOut) }} nuit(s)</span>
-                        </div>
-                      </div>
-
-                      <div class="info-item">
-                        <i class="ph ph-users-three text-primary"></i>
-                        <div>
-                          <strong>{{ request.guests }} invité(s)</strong>
-                        </div>
-                      </div>
-
-                      <div class="info-item">
-                        <i class="ph ph-currency-eur text-primary"></i>
-                        <div>
-                          <strong>{{ request.totalPrice }}€</strong>
-                          <span class="total-label">Total</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div *ngIf="request.message" class="message-section rejection-reason">
-                    <div class="message-header">
-                      <i class="ph ph-info"></i>
-                      <span>Raison du refus</span>
-                    </div>
-                    <div class="message-content">
-                      <p>{{ request.message }}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+    </section>
+  </main>
 </div>
+
+<!-- ===== Reusable empty state ===== -->
+<ng-template #emptyState let-label="label">
+  <div class="empty-card">
+    <div class="empty-line">
+      <div class="empty-icon-circle">
+        <i class="ph ph-calendar-blank"></i>
+      </div>
+      <div>
+        <p class="empty-title">{{ label }}</p>
+        <p class="empty-sub">Les nouvelles demandes de vos locataires apparaîtront ici.</p>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- ===== Reusable request card ===== -->
+<ng-template #requestCard let-request>
+  <article class="req-card" [ngClass]="request.status">
+
+    <!-- Thumbnail -->
+    <div class="req-thumb">
+      <i class="ph ph-house"></i>
+    </div>
+
+    <!-- Center info -->
+    <div class="req-main">
+      <h3 class="req-property">{{ request.propertyTitle }}</h3>
+      <p class="req-renter">{{ request.guestName || request.tenantName }}</p>
+
+      <div class="req-meta">
+        <span class="meta-item"><i class="ph ph-calendar-blank"></i>{{ formatDate(request.checkIn) }} → {{ formatDate(request.checkOut) }}</span>
+        <span class="meta-item"><i class="ph ph-moon"></i>{{ calculateNights(request.checkIn, request.checkOut) }} jour(s)</span>
+        <span class="meta-item"><i class="ph ph-users"></i>{{ request.guests }} invité(s)</span>
+      </div>
+
+      <p class="req-special" *ngIf="request.specialRequests">
+        <i class="ph ph-chat-dots"></i> {{ request.specialRequests }}
+      </p>
+      <p class="req-reason" *ngIf="request.status === 'rejected' && request.message">
+        <i class="ph ph-info"></i> {{ request.message }}
+      </p>
+    </div>
+
+    <!-- Right side -->
+    <div class="req-side">
+      <div class="req-price">{{ request.totalPrice | madCurrency }}</div>
+      <span class="status-badge" [ngClass]="request.status">
+        <i class="ph" [ngClass]="{ 'ph-hourglass': request.status === 'pending', 'ph-check-circle': request.status === 'approved', 'ph-x-circle': request.status === 'rejected' }"></i>
+        {{ getStatusText(request.status) }}
+      </span>
+
+      <div class="req-actions" *ngIf="request.status === 'pending' && !showRejectionInput[request.id]">
+        <button class="btn-accept" (click)="approveRequest(request)">
+          <i class="ph ph-check"></i> Accepter
+        </button>
+        <button class="btn-refuse" (click)="rejectRequest(request)">
+          Refuser
+        </button>
+      </div>
+    </div>
+
+    <!-- Inline rejection panel -->
+    <div class="reject-panel" *ngIf="request.status === 'pending' && showRejectionInput[request.id]">
+      <div class="reject-head">
+        <i class="ph ph-warning-circle"></i>
+        <span>Motif du refus</span>
+      </div>
+      <textarea
+        [(ngModel)]="rejectionReasons[request.id]"
+        placeholder="Expliquez au locataire pourquoi sa demande est refusée…"
+        rows="3"></textarea>
+      <div class="reject-foot">
+        <button class="btn-cancel" (click)="cancelRejection(request.id)">Annuler</button>
+        <button class="btn-confirm-refuse" (click)="confirmRejection(request)" [disabled]="!rejectionReasons[request.id]">
+          Confirmer le refus
+        </button>
+      </div>
+    </div>
+  </article>
+</ng-template>

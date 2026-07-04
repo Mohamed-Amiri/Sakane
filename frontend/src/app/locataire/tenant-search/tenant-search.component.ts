@@ -1,16 +1,18 @@
-﻿import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { LocatairesService, Place, SearchFilters } from '../services/locataires.service';
 import { PlaceCardComponent, PlaceCardData } from '../../shared/components/place-card/place-card.component';
-import { SkeletonComponent } from '../../shared/components/skeleton/skeleton.component';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
+import { SkeletonComponent } from '../../shared/components/skeleton/skeleton.component';
+import { Title } from '@angular/platform-browser';
+import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.directive';
 
 @Component({
   selector: 'app-tenant-search',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, PlaceCardComponent, SkeletonComponent, EmptyStateComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, PlaceCardComponent, SkeletonComponent, EmptyStateComponent, ScrollRevealDirective],
   templateUrl: './tenant-search.component.html',
   styleUrls: ['./tenant-search.component.scss']
 })
@@ -42,6 +44,12 @@ export class TenantSearchComponent implements OnInit {
   ];
   sortBy: string | null = null;
   
+  readonly moroccanCities: string[] = [
+    'Casablanca', 'Rabat', 'Fès', 'Marrakech', 'Agadir',
+    'Tanger', 'Meknès', 'Oujda', 'Kenitra', 'Tetouan',
+    'El Jadida', 'Essaouira', 'Ouarzazate', 'Chefchaouen'
+  ];
+
   amenitiesList = [
     'WiFi',
     'Parking',
@@ -57,7 +65,8 @@ export class TenantSearchComponent implements OnInit {
     private fb: FormBuilder,
     private locatairesService: LocatairesService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private titleService: Title
   ) {
     this.searchForm = this.fb.group({
       location: [''],
@@ -69,6 +78,7 @@ export class TenantSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.titleService.setTitle('Recherche — Sakane');
     // Load all available lieux from proprietaires
     this.loadAvailablePlaces();
     
@@ -82,16 +92,13 @@ export class TenantSearchComponent implements OnInit {
   }
 
   loadAvailablePlaces(): void {
-    console.log('TenantSearchComponent: Loading available places...');
     this.loading = true;
     this.isLoading = true;
     this.locatairesService.getAllPlaces().subscribe({
       next: (places) => {
-        console.log('TenantSearchComponent: Received available places:', places);
         // Filter to show only available properties for tenants
         this.places = places.filter(place => place.availability);
         this.filteredPlaces = this.places;
-        console.log('TenantSearchComponent: Filtered available places:', this.places);
         
         this.loading = false;
         this.isLoading = false;
@@ -110,7 +117,6 @@ export class TenantSearchComponent implements OnInit {
   }
 
   searchPlaces(): void {
-    console.log('TenantSearchComponent: Starting local search...');
     this.loading = true;
     this.isLoading = true;
     this.cdr.detectChanges();
@@ -123,7 +129,6 @@ export class TenantSearchComponent implements OnInit {
       rating: this.searchForm.get('rating')?.value || this.minRating || undefined
     };
     
-    console.log('TenantSearchComponent: Search filters:', filters);
     
     // Use search endpoint if filters are provided, otherwise get all places
     const searchObservable = Object.values(filters).some(value => value !== undefined && value !== null && (Array.isArray(value) ? value.length > 0 : true))
@@ -132,7 +137,6 @@ export class TenantSearchComponent implements OnInit {
     
     searchObservable.subscribe({
       next: (allPlaces) => {
-        console.log('TenantSearchComponent: All places for filtering:', allPlaces);
         
         // Filter to show only available properties for tenants
         let availablePlaces = allPlaces.filter(place => place.availability);
@@ -163,7 +167,6 @@ export class TenantSearchComponent implements OnInit {
           filteredResults = filteredResults.filter(place => place.rating >= this.minRating!);
         }
         
-        console.log('TenantSearchComponent: Filtered results:', filteredResults);
         this.places = availablePlaces; // Keep all available places for reference
         this.filteredPlaces = filteredResults; // Use filtered array for display
         this.loading = false;
@@ -278,7 +281,6 @@ export class TenantSearchComponent implements OnInit {
   
   toggleFavorite(placeId: number): void {
     // Implement favorite toggle logic
-    console.log('Toggle favorite for place:', placeId);
   }
   
   getAveragePrice(): number {
@@ -326,9 +328,9 @@ export class TenantSearchComponent implements OnInit {
       location: place.location,
       price: place.price,
       rating: place.rating,
-      image: place.images && place.images.length > 0 ? place.images[0] : 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&q=80',
-      capacity: 0,
-      type: 'Logement',
+      image: place.images && place.images.length > 0 ? place.images[0] : 'assets/images/hero-bg.png',
+      capacity: (place as any).maxGuests || 0,
+      type: (place as any).type || 'Logement',
       badges: place.rating >= 4.8 ? ['Populaire'] : [],
       isFavorite: false
     };

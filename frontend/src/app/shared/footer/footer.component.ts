@@ -12,10 +12,10 @@ export class FooterComponent {
   currentYear = new Date().getFullYear();
   
   socialLinks = [
-    { name: 'Facebook', icon: 'fab fa-facebook-f', url: '#' },
-    { name: 'Twitter', icon: 'fab fa-twitter', url: '#' },
-    { name: 'Instagram', icon: 'fab fa-instagram', url: '#' },
-    { name: 'LinkedIn', icon: 'fab fa-linkedin-in', url: '#' }
+    { name: 'Facebook', url: '#' },
+    { name: 'Twitter', url: '#' },
+    { name: 'Instagram', url: '#' },
+    { name: 'LinkedIn', url: '#' }
   ];
 
   quickLinks = [

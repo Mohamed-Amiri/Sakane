@@ -8,6 +8,7 @@ import { fadeInUpAnimation } from '../../shared/animations/fade.animation';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { FormFieldComponent } from '../../shared/components/form/form-field.component';
 import { ToastService } from '../../shared/components/toast/toast.service';
+import { MadCurrencyPipe } from '../../shared/pipes/mad-currency.pipe';
 
 interface ReservationStep {
   id: number;
@@ -25,7 +26,8 @@ interface ReservationStep {
     RouterModule,
     ReactiveFormsModule,
     ButtonComponent,
-    FormFieldComponent
+    FormFieldComponent,
+    MadCurrencyPipe
   ],
   animations: [fadeInUpAnimation],
   template: `
@@ -237,7 +239,7 @@ interface ReservationStep {
                   </div>
                   <div class="detail-row">
                     <span>Total payé:</span>
-                    <strong>{{ totalPrice }}€</strong>
+                    <strong>{{ totalPrice | madCurrency }}</strong>
                   </div>
                 </div>
               </div>
@@ -261,21 +263,21 @@ interface ReservationStep {
                 <div class="price-breakdown" *ngIf="currentStep > 1">
                   <h4>Détail des prix</h4>
                   <div class="price-row">
-                    <span>{{ lieu?.prix }}€ × {{ totalNights }} nuits</span>
-                    <span>{{ basePrice }}€</span>
+                    <span>{{ lieu?.prix | madCurrency }} x {{ totalNights }} jours</span>
+                    <span>{{ basePrice | madCurrency }}</span>
                   </div>
                   <div class="price-row">
                     <span>Frais de service</span>
-                    <span>{{ serviceFee }}€</span>
+                    <span>{{ serviceFee | madCurrency }}</span>
                   </div>
                   <div class="price-row">
                     <span>Taxes</span>
-                    <span>{{ taxes }}€</span>
+                    <span>{{ taxes | madCurrency }}</span>
                   </div>
                   <hr>
                   <div class="price-row total">
                     <span>Total</span>
-                    <span>{{ totalPrice }}€</span>
+                    <span>{{ totalPrice | madCurrency }}</span>
                   </div>
                 </div>
 

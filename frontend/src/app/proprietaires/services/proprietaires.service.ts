@@ -4,6 +4,45 @@ import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { map, catchError, retry, delay } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
+/** Shape of a lieu as returned by the backend */
+export interface BackendLieu {
+  id: number;
+  titre: string;
+  description: string;
+  prix: number;
+  adresse: string;
+  type: string;
+  photos: string[];
+  amenities: string[];
+  maxGuests: number;
+  bedrooms: number;
+  bathrooms: number;
+  valide: boolean;
+  owner?: { id: number; nom: string; };
+  ownerId?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+/** Shape of a reservation as returned by the backend (owner view) */
+export interface BackendOwnerReservation {
+  id: number;
+  dateDebut: string;
+  dateFin: string;
+  statut: string;
+  totalPrice: number;
+  guests: number;
+  guestName?: string;
+  guestEmail?: string;
+  guestPhone?: string;
+  specialRequests?: string;
+  ownerMessage?: string;
+  message?: string;
+  createdAt?: string;
+  lieu?: { id: number; titre: string; };
+  locataire?: { id: number; nom: string; email: string; };
+}
+
 export interface Property {
   id?: number;
   title: string;
@@ -36,6 +75,10 @@ export interface BookingRequest {
   status: 'pending' | 'approved' | 'rejected' | 'cancelled';
   message?: string;
   createdAt: Date;
+  guestName?: string;
+  guestEmail?: string;
+  guestPhone?: string;
+  specialRequests?: string;
 }
 
 export interface CalendarEvent {
@@ -43,7 +86,7 @@ export interface CalendarEvent {
   propertyId: number;
   startDate: Date;
   endDate: Date;
-  type: 'booked' | 'blocked' | 'available';
+  type: 'booked' | 'blocked' | 'available' | 'pending';
   title?: string;
   bookingId?: number;
 }
@@ -63,7 +106,6 @@ export class ProprietairesService {
   };
 
   constructor(private http: HttpClient) {
-    console.log('ProprietairesService initialized with API URL:', this.apiUrl);
   }
 
   // Enhanced error handling
@@ -109,11 +151,9 @@ export class ProprietairesService {
 
   // Property Management
   getOwnerProperties(): Observable<Property[]> {
-    console.log('Fetching owner properties from:', `${this.apiUrl}/my`);
-    return this.http.get<any[]>(`${this.apiUrl}/my`, this.httpOptions).pipe(
+    return this.http.get<BackendLieu[]>(`${this.apiUrl}/my`, this.httpOptions).pipe(
       retry(2),
       map(lieuResponses => {
-        console.log('Received lieu responses:', lieuResponses);
         if (!Array.isArray(lieuResponses)) {
           console.warn('Expected array but received:', lieuResponses);
           return [];
@@ -125,11 +165,9 @@ export class ProprietairesService {
   }
 
   getPropertyById(id: number): Observable<Property> {
-    console.log('Fetching property by ID:', id);
-    return this.http.get<any>(`${this.apiUrl}/${id}`, this.httpOptions).pipe(
+    return this.http.get<BackendLieu>(`${this.apiUrl}/${id}`, this.httpOptions).pipe(
       retry(1),
       map(lieu => {
-        console.log('Received lieu for ID', id, ':', lieu);
         return this.transformLieuToProperty(lieu);
       }),
       catchError(this.handleError.bind(this))
@@ -154,11 +192,9 @@ export class ProprietairesService {
       valide: property.isActive !== false // Default to true if not specified
     };
     
-    console.log('Sending property creation request:', lieuRequest);
     
-    return this.http.post<any>(`${this.apiUrl}`, lieuRequest, this.httpOptions).pipe(
+    return this.http.post<BackendLieu>(`${this.apiUrl}`, lieuRequest, this.httpOptions).pipe(
       map(lieu => {
-        console.log('Received property creation response:', lieu);
         const transformedProperty = this.transformLieuToProperty(lieu);
         // Update the properties list
         this.refreshProperties();
@@ -169,7 +205,7 @@ export class ProprietairesService {
   }
 
   updateProperty(id: number, property: Partial<Property>): Observable<Property> {
-    const lieuRequest: any = {};
+    const lieuRequest: Partial<BackendLieu> & { valide?: boolean } = {};
     
     // Only include fields that are provided
     if (property.title !== undefined) lieuRequest.titre = property.title;
@@ -184,11 +220,9 @@ export class ProprietairesService {
     if (property.amenities !== undefined) lieuRequest.amenities = property.amenities;
     if (property.isActive !== undefined) lieuRequest.valide = property.isActive;
     
-    console.log('Sending property update request for ID', id, ':', lieuRequest);
     
-    return this.http.put<any>(`${this.apiUrl}/${id}`, lieuRequest, this.httpOptions).pipe(
+    return this.http.put<BackendLieu>(`${this.apiUrl}/${id}`, lieuRequest, this.httpOptions).pipe(
       map(lieu => {
-        console.log('Received property update response:', lieu);
         const transformedProperty = this.transformLieuToProperty(lieu);
         // Update the properties list
         this.refreshProperties();
@@ -199,10 +233,8 @@ export class ProprietairesService {
   }
 
   deleteProperty(id: number): Observable<void> {
-    console.log('Deleting property with ID:', id);
     return this.http.delete<void>(`${this.apiUrl}/${id}`, this.httpOptions).pipe(
       map(() => {
-        console.log('Property deleted successfully:', id);
         // Update the properties list
         this.refreshProperties();
       }),
@@ -211,16 +243,13 @@ export class ProprietairesService {
   }
 
   uploadPropertyPhotos(propertyId: number, photos: File[]): Observable<string[]> {
-    console.log('Uploading', photos.length, 'photos for property', propertyId);
     const formData = new FormData();
     photos.forEach((photo, index) => {
-      console.log(`Adding photo ${index + 1}:`, photo.name, 'Size:', photo.size);
       formData.append('photos', photo);
     });
     
     return this.http.post<string[]>(`${this.apiUrl}/${propertyId}/photos`, formData).pipe(
       map(urls => {
-        console.log('Photos uploaded successfully:', urls);
         return urls;
       }),
       catchError(this.handleError.bind(this))
@@ -228,22 +257,18 @@ export class ProprietairesService {
   }
 
   deletePropertyPhoto(propertyId: number, url: string): Observable<void> {
-    console.log('Deleting photo for property', propertyId, ':', url);
     return this.http.delete<void>(`${this.apiUrl}/${propertyId}/photos`, {
       params: { url }
     }).pipe(
       map(() => {
-        console.log('Photo deleted successfully');
       }),
       catchError(this.handleError.bind(this))
     );
   }
 
   reorderPropertyPhotos(propertyId: number, orderedUrls: string[]): Observable<void> {
-    console.log('Reordering photos for property', propertyId, ':', orderedUrls);
     return this.http.put<void>(`${this.apiUrl}/${propertyId}/photos/order`, orderedUrls, this.httpOptions).pipe(
       map(() => {
-        console.log('Photos reordered successfully');
       }),
       catchError(this.handleError.bind(this))
     );
@@ -273,7 +298,7 @@ export class ProprietairesService {
     return typeMap[backendType] || 'apartment';
   }
 
-  private transformLieuToProperty(lieu: any): Property {
+  private transformLieuToProperty(lieu: BackendLieu): Property {
     // Enhanced transformation with better error handling and data mapping
     const property: Property = {
       id: lieu.id,
@@ -294,12 +319,11 @@ export class ProprietairesService {
       updatedAt: lieu.updatedAt ? new Date(lieu.updatedAt) : undefined
     };
     
-    console.log('Transformed backend lieu to frontend property:', { lieu, property });
     return property;
   }
 
   // Helper method to safely parse numbers
-  private parseNumber(value: any, defaultValue: number = 0): number {
+  private parseNumber(value: unknown, defaultValue: number = 0): number {
     if (typeof value === 'number' && !isNaN(value)) {
       return value;
     }
@@ -312,8 +336,6 @@ export class ProprietairesService {
 
   // Booking Requests Management
   getBookingRequests(): Observable<BookingRequest[]> {
-    console.log('Fetching booking requests from:', `${environment.apiUrl}/reservations/owner`);
-    console.log('Using headers:', this.httpOptions.headers);
     
     // First check if we have a valid token
     const token = localStorage.getItem('authToken');
@@ -323,26 +345,20 @@ export class ProprietairesService {
     }
     
     // Fetch owner reservations and map to BookingRequest shape expected by UI
-    return this.http.get<any[]>(`${environment.apiUrl}/reservations/owner`, this.httpOptions).pipe(
+    return this.http.get<BackendOwnerReservation[]>(`${environment.apiUrl}/reservations/owner`, this.httpOptions).pipe(
       retry(1),
       map((reservations) => {
-        console.log('Raw API response:', reservations);
-        console.log('Response type:', typeof reservations);
-        console.log('Is array:', Array.isArray(reservations));
         
         if (!Array.isArray(reservations)) {
           console.warn('Expected array but received:', reservations);
           return [];
         }
         
-        const mappedRequests = reservations.map((r: any) => {
-          console.log('Mapping reservation:', r);
+        const mappedRequests = reservations.map((r: BackendOwnerReservation) => {
           const mapped = this.mapReservationToBookingRequest(r);
-          console.log('Mapped to booking request:', mapped);
           return mapped;
         });
         
-        console.log('Final mapped booking requests:', mappedRequests);
         return mappedRequests;
       }),
       catchError((error) => {
@@ -358,8 +374,7 @@ export class ProprietairesService {
   }
 
   // Map backend reservation to frontend BookingRequest
-  private mapReservationToBookingRequest(r: any): BookingRequest {
-    console.log('Mapping reservation data:', r);
+  private mapReservationToBookingRequest(r: BackendOwnerReservation): BookingRequest {
     
     if (!r) {
       console.warn('Null reservation data received');
@@ -378,11 +393,14 @@ export class ProprietairesService {
       guests: this.parseNumber(r.guests, 1),
       totalPrice: this.parseNumber(r.totalPrice, 0),
       status: this.mapBackendStatusToFrontend(r.statut),
-      message: r.message || '',
-      createdAt: r.createdAt ? new Date(r.createdAt) : (r.dateDebut ? new Date(r.dateDebut) : new Date())
+      message: r.ownerMessage || r.message || '',
+      createdAt: r.createdAt ? new Date(r.createdAt) : (r.dateDebut ? new Date(r.dateDebut) : new Date()),
+      guestName: r.guestName,
+      guestEmail: r.guestEmail,
+      guestPhone: r.guestPhone,
+      specialRequests: r.specialRequests
     };
     
-    console.log('Mapped booking request:', mapped);
     return mapped;
   }
 
@@ -409,14 +427,12 @@ export class ProprietairesService {
   respondToBookingRequest(requestId: number, response: 'approved' | 'rejected', message?: string): Observable<BookingRequest> {
     // Map frontend status to backend
     const backendStatus = this.mapFrontendResponseToBackend(response);
-    console.log('Responding to booking request', requestId, 'with status:', backendStatus);
     
-    return this.http.put<any>(`${environment.apiUrl}/reservations/${requestId}/status`, {
+    return this.http.put<BackendOwnerReservation>(`${environment.apiUrl}/reservations/${requestId}/status`, {
       status: backendStatus,
       message
     }, this.httpOptions).pipe(
-      map((r: any) => {
-        console.log('Booking response updated:', r);
+      map((r: BackendOwnerReservation) => {
         return this.mapReservationToBookingRequest(r);
       }),
       catchError(this.handleError.bind(this))
@@ -425,7 +441,6 @@ export class ProprietairesService {
 
   // Calendar Management
   getPropertyCalendar(propertyId: number, startDate: Date, endDate: Date): Observable<CalendarEvent[]> {
-    console.log('Fetching calendar for property', propertyId, 'from', startDate, 'to', endDate);
     return this.http.get<CalendarEvent[]>(`${this.apiUrl}/properties/${propertyId}/calendar`, {
       params: {
         startDate: startDate.toISOString(),
@@ -434,7 +449,6 @@ export class ProprietairesService {
     }).pipe(
       retry(1),
       map(events => {
-        console.log('Received calendar events:', events);
         return Array.isArray(events) ? events : [];
       }),
       catchError(this.handleError.bind(this))
@@ -442,14 +456,12 @@ export class ProprietairesService {
   }
 
   blockDates(propertyId: number, startDate: Date, endDate: Date, title?: string): Observable<CalendarEvent> {
-    console.log('Blocking dates for property', propertyId, 'from', startDate, 'to', endDate);
     return this.http.post<CalendarEvent>(`${this.apiUrl}/properties/${propertyId}/calendar/block`, {
       startDate,
       endDate,
       title
     }, this.httpOptions).pipe(
       map(event => {
-        console.log('Dates blocked successfully:', event);
         return event;
       }),
       catchError(this.handleError.bind(this))
@@ -457,22 +469,18 @@ export class ProprietairesService {
   }
 
   unblockDates(eventId: number): Observable<void> {
-    console.log('Unblocking dates for event', eventId);
     return this.http.delete<void>(`${this.apiUrl}/calendar/events/${eventId}`, this.httpOptions).pipe(
       map(() => {
-        console.log('Dates unblocked successfully');
       }),
       catchError(this.handleError.bind(this))
     );
   }
 
   // Statistics
-  getOwnerStats(): Observable<any> {
-    console.log('Fetching owner statistics');
-    return this.http.get(`${this.apiUrl}/stats`, this.httpOptions).pipe(
+  getOwnerStats(): Observable<Record<string, unknown>> {
+    return this.http.get<Record<string, unknown>>(`${this.apiUrl}/stats`, this.httpOptions).pipe(
       retry(1),
       map(stats => {
-        console.log('Received owner stats:', stats);
         return stats;
       }),
       catchError(this.handleError.bind(this))
@@ -480,10 +488,8 @@ export class ProprietairesService {
   }
 
   refreshProperties(): void {
-    console.log('Refreshing properties list');
     this.getOwnerProperties().subscribe({
       next: (properties) => {
-        console.log('Properties refreshed successfully:', properties.length, 'properties');
         this.propertiesSubject.next(properties);
       },
       error: (error) => {
@@ -495,10 +501,8 @@ export class ProprietairesService {
 
   // Health check method
   checkBackendHealth(): Observable<boolean> {
-    console.log('Checking backend health');
     return this.http.get(`${environment.apiUrl}/health`, this.httpOptions).pipe(
       map(() => {
-        console.log('Backend is healthy');
         return true;
       }),
       catchError((error) => {

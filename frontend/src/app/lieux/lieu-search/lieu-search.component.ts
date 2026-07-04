@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, OnDestroy, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LieuService } from '../lieu.service';
 import { Lieu } from '../lieu.model';
@@ -31,6 +31,7 @@ export class LieuSearchComponent implements OnInit, OnDestroy, AfterViewInit {
   activeCard?: number;
 
   filterForm!: FormGroup;
+  searchText = '';
   maxPrice = 1000;
   allTypes: string[] = [];
   allAmenities: string[] = [];
@@ -51,17 +52,19 @@ export class LieuSearchComponent implements OnInit, OnDestroy, AfterViewInit {
   private carouselTimers: Record<number, any> = {};
   @ViewChild('sentinel', { static:false }) sentinel?: ElementRef<HTMLElement>;
 
-  constructor(private lieuService: LieuService, private fb: FormBuilder, private favs: FavoritesService, private route: ActivatedRoute, private router: Router) {}
+  constructor(
+    private lieuService: LieuService,
+    private fb: FormBuilder,
+    private favs: FavoritesService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
-    // Subscribe to real data from the updated service
-    this.lieuService.getLieux$().subscribe(lieux => {
-      this.locations = lieux;
-      this.filteredLocations = [...this.locations];
-      this.extractFilterOptions();
-      this.applyFilters(); // Reapply current filters
-    });
-
+    // Initialize form FIRST — getLieux$() is a BehaviorSubject that emits
+    // synchronously on subscribe, so applyFilters() would run before the form
+    // exists if we subscribed first.
     this.filterForm = this.fb.group({
       maxPrice: [this.maxPrice],
       types: this.fb.group({}),
@@ -74,10 +77,19 @@ export class LieuSearchComponent implements OnInit, OnDestroy, AfterViewInit {
       this.syncUrl();
     });
 
+    // Subscribe to lieux data (may fire synchronously)
+    this.lieuService.getLieux$().subscribe(lieux => {
+      this.locations = lieux;
+      this.filteredLocations = [...this.locations];
+      this.extractFilterOptions();
+      this.applyFilters();
+    });
+
     // delay initial display to show skeleton
-    setTimeout(()=>{
+    setTimeout(() => {
       this.updateDisplayed();
       this.isLoading = false;
+      this.cdr.markForCheck(); // prevent NG0100 ExpressionChangedAfterChecked
     }, 600);
 
     // init from URL after form created
@@ -139,17 +151,22 @@ export class LieuSearchComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   applyFilters(): void {
+    if (!this.filterForm) { return; } // guard against early calls
     const filters = this.filterForm.value;
     const selectedTypes = Object.keys(filters.types).filter(key => filters.types[key]);
     const selectedAmenities = Object.keys(filters.amenities).filter(key => filters.amenities[key]);
+    const query = this.searchText.trim().toLowerCase();
 
     this.filteredLocations = this.locations.filter(loc => {
       const priceMatch = loc.prix <= filters.maxPrice;
       const ratingMatch = loc.note >= filters.minRating;
       const typeMatch = selectedTypes.length === 0 || selectedTypes.includes(loc.type);
       const amenitiesMatch = selectedAmenities.every(amenity => loc.equipements?.includes(amenity));
+      const searchMatch = !query ||
+        loc.titre?.toLowerCase().includes(query) ||
+        loc.ville?.toLowerCase().includes(query);
 
-      return priceMatch && ratingMatch && typeMatch && amenitiesMatch;
+      return priceMatch && ratingMatch && typeMatch && amenitiesMatch && searchMatch;
     });
 
     this.currentPage = 1;
@@ -174,6 +191,11 @@ export class LieuSearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   toggleFilters(): void {
     this.isFiltersVisible = !this.isFiltersVisible;
+  }
+
+  onSearch(text: string): void {
+    this.searchText = text;
+    this.applyFilters();
   }
 
   setViewMode(mode: 'grid' | 'map'): void {
@@ -241,7 +263,7 @@ export class LieuSearchComponent implements OnInit, OnDestroy, AfterViewInit {
   private initMap(): void {
     if (this.map) { return; }
 
-    this.map = L.map('map').setView([46.2276, 2.2137], 6); // Center on France
+    this.map = L.map('map').setView([31.7917, -7.0926], 6); // Center on Morocco
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -268,7 +290,7 @@ export class LieuSearchComponent implements OnInit, OnDestroy, AfterViewInit {
             <div class="map-popup">
               <h4>${location.titre}</h4>
               <p>${location.ville}</p>
-              <p><strong>${location.prix}€</strong> / nuit</p>
+              <p><strong>${Math.round(location.prix * 10.5)} DH</strong> / jour</p>
               <button onclick="window.location.href='/lieux/${location.id}'">Voir détails</button>
             </div>
           `);

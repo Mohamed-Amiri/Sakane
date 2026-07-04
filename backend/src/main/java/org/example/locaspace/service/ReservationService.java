@@ -58,7 +58,7 @@ public class ReservationService {
             );
             
             if (!conflicts.isEmpty()) {
-                throw new IllegalStateException("Dates not available - conflicting reservation exists");
+                throw new IllegalStateException("Ces dates ne sont plus disponibles");
             }
             
             // Validate dates
@@ -115,7 +115,7 @@ public class ReservationService {
     }
     
     // Update reservation status (owner or admin)
-    public Reservation updateReservationStatus(Long id, ReservationStatus newStatus) {
+    public Reservation updateReservationStatus(Long id, ReservationStatus newStatus, String messageOpt) {
         return reservationRepository.findById(id)
             .map(reservation -> {
                 // Simplified server-side status update; validation can be expanded

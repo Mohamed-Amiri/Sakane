@@ -1,17 +1,21 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ProprietairesService, BookingRequest } from '../services/proprietaires.service';
 import { ToastService } from '../../shared/components/toast/toast.service';
 import { catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { FormsModule } from '@angular/forms';
+import { MadCurrencyPipe } from '../../shared/pipes/mad-currency.pipe';
 
 @Component({
   selector: 'app-booking-requests',
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    FormsModule,
+    MadCurrencyPipe
   ],
   templateUrl: './booking-requests.component.html',
   styleUrls: ['./booking-requests.component.scss']
@@ -22,7 +26,11 @@ export class BookingRequestsComponent implements OnInit {
   approvedRequests: BookingRequest[] = [];
   rejectedRequests: BookingRequest[] = [];
   loading = true;
-  activeTab = 0;
+  activeTab: number = 0;
+
+  // Inline rejection form state
+  showRejectionInput: { [requestId: number]: boolean } = {};
+  rejectionReasons: { [requestId: number]: string } = {};
 
   constructor(
     private proprietairesService: ProprietairesService,
@@ -38,9 +46,12 @@ export class BookingRequestsComponent implements OnInit {
     this.activeTab = index;
   }
 
+  isTab(n: number): boolean {
+    return this.activeTab === n;
+  }
+
   loadBookingRequests(): void {
     this.loading = true;
-    console.log('Loading booking requests...');
     
     this.proprietairesService.getBookingRequests()
       .pipe(
@@ -108,10 +119,22 @@ export class BookingRequestsComponent implements OnInit {
   }
 
   rejectRequest(request: BookingRequest): void {
-    const reason = prompt('Raison du refus (optionnel):');
-    if (reason !== null) {
-      this.respondToRequest(request, 'rejected', reason || 'Aucune raison spécifiée');
-    }
+    this.startRejection(request.id);
+  }
+
+  startRejection(requestId: number): void {
+    this.showRejectionInput[requestId] = true;
+    this.rejectionReasons[requestId] = '';
+  }
+
+  cancelRejection(requestId: number): void {
+    this.showRejectionInput[requestId] = false;
+  }
+
+  confirmRejection(request: BookingRequest): void {
+    const reason = this.rejectionReasons[request.id] || 'Aucune raison spécifiée';
+    this.respondToRequest(request, 'rejected', reason);
+    this.showRejectionInput[request.id] = false;
   }
 
   getStatusText(status: string): string {

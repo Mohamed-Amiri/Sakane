@@ -16,7 +16,7 @@
             <i class="ph ph-map-pin"></i>
             {{place.location}}
           </p>
-          <p class="price">{{place.price}}€ / nuit</p>
+          <p class="price">{{place.price | madCurrency}} / jour</p>
         </div>
       </div>
 
@@ -57,17 +57,17 @@
         <div class="price-breakdown" *ngIf="numberOfNights > 0">
           <h3>Détail du prix</h3>
           <div class="price-line">
-            <span>{{place.price}}€ × {{numberOfNights}} nuit(s)</span>
-            <span>{{place.price * numberOfNights}}€</span>
+            <span>{{place.price | madCurrency}} x {{numberOfNights}} jour(s)</span>
+            <span>{{place.price * numberOfNights | madCurrency}}</span>
           </div>
           <div class="price-line">
             <span>Frais de service</span>
-            <span>0€</span>
+            <span>0 DH</span>
           </div>
           <hr>
           <div class="price-line total">
             <span><strong>Total</strong></span>
-            <span><strong>{{totalPrice}}€</strong></span>
+            <span><strong>{{totalPrice | madCurrency}}</strong></span>
           </div>
         </div>
       </form>

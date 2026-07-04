@@ -1,269 +1,329 @@
-﻿<!-- MODERN PREMIUM PROPERTY CREATION FORM -->
-<div class="modern-container">
-  
-  <!-- Modern Header -->
-  <header class="modern-header">
-    <div class="header-content">
-      <div class="title-section">
-        <div class="icon-container">
-          <i class="ph ph-house"></i>
-        </div>
-        <div class="title-text">
-          <h1>Créer une Propriété</h1>
-          <p>Publiez votre espace en quelques étapes</p>
-        </div>
-      </div>
-      <button class="btn btn-ghost back-btn" routerLink="/proprietaires/manage-properties">
-        <i class="ph ph-arrow-left"></i>
-        Retour
-      </button>
-    </div>
+<!-- PREMIUM LISTING FLOW — Add Property -->
+<div class="listing-flow">
+
+  <!-- Header -->
+  <header class="flow-header">
+    <a class="back-link" routerLink="/proprietaires/manage-properties">
+      <i class="ph ph-arrow-left"></i>
+      <span>Mes propriétés</span>
+    </a>
+    <h1 class="flow-title">Créer une propriété</h1>
   </header>
 
-  <!-- Progress Steps -->
-  <div class="progress-container">
-    <div class="progress-steps">
-      <div class="step" [class.active]="currentStep >= 0" (click)="goToStep(0)">
-        <div class="step-number" *ngIf="currentStep <= 0">1</div>
-        <div class="step-number completed" *ngIf="currentStep > 0"><i class="ph ph-check"></i></div>
-        <span>Informations</span>
-      </div>
-      <div class="step-line" [class.active]="currentStep > 0"></div>
-      
-      <div class="step" [class.active]="currentStep >= 1" (click)="goToStep(1)">
-        <div class="step-number" *ngIf="currentStep <= 1">2</div>
-        <div class="step-number completed" *ngIf="currentStep > 1"><i class="ph ph-check"></i></div>
-        <span>Détails</span>
-      </div>
-      <div class="step-line" [class.active]="currentStep > 1"></div>
-      
-      <div class="step" [class.active]="currentStep >= 2" (click)="goToStep(2)">
-        <div class="step-number" *ngIf="currentStep <= 2">3</div>
-        <div class="step-number completed" *ngIf="currentStep > 2"><i class="ph ph-check"></i></div>
-        <span>Équipements</span>
-      </div>
-      <div class="step-line" [class.active]="currentStep > 2"></div>
-      
-      <div class="step" [class.active]="currentStep >= 3" (click)="goToStep(3)">
-        <div class="step-number" *ngIf="currentStep <= 3">4</div>
-        <div class="step-number completed" *ngIf="currentStep > 3"><i class="ph ph-check"></i></div>
-        <span>Photos</span>
-      </div>
-    </div>
-  </div>
+  <!-- Step Timeline -->
+  <nav class="step-timeline" aria-label="Progression">
+    <div class="timeline-track"></div>
+    <div class="timeline-progress" [style.width.%]="(currentStep / 3) * 100"></div>
 
-  <!-- Modern Form Card -->
-  <div class="form-container">
+    <button type="button" class="tl-step" (click)="goToStep(0)"
+            [class.active]="currentStep === 0" [class.done]="currentStep > 0">
+      <span class="tl-circle">
+        <i class="ph ph-check" *ngIf="currentStep > 0"></i>
+        <span *ngIf="currentStep <= 0">1</span>
+      </span>
+      <span class="tl-label">Informations</span>
+    </button>
 
-    <!-- Form Content -->
-    <div class="form-content">
-      <form [formGroup]="propertyForm" (ngSubmit)="onSubmit($event)" (keydown)="onKeyDown($event)">
-        
-        <!-- Step 1: Basic Information -->
-        <div class="step-section" *ngIf="currentStep === 0" formGroupName="basicInfo">
-          <div class="form-section">
-            <h3>Informations principales</h3>
-            <p class="section-desc">Décrivez votre propriété de manière attractive</p>
-            
-            <div class="form-grid">
-              <!-- Title Field -->
-              <div class="form-field full-width form-group">
-                <label>Titre de l'annonce</label>
-                <div class="input-with-icon">
-                  <input type="text" class="form-control" formControlName="title" placeholder="Ex: Appartement moderne avec vue">
-                  <i class="ph ph-text-aa input-icon"></i>
-                </div>
-                <div class="form-hint">{{ propertyForm.get('basicInfo.title')?.value?.length || 0 }}/100</div>
-                <div class="form-error" *ngIf="propertyForm.get('basicInfo.title')?.touched && propertyForm.get('basicInfo.title')?.hasError('required')">
-                  Le titre est requis
-                </div>
-                <div class="form-error" *ngIf="propertyForm.get('basicInfo.title')?.touched && propertyForm.get('basicInfo.title')?.hasError('minlength')">
-                  {{ validationMessages.basicInfo.title.minlength }}
-                </div>
-              </div>
+    <button type="button" class="tl-step" (click)="goToStep(1)"
+            [class.active]="currentStep === 1" [class.done]="currentStep > 1">
+      <span class="tl-circle">
+        <i class="ph ph-check" *ngIf="currentStep > 1"></i>
+        <span *ngIf="currentStep <= 1">2</span>
+      </span>
+      <span class="tl-label">Détails</span>
+    </button>
 
-              <!-- Description Field -->
-              <div class="form-field full-width form-group">
-                <label>Description</label>
-                <div class="input-with-icon">
-                  <textarea class="form-control" formControlName="description" rows="4" placeholder="Décrivez votre espace..."></textarea>
-                  <i class="ph ph-align-left input-icon textarea-icon"></i>
-                </div>
-                <div class="form-hint">{{ propertyForm.get('basicInfo.description')?.value?.length || 0 }}/1000</div>
-                <div class="form-error" *ngIf="propertyForm.get('basicInfo.description')?.touched && propertyForm.get('basicInfo.description')?.hasError('required')">
-                  La description est requise
-                </div>
-                <div class="form-error" *ngIf="propertyForm.get('basicInfo.description')?.touched && propertyForm.get('basicInfo.description')?.hasError('minlength')">
-                  {{ validationMessages.basicInfo.description.minlength }}
-                </div>
-              </div>
+    <button type="button" class="tl-step" (click)="goToStep(2)"
+            [class.active]="currentStep === 2" [class.done]="currentStep > 2">
+      <span class="tl-circle">
+        <i class="ph ph-check" *ngIf="currentStep > 2"></i>
+        <span *ngIf="currentStep <= 2">3</span>
+      </span>
+      <span class="tl-label">Équipements</span>
+    </button>
 
-              <!-- Property Type and Location -->
-              <div class="form-field half-width form-group">
-                <label>Type de propriété</label>
-                <div class="input-with-icon">
-                  <select class="form-control" formControlName="propertyType">
-                    <option value="" disabled selected>Sélectionnez un type</option>
-                    <option *ngFor="let type of propertyTypes" [value]="type.value">
-                      {{ type.label }}
-                    </option>
-                  </select>
-                  <i class="ph ph-house input-icon"></i>
-                </div>
-                <div class="form-error" *ngIf="propertyForm.get('basicInfo.propertyType')?.touched && propertyForm.get('basicInfo.propertyType')?.hasError('required')">
-                  Le type de propriété est requis
-                </div>
-              </div>
+    <button type="button" class="tl-step" (click)="goToStep(3)"
+            [class.active]="currentStep === 3" [class.done]="currentStep > 3">
+      <span class="tl-circle">
+        <i class="ph ph-check" *ngIf="currentStep > 3"></i>
+        <span *ngIf="currentStep <= 3">4</span>
+      </span>
+      <span class="tl-label">Photos</span>
+    </button>
+  </nav>
 
-              <div class="form-field half-width form-group">
-                <label>Localisation</label>
-                <div class="input-with-icon">
-                  <input type="text" class="form-control" formControlName="location" placeholder="Ex: Paris 15ème">
-                  <i class="ph ph-map-pin input-icon"></i>
-                </div>
-                <div class="form-error" *ngIf="propertyForm.get('basicInfo.location')?.touched && propertyForm.get('basicInfo.location')?.hasError('required')">
-                  La localisation est requise
-                </div>
-                <div class="form-error" *ngIf="propertyForm.get('basicInfo.location')?.touched && propertyForm.get('basicInfo.location')?.hasError('minlength')">
-                  {{ validationMessages.basicInfo.location.minlength }}
-                </div>
-              </div>
+  <!-- Form -->
+  <form [formGroup]="propertyForm" (ngSubmit)="onSubmit($event)" (keydown)="onKeyDown($event)" class="flow-form">
+
+    <!-- STEP 1 — Informations de base -->
+    <section class="step-pane" *ngIf="currentStep === 0" formGroupName="basicInfo">
+      <div class="pane-grid">
+        <!-- Editorial intro -->
+        <aside class="pane-intro">
+          <span class="eyebrow"><span class="gold-dot"></span>Étape 1</span>
+          <h2 class="intro-title">Décrivez votre espace</h2>
+          <p class="intro-sub">Les premières informations que verront vos locataires.</p>
+        </aside>
+
+        <!-- Fields -->
+        <div class="pane-fields">
+          <div class="field">
+            <label>Titre de l'annonce</label>
+            <input type="text" class="line-input" formControlName="title"
+                   placeholder="Ex : Villa contemporaine avec piscine">
+            <div class="field-foot">
+              <span class="hint">{{ propertyForm.get('basicInfo.title')?.value?.length || 0 }}/100</span>
+              <span class="err" *ngIf="propertyForm.get('basicInfo.title')?.touched && propertyForm.get('basicInfo.title')?.hasError('required')">Le titre est requis</span>
+              <span class="err" *ngIf="propertyForm.get('basicInfo.title')?.touched && propertyForm.get('basicInfo.title')?.hasError('minlength')">{{ validationMessages.basicInfo.title.minlength }}</span>
             </div>
           </div>
 
-          <div class="step-actions right-align">
-            <button class="btn btn-primary" type="button" (click)="goToStep(1)">
-              Continuer
-              <i class="ph ph-arrow-right ml-2"></i>
-            </button>
+          <div class="field">
+            <label>Description</label>
+            <textarea class="line-input" formControlName="description" rows="4"
+                      placeholder="Décrivez l'ambiance, les volumes, le quartier…"></textarea>
+            <div class="field-foot">
+              <span class="hint">{{ propertyForm.get('basicInfo.description')?.value?.length || 0 }}/1000</span>
+              <span class="err" *ngIf="propertyForm.get('basicInfo.description')?.touched && propertyForm.get('basicInfo.description')?.hasError('required')">La description est requise</span>
+              <span class="err" *ngIf="propertyForm.get('basicInfo.description')?.touched && propertyForm.get('basicInfo.description')?.hasError('minlength')">{{ validationMessages.basicInfo.description.minlength }}</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Type de propriété</label>
+            <div class="chip-row">
+              <button type="button" class="type-chip"
+                      [class.active]="propertyForm.get('basicInfo.propertyType')?.value === 'villa'"
+                      (click)="propertyForm.get('basicInfo.propertyType')?.setValue('villa')">
+                <i class="ph ph-house"></i><span>Villa</span>
+              </button>
+              <button type="button" class="type-chip"
+                      [class.active]="propertyForm.get('basicInfo.propertyType')?.value === 'apartment'"
+                      (click)="propertyForm.get('basicInfo.propertyType')?.setValue('apartment')">
+                <i class="ph ph-buildings"></i><span>Appartement</span>
+              </button>
+              <button type="button" class="type-chip"
+                      [class.active]="propertyForm.get('basicInfo.propertyType')?.value === 'house'"
+                      (click)="propertyForm.get('basicInfo.propertyType')?.setValue('house')">
+                <i class="ph ph-house-line"></i><span>Maison</span>
+              </button>
+              <button type="button" class="type-chip"
+                      [class.active]="propertyForm.get('basicInfo.propertyType')?.value === 'studio'"
+                      (click)="propertyForm.get('basicInfo.propertyType')?.setValue('studio')">
+                <i class="ph ph-door"></i><span>Studio</span>
+              </button>
+              <button type="button" class="type-chip"
+                      [class.active]="propertyForm.get('basicInfo.propertyType')?.value === 'loft'"
+                      (click)="propertyForm.get('basicInfo.propertyType')?.setValue('loft')">
+                <i class="ph ph-warehouse"></i><span>Loft</span>
+              </button>
+              <button type="button" class="type-chip"
+                      [class.active]="propertyForm.get('basicInfo.propertyType')?.value === 'chalet'"
+                      (click)="propertyForm.get('basicInfo.propertyType')?.setValue('chalet')">
+                <i class="ph ph-mountains"></i><span>Chalet</span>
+              </button>
+            </div>
+            <div class="field-foot">
+              <span class="err" *ngIf="propertyForm.get('basicInfo.propertyType')?.touched && propertyForm.get('basicInfo.propertyType')?.hasError('required')">Le type de propriété est requis</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Localisation</label>
+            <input type="text" class="line-input" formControlName="location"
+                   placeholder="Ex : Quartier Gauthier, Casablanca">
+            <div class="field-foot">
+              <span class="err" *ngIf="propertyForm.get('basicInfo.location')?.touched && propertyForm.get('basicInfo.location')?.hasError('required')">La localisation est requise</span>
+              <span class="err" *ngIf="propertyForm.get('basicInfo.location')?.touched && propertyForm.get('basicInfo.location')?.hasError('minlength')">{{ validationMessages.basicInfo.location.minlength }}</span>
+            </div>
+            <div class="map-placeholder">
+              <i class="ph ph-map-pin"></i>
+              <span>Aperçu de la carte</span>
+            </div>
           </div>
         </div>
+      </div>
 
-        <!-- Step 2: Details -->
-        <div class="step-section" *ngIf="currentStep === 1" formGroupName="details">
-          <div class="form-section">
-            <h3>Caractéristiques</h3>
-            <p class="section-desc">Précisez les détails de votre propriété</p>
-            
-            <div class="form-grid details-grid">
-              <div class="form-field form-group">
-                <label>Invités max</label>
-                <div class="input-with-icon">
-                  <input class="form-control" type="number" formControlName="maxGuests" min="1">
-                  <i class="ph ph-users-three input-icon"></i>
-                </div>
-                <div class="form-error" *ngIf="propertyForm.get('details.maxGuests')?.touched && propertyForm.get('details.maxGuests')?.hasError('required')">Requis</div>
+      <div class="step-nav end">
+        <button class="btn-gold" type="button" (click)="goToStep(1)">
+          Suivant <i class="ph ph-arrow-right"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- STEP 2 — Détails -->
+    <section class="step-pane" *ngIf="currentStep === 1" formGroupName="details">
+      <div class="pane-grid">
+        <aside class="pane-intro">
+          <span class="eyebrow"><span class="gold-dot"></span>Étape 2</span>
+          <h2 class="intro-title">Capacité &amp; tarif</h2>
+          <p class="intro-sub">Indiquez la capacité réelle et le prix de votre logement.</p>
+        </aside>
+
+        <div class="pane-fields">
+          <div class="counter-stack">
+            <!-- Guests -->
+            <div class="counter-row">
+              <div class="counter-meta">
+                <i class="ph ph-users-three"></i>
+                <span>Voyageurs</span>
               </div>
-
-              <div class="form-field form-group">
-                <label>Chambres</label>
-                <div class="input-with-icon">
-                  <input class="form-control" type="number" formControlName="bedrooms" min="0">
-                  <i class="ph ph-bed input-icon"></i>
-                </div>
-                <div class="form-error" *ngIf="propertyForm.get('details.bedrooms')?.touched && propertyForm.get('details.bedrooms')?.hasError('required')">Requis</div>
-              </div>
-
-              <div class="form-field form-group">
-                <label>Salles de bain</label>
-                <div class="input-with-icon">
-                  <input class="form-control" type="number" formControlName="bathrooms" min="1">
-                  <i class="ph ph-bathtub input-icon"></i>
-                </div>
-                <div class="form-error" *ngIf="propertyForm.get('details.bathrooms')?.touched && propertyForm.get('details.bathrooms')?.hasError('required')">Requis</div>
-              </div>
-
-              <div class="form-field form-group">
-                <label>Prix par nuit (€)</label>
-                <div class="input-with-icon">
-                  <input class="form-control" type="number" formControlName="price" min="10">
-                  <i class="ph ph-currency-eur input-icon"></i>
-                </div>
-                <div class="form-error" *ngIf="propertyForm.get('details.price')?.touched && propertyForm.get('details.price')?.hasError('required')">Requis</div>
+              <div class="counter">
+                <button type="button" class="cnt-btn"
+                        [disabled]="(propertyForm.get('details.maxGuests')?.value || 0) <= 1"
+                        (click)="propertyForm.get('details.maxGuests')?.setValue((propertyForm.get('details.maxGuests')?.value || 0) - 1)">
+                  <i class="ph ph-minus"></i>
+                </button>
+                <input class="cnt-value" type="number" formControlName="maxGuests" min="1" readonly>
+                <button type="button" class="cnt-btn"
+                        (click)="propertyForm.get('details.maxGuests')?.setValue((propertyForm.get('details.maxGuests')?.value || 0) + 1)">
+                  <i class="ph ph-plus"></i>
+                </button>
               </div>
             </div>
-          </div>
 
-          <div class="step-actions split-align">
-            <button class="btn btn-outline" type="button" (click)="goToStep(0)">
-              <i class="ph ph-arrow-left mr-2"></i>
-              Précédent
-            </button>
-            <button class="btn btn-primary" type="button" (click)="goToStep(2)">
-              Continuer
-              <i class="ph ph-arrow-right ml-2"></i>
-            </button>
-          </div>
-        </div>
-
-        <!-- Step 3: Amenities -->
-        <div class="step-section" *ngIf="currentStep === 2">
-          <div class="form-section">
-            <h3>Équipements disponibles</h3>
-            <p class="section-desc">Sélectionnez les équipements de votre propriété</p>
-            
-            <div class="amenities-grid custom-checkbox-grid">
-              <label class="custom-checkbox-wrapper" *ngFor="let amenity of availableAmenities">
-                <input type="checkbox"
-                       [checked]="isAmenitySelected(amenity)"
-                       (change)="onAmenityChange(amenity, $any($event.target).checked)">
-                <span class="checkmark"></span>
-                <span class="checkbox-label">{{ amenity }}</span>
-              </label>
-            </div>
-          </div>
-
-          <div class="step-actions split-align">
-            <button class="btn btn-outline" type="button" (click)="goToStep(1)">
-              <i class="ph ph-arrow-left mr-2"></i>
-              Précédent
-            </button>
-            <button class="btn btn-primary" type="button" (click)="goToStep(3)">
-              Continuer
-              <i class="ph ph-arrow-right ml-2"></i>
-            </button>
-          </div>
-        </div>
-
-        <!-- Step 4: Photos -->
-        <div class="step-section" *ngIf="currentStep === 3">
-          <div class="form-section">
-            <h3>Photos de votre propriété</h3>
-            <p class="section-desc">Ajoutez des photos attractives (max 10 photos, 5MB chacune)</p>
-            
-            <div class="upload-area" (click)="fileInput.click()">
-              <i class="ph ph-cloud-arrow-up upload-icon"></i>
-              <h4>Glissez vos photos ici</h4>
-              <p>ou cliquez pour sélectionner</p>
-              <input #fileInput type="file" multiple accept="image/*" (change)="onFilesSelected($event)" hidden>
+            <!-- Bedrooms -->
+            <div class="counter-row">
+              <div class="counter-meta">
+                <i class="ph ph-bed"></i>
+                <span>Chambres</span>
+              </div>
+              <div class="counter">
+                <button type="button" class="cnt-btn"
+                        [disabled]="(propertyForm.get('details.bedrooms')?.value || 0) <= 0"
+                        (click)="propertyForm.get('details.bedrooms')?.setValue((propertyForm.get('details.bedrooms')?.value || 0) - 1)">
+                  <i class="ph ph-minus"></i>
+                </button>
+                <input class="cnt-value" type="number" formControlName="bedrooms" min="0" readonly>
+                <button type="button" class="cnt-btn"
+                        (click)="propertyForm.get('details.bedrooms')?.setValue((propertyForm.get('details.bedrooms')?.value || 0) + 1)">
+                  <i class="ph ph-plus"></i>
+                </button>
+              </div>
             </div>
 
-            <div *ngIf="previewUrls.length > 0" class="photos-preview">
-              <div *ngFor="let url of previewUrls; let i = index" class="photo-item">
-                <img [src]="url" [alt]="'Photo ' + (i + 1)">
-                <button class="btn-mini btn-mini-danger remove-photo" (click)="removePhoto(i)">
-                  <i class="ph ph-x"></i>
+            <!-- Bathrooms -->
+            <div class="counter-row">
+              <div class="counter-meta">
+                <i class="ph ph-bathtub"></i>
+                <span>Salles de bain</span>
+              </div>
+              <div class="counter">
+                <button type="button" class="cnt-btn"
+                        [disabled]="(propertyForm.get('details.bathrooms')?.value || 0) <= 1"
+                        (click)="propertyForm.get('details.bathrooms')?.setValue((propertyForm.get('details.bathrooms')?.value || 0) - 1)">
+                  <i class="ph ph-minus"></i>
+                </button>
+                <input class="cnt-value" type="number" formControlName="bathrooms" min="1" readonly>
+                <button type="button" class="cnt-btn"
+                        (click)="propertyForm.get('details.bathrooms')?.setValue((propertyForm.get('details.bathrooms')?.value || 0) + 1)">
+                  <i class="ph ph-plus"></i>
                 </button>
               </div>
             </div>
           </div>
 
-          <div class="step-actions split-align">
-            <button class="btn btn-outline" type="button" (click)="goToStep(2)">
-              <i class="ph ph-arrow-left mr-2"></i>
-              Précédent
-            </button>
-            <button class="btn btn-primary" type="submit" [disabled]="loading || previewUrls.length === 0">
-              <div class="spinner" *ngIf="loading"></div>
-              <i class="ph ph-rocket-launch" *ngIf="!loading"></i>
-              {{ loading ? ' Création...' : ' Créer ma propriété' }}
+          <!-- Price -->
+          <div class="price-block">
+            <label>Prix par jour</label>
+            <div class="price-input">
+              <input type="number" formControlName="price" min="10" placeholder="0">
+              <span class="price-unit">DH / jour</span>
+            </div>
+            <div class="field-foot center">
+              <span class="err" *ngIf="propertyForm.get('details.price')?.touched && propertyForm.get('details.price')?.hasError('required')">Le prix est requis</span>
+              <span class="err" *ngIf="propertyForm.get('details.price')?.touched && propertyForm.get('details.price')?.hasError('min')">Le prix minimum est de 10 DH</span>
+              <span class="err" *ngIf="propertyForm.get('details.price')?.touched && propertyForm.get('details.price')?.hasError('max')">Le prix maximum est de 10 000 DH</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-nav split">
+        <button class="btn-outline" type="button" (click)="goToStep(0)">
+          <i class="ph ph-arrow-left"></i> Précédent
+        </button>
+        <button class="btn-gold" type="button" (click)="goToStep(2)">
+          Suivant <i class="ph ph-arrow-right"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- STEP 3 — Équipements -->
+    <section class="step-pane" *ngIf="currentStep === 2">
+      <div class="pane-grid">
+        <aside class="pane-intro">
+          <span class="eyebrow"><span class="gold-dot"></span>Étape 3</span>
+          <h2 class="intro-title">Équipements</h2>
+          <p class="intro-sub">Sélectionnez tout ce que propose votre logement.</p>
+        </aside>
+
+        <div class="pane-fields">
+          <div class="amenity-grid">
+            <button type="button" class="amenity-chip" *ngFor="let amenity of availableAmenities"
+                    [class.active]="isAmenitySelected(amenity)"
+                    (click)="toggleAmenity(amenity)">
+              <i class="ph" [ngClass]="isAmenitySelected(amenity) ? 'ph-check-circle' : 'ph-plus-circle'"></i>
+              <span>{{ amenity }}</span>
             </button>
           </div>
         </div>
+      </div>
 
-      </form>
-    </div>
+      <div class="step-nav split">
+        <button class="btn-outline" type="button" (click)="goToStep(1)">
+          <i class="ph ph-arrow-left"></i> Précédent
+        </button>
+        <button class="btn-gold" type="button" (click)="goToStep(3)">
+          Suivant <i class="ph ph-arrow-right"></i>
+        </button>
+      </div>
+    </section>
 
-  </div>
+    <!-- STEP 4 — Photos -->
+    <section class="step-pane" *ngIf="currentStep === 3">
+      <div class="pane-grid">
+        <aside class="pane-intro">
+          <span class="eyebrow"><span class="gold-dot"></span>Étape 4</span>
+          <h2 class="intro-title">Photos</h2>
+          <p class="intro-sub">Des visuels lumineux valorisent votre annonce (max 10, 5 Mo).</p>
+        </aside>
 
+        <div class="pane-fields">
+          <div class="dropzone" (click)="fileInput.click()"
+               (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)"
+               [class.dragover]="isDragOver">
+            <i class="ph ph-camera"></i>
+            <h4>Glissez vos photos ici</h4>
+            <p>ou cliquez pour parcourir vos fichiers</p>
+            <input #fileInput type="file" multiple accept="image/*" (change)="onFilesSelected($event)" hidden>
+          </div>
+
+          <div *ngIf="previewUrls.length > 0" class="photo-grid">
+            <div *ngFor="let url of previewUrls; let i = index" class="photo-tile">
+              <img [src]="url" [alt]="'Photo ' + (i + 1)">
+              <div class="photo-overlay">
+                <button type="button" class="photo-del" (click)="removePhoto(i)">
+                  <i class="ph ph-trash"></i>
+                </button>
+              </div>
+              <span class="photo-index" *ngIf="i === 0">Couverture</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-nav split">
+        <button class="btn-outline" type="button" (click)="goToStep(2)">
+          <i class="ph ph-arrow-left"></i> Précédent
+        </button>
+        <button class="btn-gold" type="submit" [disabled]="loading || previewUrls.length === 0">
+          <span class="spinner" *ngIf="loading"></span>
+          <i class="ph ph-check-circle" *ngIf="!loading"></i>
+          {{ loading ? 'Publication…' : 'Publier' }}
+        </button>
+      </div>
+    </section>
+
+  </form>
 </div>

@@ -1,10 +1,11 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { LieuService } from '../lieu.service';
 import { MapComponent } from '../../shared/map/map.component';
 import { SkeletonLoaderComponent } from '../../shared/skeleton-loader/skeleton-loader.component';
+import { MadCurrencyPipe } from '../../shared/pipes/mad-currency.pipe';
 
 interface Lieu {
   id: number;
@@ -20,7 +21,7 @@ interface Lieu {
 @Component({
   selector: 'app-lieu-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, MapComponent, SkeletonLoaderComponent],
+  imports: [CommonModule, RouterModule, FormsModule, MapComponent, SkeletonLoaderComponent, MadCurrencyPipe],
   templateUrl: './lieu-list.component.html',
   styleUrls: ['./lieu-list.component.scss']
 })

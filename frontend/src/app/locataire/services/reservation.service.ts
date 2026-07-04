@@ -5,6 +5,38 @@ import { map, catchError } from 'rxjs/operators';
 import { Booking, Place } from './locataires.service';
 import { environment } from '../../../environments/environment';
 
+/** Shape of a reservation as returned by the backend */
+export interface BackendReservation {
+  id: number;
+  dateDebut: string;
+  dateFin: string;
+  statut: string;
+  totalPrice: number;
+  guests: number;
+  guestName: string;
+  guestEmail: string;
+  guestPhone: string;
+  specialRequests: string;
+  paymentMethod: string;
+  ownerMessage?: string;
+  message?: string;
+  createdAt?: string;
+  lieu?: {
+    id: number;
+    titre: string;
+    description: string;
+    prix: number;
+    adresse: string;
+    photos: string[];
+    amenities: string[];
+    averageRating: number;
+    valide: boolean;
+    type: string;
+    city: string;
+  };
+  locataire?: { id: number; nom: string; email: string; };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -27,19 +59,27 @@ export class ReservationService {
   // Method to clear reviews for testing (call from browser console)
   clearAllReviews(): void {
     localStorage.removeItem('user_reviews');
-    console.log('All reviews cleared');
   }
 
   // Map backend -> frontend booking shape
-  private mapReservationToBooking(r: any): Booking {
+  private mapReservationToBooking(r: BackendReservation): Booking {
     return {
       id: r.id,
-      placeId: r.lieu?.id,
-      userId: r.locataire?.id,
+      placeId: r.lieu?.id || 0,
+      userId: r.locataire?.id || 0,
       startDate: new Date(r.dateDebut),
       endDate: new Date(r.dateFin),
       totalPrice: r.totalPrice || 0,
       status: this.mapBackendStatusToFrontend(r.statut),
+      guests: r.guests || 1,
+      guestInfo: {
+        name: r.guestName || '',
+        email: r.guestEmail || '',
+        phone: r.guestPhone || '',
+        specialRequests: r.specialRequests || ''
+      },
+      paymentMethod: r.paymentMethod || 'onsite',
+      ownerMessage: r.ownerMessage || r.message || '',
       place: r.lieu ? {
         id: r.lieu.id,
         title: r.lieu.titre,
@@ -50,7 +90,9 @@ export class ReservationService {
         amenities: r.lieu.amenities || [],
         rating: r.lieu.averageRating || 0,
         reviews: [],
-        availability: r.lieu.valide
+        availability: r.lieu.valide,
+        type: r.lieu.type || '',
+        city: r.lieu.city || ''
       } : undefined
     };
   }
@@ -102,17 +144,20 @@ export class ReservationService {
       throw new Error('La date de départ doit être antérieure à la date de fin');
     }
 
-    // Only send fields that backend expects
+    // Only send fields that backend expects in Sprint 2
     const payload = {
       placeId: bookingData.place.id,
       startDate: bookingData.startDate.toISOString().split('T')[0], // Send as YYYY-MM-DD format
-      endDate: bookingData.endDate.toISOString().split('T')[0]     // Send as YYYY-MM-DD format
-      // Note: guests and totalPrice are not used by backend according to ReservationController
+      endDate: bookingData.endDate.toISOString().split('T')[0],     // Send as YYYY-MM-DD format
+      guests: bookingData.guests,
+      totalPrice: bookingData.totalPrice,
+      guestName: bookingData.guestInfo?.name || '',
+      guestEmail: bookingData.guestInfo?.email || '',
+      guestPhone: bookingData.guestInfo?.phone || '',
+      specialRequests: bookingData.guestInfo?.specialRequests || ''
     };
-    console.log('Creating reservation with payload:', payload);
-    console.log('Auth headers:', this.getAuthHeaders());
     
-    return this.http.post<any>(`${this.apiUrl}`, payload, {
+    return this.http.post<BackendReservation>(`${this.apiUrl}`, payload, {
       headers: this.getAuthHeaders()
     }).pipe(
       map(r => this.mapReservationToBooking(r)),
@@ -140,7 +185,7 @@ export class ReservationService {
   }
 
   getUserBookings(): Observable<Booking[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/my`, {
+    return this.http.get<BackendReservation[]>(`${this.apiUrl}/my`, {
       headers: this.getAuthHeaders()
     }).pipe(
       map(list => list.map(r => this.mapReservationToBooking(r))),

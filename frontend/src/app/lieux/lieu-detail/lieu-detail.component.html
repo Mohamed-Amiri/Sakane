@@ -42,16 +42,16 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="0.5">
           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
         </svg>
-        <span class="rating">{{ averageRating | number:'1.1-1' }}</span>
-        <span class="separator">·</span>
-        <a href="#reviews" class="reviews-link">{{ lieu.reviews.length }} avis</a>
+        <span class="rating" *ngIf="lieu.reviews.length">{{ averageRating | number:'1.1-1' }}</span>
+        <span class="separator" *ngIf="lieu.reviews.length">·</span>
+        <a href="#reviews" class="reviews-link">{{ lieu.reviews.length ? lieu.reviews.length + ' avis' : 'Aucun avis pour le moment' }}</a>
       </div>
       <div class="location-info">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
           <circle cx="12" cy="10" r="3"></circle>
         </svg>
-        <span>{{ lieu.ville }}, France</span>
+        <span>{{ lieu.ville }}</span>
       </div>
     </div>
   </header>
@@ -59,23 +59,31 @@
   <!-- Modern Photo Gallery -->
   <div class="photo-gallery">
     <div class="gallery-grid">
-      <div class="main-image" (click)="openLightbox(0)">
-        <img [src]="lieu.photos[0]" [alt]="'Image principale de ' + lieu.titre" loading="lazy">
-        <div class="image-overlay">
+      <div class="main-image" (click)="lieu.photos.length ? openLightbox(0) : null">
+        <img *ngIf="lieu.photos.length" [src]="lieu.photos[0]" [alt]="'Image principale de ' + lieu.titre" loading="lazy" (error)="onImgError($event)">
+        <div class="img-placeholder" *ngIf="!lieu.photos.length">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+          <span>Photo bientôt disponible</span>
+        </div>
+        <div class="image-overlay" *ngIf="lieu.photos.length">
           <div class="image-badge">Image principale</div>
         </div>
       </div>
-      
-      <div class="thumbnail-grid">
-        <div *ngFor="let photo of lieu.photos.slice(1, 5); let i = index" 
-             class="thumbnail" 
-             (click)="openLightbox(i + 1)" 
+
+      <div class="thumbnail-grid" *ngIf="lieu.photos.length > 1">
+        <div *ngFor="let photo of lieu.photos.slice(1, 5); let i = index"
+             class="thumbnail"
+             (click)="openLightbox(i + 1)"
              [class.active]="photo === selectedImage">
-          <img [src]="photo" [alt]="'Image de ' + lieu.titre" loading="lazy">
+          <img [src]="photo" [alt]="'Image de ' + lieu.titre" loading="lazy" (error)="onImgError($event)">
           <div class="image-overlay"></div>
         </div>
       </div>
-      
+
       <button class="view-all-photos" (click)="openLightbox(0)" *ngIf="lieu.photos.length > 5">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
@@ -113,46 +121,6 @@
             </div>
           </div>
         </div>
-        
-        <div class="key-features">
-          <div class="feature">
-            <div class="feature-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
-            </div>
-            <div class="feature-text">
-              <h4>Hôte expérimenté</h4>
-              <p>{{ lieu.host.name }} a accueilli {{ lieu.host.guestCount }}+ voyageurs</p>
-            </div>
-          </div>
-          
-          <div class="feature">
-            <div class="feature-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-              </svg>
-            </div>
-            <div class="feature-text">
-              <h4>Arrivée autonome</h4>
-              <p>Accès facile avec code sécurisé</p>
-            </div>
-          </div>
-          
-          <div class="feature">
-            <div class="feature-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              </svg>
-            </div>
-            <div class="feature-text">
-              <h4>Emplacement idéal</h4>
-              <p>95% des voyageurs ont attribué 5 étoiles à l'emplacement</p>
-            </div>
-          </div>
-        </div>
       </section>
       
       <div class="content-divider"></div>
@@ -172,10 +140,10 @@
         </div>
       </section>
       
-      <div class="content-divider"></div>
-      
+      <div class="content-divider" *ngIf="displayedAmenities.length"></div>
+
       <!-- Amenities Section -->
-      <section class="amenities-section">
+      <section class="amenities-section" *ngIf="displayedAmenities.length">
         <div class="section-header">
           <h3>Ce que propose ce lieu</h3>
         </div>
@@ -227,7 +195,7 @@
       <section class="location-section">
         <div class="section-header">
           <h3>Emplacement</h3>
-          <p>{{ lieu.ville }}, France</p>
+          <p>{{ lieu.ville }}</p>
         </div>
         
         <div class="map-container" #mapContainer></div>
@@ -251,23 +219,13 @@
           </div>
         </div>
         
-        <div class="rating-categories" *ngIf="ratingCategories">
-          <div class="rating-category" *ngFor="let category of ratingCategories">
-            <span class="category-name">{{ category.name }}</span>
-            <div class="rating-bar-container">
-              <div class="rating-bar" [style.width.%]="category.score * 20"></div>
-            </div>
-            <span class="category-score">{{ category.score }}</span>
-          </div>
-        </div>
-        
         <div class="reviews-grid">
           <div class="review-card" *ngFor="let review of displayedReviews">
             <div class="review-header">
               <img [src]="review.avatar" [alt]="'Avatar de ' + review.user" class="avatar">
               <div class="review-user-info">
                 <h4>{{ review.user }}</h4>
-                <p class="review-date">{{ review.date | date:'MMMM yyyy' }}</p>
+                <p class="review-date" *ngIf="review.date">{{ review.date | date:'MMMM yyyy' }}</p>
               </div>
             </div>
             
@@ -300,14 +258,14 @@
             <img [src]="lieu.host.avatar" [alt]="'Avatar de ' + lieu.host.name" class="host-avatar-large">
             <div class="host-profile-info">
               <h4>{{ lieu.host.name }}</h4>
-              <p class="host-since">Membre depuis {{ lieu.host.memberSince || 'janvier 2020' }}</p>
-              
+              <p class="host-since" *ngIf="lieu.host.memberSince">Membre depuis {{ lieu.host.memberSince }}</p>
+
               <div class="host-stats-badges">
-                <div class="host-stat">
+                <div class="host-stat" *ngIf="lieu.host.reviewCount">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="0.5">
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                   </svg>
-                  <span>{{ lieu.host.rating || '4.9' }} ({{ lieu.host.reviewCount || '124' }} avis)</span>
+                  <span>{{ lieu.host.rating | number:'1.1-1' }} ({{ lieu.host.reviewCount }} avis)</span>
                 </div>
                 
                 <div class="host-stat" *ngIf="lieu.host.isIdentityVerified">
@@ -346,11 +304,11 @@
       <div class="booking-card">
         <div class="booking-card-header">
           <div class="price-container">
-            <span class="price-amount">{{ lieu.prix | currency:'EUR':'symbol':'1.0-0' }}</span>
-            <span class="price-period">/ nuit</span>
+            <span class="price-amount">{{ lieu.prix | madCurrency }}</span>
+            <span class="price-period">/ jour</span>
           </div>
           
-          <div class="booking-rating">
+          <div class="booking-rating" *ngIf="lieu.reviews.length">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="0.5">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
             </svg>
@@ -469,20 +427,20 @@
         
         <div class="price-breakdown" *ngIf="totalNights > 0">
           <div class="price-item">
-            <span>{{ lieu.prix | currency:'EUR' }} x {{ totalNights }} nuits</span>
-            <span>{{ (lieu.prix * totalNights) | currency:'EUR' }}</span>
+            <span>{{ lieu.prix | madCurrency }} x {{ totalNights }} jours</span>
+            <span>{{ (lieu.prix * totalNights) | madCurrency }}</span>
           </div>
           <div class="price-item">
             <span>Frais de service</span>
-            <span>{{ (totalPrice * 0.1) | currency:'EUR' }}</span>
+            <span>{{ (totalPrice * 0.1) | madCurrency }}</span>
           </div>
           <div class="price-item">
             <span>Taxes</span>
-            <span>{{ (totalPrice * 0.05) | currency:'EUR' }}</span>
+            <span>{{ (totalPrice * 0.05) | madCurrency }}</span>
           </div>
           <div class="price-total">
             <span>Total</span>
-            <span>{{ (totalPrice * 1.15) | currency:'EUR' }}</span>
+            <span>{{ (totalPrice * 1.15) | madCurrency }}</span>
           </div>
         </div>
       </div>

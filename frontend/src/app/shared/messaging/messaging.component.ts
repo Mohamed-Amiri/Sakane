@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+﻿import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -903,7 +903,6 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   toggleConversationMenu() {
     // Implementation for conversation menu (block, report, etc.)
-    console.log('Toggle conversation menu');
   }
 
   private scrollToBottom() {

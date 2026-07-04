@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.example.locaspace.dto.lieu.CalendarBlockRequest;
 import org.example.locaspace.dto.lieu.LieuRequest;
 import org.example.locaspace.dto.lieu.LieuResponse;
+import org.example.locaspace.dto.lieu.AvailabilityResponse;
 import org.example.locaspace.exception.BadRequestException;
 import org.example.locaspace.exception.ResourceNotFoundException;
 import org.example.locaspace.exception.UnauthorizedException;
@@ -188,6 +189,16 @@ public class LieuController {
 
         LieuResponse response = entityMapper.toLieuResponse(lieu);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}/availability")
+    public ResponseEntity<AvailabilityResponse> getAvailability(
+            @PathVariable Long id,
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate) {
+        java.time.LocalDate start = java.time.LocalDate.parse(startDate.substring(0, 10));
+        java.time.LocalDate end = java.time.LocalDate.parse(endDate.substring(0, 10));
+        return ResponseEntity.ok(lieuService.getAvailability(id, start, end));
     }
 
     @PutMapping("/{id}")

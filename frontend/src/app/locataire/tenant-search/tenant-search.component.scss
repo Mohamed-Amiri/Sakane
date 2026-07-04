@@ -1,300 +1,264 @@
 @use '../../../styles/variables' as *;
 
+$navy:   #0A2540;
+$navy-2: #0F3460;
+$gold:   #C9A84C;
+$gold-2: #E8C46A;
+$cream:  #FAF7F0;
+$sand:   #F0E9D6;
+$ink:    #2C3E50;
+$muted:  #6B7C93;
+$line:   rgba(10, 37, 64, 0.10);
+
+:host { display: block; background: $cream; min-height: 100vh; }
+
 .search-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
   font-family: $font-body;
+  color: $ink;
+  padding-bottom: 4rem;
 }
 
-// ─── Header Section ───
-.page-header {
+// ─── Navy banner ───
+.browse-banner {
+  background: linear-gradient(155deg, $navy 0%, $navy-2 100%);
+  color: $cream;
+  padding: 3.5rem 2rem 5rem;
+  position: relative;
+  overflow: hidden;
   text-align: center;
-  margin-bottom: 3rem;
 
-  .page-title {
-    font-size: 2.5rem;
-    font-weight: 800;
-    color: $neutral-900;
-    margin-bottom: 0.5rem;
-    letter-spacing: -0.02em;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(201,168,76,0.05) 0 1px, transparent 1px 22px),
+      repeating-linear-gradient(-45deg, rgba(201,168,76,0.05) 0 1px, transparent 1px 22px);
+    pointer-events: none;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    right: -90px; top: -60px;
+    width: 300px; height: 300px;
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 50% 50% 0 50%;
+    pointer-events: none;
   }
 
-  .page-subtitle {
-    font-size: 1.125rem;
-    color: $neutral-500;
-    margin-bottom: 2rem;
+  .banner-inner { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+    color: $gold; margin-bottom: 1rem;
+    .eb-dot { width: 7px; height: 7px; border-radius: 50%; background: $gold; }
   }
 
-  .search-bar {
-    max-width: 600px;
-    margin: 0 auto;
-    display: flex;
-    gap: 0.5rem;
-    background: white;
-    padding: 0.5rem;
-    border-radius: $border-radius-full;
-    box-shadow: $shadow-md;
-    border: 1px solid $neutral-200;
+  h1 {
+    font-family: $font-display;
+    font-size: clamp(2.25rem, 5vw, 3.25rem);
+    font-weight: 600; line-height: 1.08; letter-spacing: -0.01em;
+    color: #fff; margin: 0 0 0.75rem;
+  }
 
-    .search-input-wrapper {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      padding: 0 1rem;
-      gap: 0.5rem;
+  p { font-size: 1.05rem; color: rgba(245,239,224,0.72); margin: 0 0 2rem; }
+}
 
-      .search-icon {
-        color: $neutral-400;
-      }
+// ─── Search bar (floats over banner edge) ───
+.search-bar {
+  display: flex;
+  gap: 0.4rem;
+  background: #fff;
+  padding: 0.45rem;
+  border-radius: $radius-pill;
+  box-shadow: 0 12px 40px rgba(10, 37, 64, 0.25);
+  max-width: 760px;
+  margin: 0 auto;
 
-      .search-input {
-        width: 100%;
-        border: none;
-        background: transparent;
-        font-size: 1rem;
-        outline: none;
-
-        &::placeholder {
-          color: $neutral-400;
-        }
-      }
+  .search-input-wrapper {
+    flex: 1; display: flex; align-items: center; gap: 0.6rem; padding: 0 1rem;
+    .search-icon { color: $gold; font-size: 1.25rem; }
+    .search-input {
+      width: 100%; border: none; outline: none; background: transparent;
+      font-family: $font-body; font-size: 1rem; color: $navy;
+      &::placeholder { color: rgba(10,37,64,0.4); }
     }
+  }
 
-    .btn-primary {
-      padding: 0.75rem 1.5rem;
-      border-radius: $border-radius-full;
+  .search-city-select {
+    border: none;
+    border-left: 1px solid $line;
+    background: transparent;
+    font-family: $font-body; font-size: 0.95rem; font-weight: 500; color: $navy;
+    padding: 0 1rem;
+    outline: none;
+    cursor: pointer;
+    max-width: 180px;
+    &:focus { color: $gold; }
+  }
+
+  .btn-search {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: $navy; color: #fff; border: none;
+    padding: 0.8rem 1.6rem; border-radius: $radius-pill;
+    font-family: $font-body; font-size: 0.92rem; font-weight: 600; cursor: pointer;
+    transition: background 200ms ease;
+    i { font-size: 1.05rem; }
+    &:hover { background: $gold; color: $navy; }
+  }
+}
+
+// ─── Body layout ───
+.browse-body {
+  max-width: 1200px;
+  margin: -2.5rem auto 0;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 2rem;
+  align-items: start;
+  position: relative;
+  z-index: 2;
+}
+
+// ─── Filter sidebar ───
+.filter-sidebar {
+  background: #fff;
+  border: 1px solid $line;
+  border-radius: $radius-lg;
+  box-shadow: 0 2px 16px rgba(10, 37, 64, 0.07);
+  padding: 1.5rem;
+  position: sticky;
+  top: 88px;
+
+  .sidebar-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.25rem;
+    h3 { font-family: $font-display; font-size: 1.4rem; font-weight: 600; color: $navy; margin: 0; }
+    .reset-btn {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      background: none; border: none; cursor: pointer;
+      font-family: $font-body; font-size: 0.78rem; font-weight: 600; color: $muted;
+      transition: color 200ms ease;
+      i { font-size: 0.9rem; }
+      &:hover { color: $gold; }
+    }
+  }
+
+  .group-divider { height: 1px; background: $line; margin: 1.4rem 0; }
+
+  .filter-group {
+    h4 {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: $navy; margin: 0 0 0.9rem;
+    }
+  }
+
+  // Budget
+  .price-display {
+    font-family: $font-body;
+    font-size: 1.5rem; font-weight: 700; color: $navy; margin-bottom: 0.85rem;
+    font-variant-numeric: normal;
+    span { font-size: 0.85rem; font-weight: 500; color: $muted; margin-left: 2px; }
+  }
+
+  // ── Custom navy/gold slider (replaces native blue) ──
+  .brand-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 50px;
+    background: $sand;
+    outline: none;
+    cursor: pointer;
+
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: $gold;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(10, 37, 64, 0.25);
+      transition: transform 150ms ease;
+    }
+    &::-webkit-slider-thumb:hover { transform: scale(1.15); }
+
+    &::-moz-range-thumb {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: $gold; border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(10, 37, 64, 0.25);
+    }
+    &::-moz-range-track { height: 4px; border-radius: 50px; background: $sand; }
+  }
+
+  // Rating
+  .rating-filter { display: flex; gap: 0.4rem; }
+  .rating-btn {
+    flex: 1;
+    display: inline-flex; flex-direction: column; align-items: center; gap: 0.15rem;
+    padding: 0.5rem 0; border: 1px solid $line; border-radius: $radius-md;
+    background: #fff; color: $muted; cursor: pointer;
+    transition: all 200ms ease;
+    i { font-size: 0.85rem; color: rgba(201,168,76,0.5); }
+    span { font-size: 0.85rem; font-weight: 600; }
+    &:hover { border-color: $gold; }
+    &.active {
+      background: $navy; border-color: $navy; color: #fff;
+      i { color: $gold; }
+    }
+  }
+
+  // Chips
+  .chip-grid { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .filter-chip {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.45rem 0.85rem;
+    border: 1px solid $line; border-radius: $radius-pill;
+    background: #fff; color: $ink;
+    font-family: $font-body; font-size: 0.82rem; font-weight: 500;
+    cursor: pointer; transition: all 200ms ease;
+    i { font-size: 0.95rem; }
+    &:hover { border-color: $gold; color: $navy; }
+    &.active {
+      background: $navy; border-color: $navy; color: $cream;
     }
   }
 }
 
-// ─── Filters Section ───
-.filters-section {
-  background: white;
-  border-radius: $border-radius-xl;
-  padding: 2rem;
-  box-shadow: $shadow-sm;
-  border: 1px solid $neutral-200;
-  margin-bottom: 2rem;
-
-  .filters-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-
-    h3 {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: $neutral-900;
-      margin: 0;
-    }
-  }
-
-  .filters-form {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-
-    .filter-card {
-      .filter-header h4 {
-        font-size: 1rem;
-        font-weight: 600;
-        color: $neutral-800;
-        margin-bottom: 1rem;
-      }
-
-      // Price filter
-      .price-filter {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-
-        .price-input {
-          position: relative;
-          flex: 1;
-
-          .currency {
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            color: $neutral-500;
-          }
-
-          .price-slider {
-            width: 100%;
-            margin-left: 1rem;
-          }
-        }
-
-        .price-display {
-          font-weight: 600;
-          color: $primary-color;
-          background: $primary-color-light;
-          padding: 0.25rem 0.5rem;
-          border-radius: $border-radius-md;
-        }
-      }
-
-      // Rating filter
-      .rating-filter {
-        display: flex;
-        gap: 0.5rem;
-
-        .rating-btn {
-          width: 40px;
-          height: 40px;
-          border-radius: $border-radius-md;
-          border: 1px solid $neutral-200;
-          background: white;
-          color: $neutral-600;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.25rem;
-          cursor: pointer;
-          transition: all 0.2s ease;
-
-          &:hover {
-            border-color: $primary-color;
-            color: $primary-color;
-          }
-
-          &.active {
-            background: $primary-color;
-            border-color: $primary-color;
-            color: white;
-          }
-        }
-      }
-
-      // Amenities grid
-      .amenities-grid {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-
-        .amenity-btn {
-          padding: 0.5rem 1rem;
-          border-radius: $border-radius-full;
-          border: 1px solid $neutral-200;
-          background: white;
-          color: $neutral-600;
-          font-size: 0.875rem;
-          cursor: pointer;
-          transition: all 0.2s ease;
-
-          &:hover {
-            border-color: $primary-color;
-            color: $primary-color;
-          }
-
-          &.active {
-            background: $primary-color;
-            border-color: $primary-color;
-            color: white;
-          }
-        }
-      }
-    }
-  }
-}
-
-// ─── Results Section ───
+// ─── Results ───
 .results-section {
   .results-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 1.5rem;
 
     .results-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: $neutral-900;
-      margin: 0;
-    }
-
-    .view-toggle {
-      display: flex;
-      gap: 0.5rem;
-      background: $neutral-100;
-      padding: 0.25rem;
-      border-radius: $border-radius-md;
-
-      .view-btn {
-        padding: 0.5rem 0.75rem;
-        border-radius: $border-radius-sm;
-        color: $neutral-500;
-        transition: all 0.2s;
-
-        &:hover {
-          color: $neutral-900;
-        }
-
-        &.active {
-          background: white;
-          color: $primary-color;
-          box-shadow: $shadow-sm;
-        }
-      }
+      font-family: $font-display; font-size: 1.65rem; font-weight: 600; color: $navy; margin: 0;
+      .results-sub { color: $muted; font-weight: 500; }
     }
   }
 
   .places-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-bottom: 3rem;
-  }
-
-  .load-more-btn {
-    display: block;
-    margin: 0 auto;
-    padding: 0.75rem 2rem;
-    background: white;
-    border: 1px solid $neutral-300;
-    border-radius: $border-radius-full;
-    font-weight: 600;
-    color: $neutral-700;
-    cursor: pointer;
-    transition: all 0.2s ease;
-
-    &:hover {
-      border-color: $primary-color;
-      color: $primary-color;
-    }
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
   }
 }
 
-// Buttons
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.2s ease;
+// ─── Responsive ───
+@media (max-width: 900px) {
+  .browse-body { grid-template-columns: 1fr; }
+  .filter-sidebar { position: static; }
+}
 
-  &.btn-primary {
-    background: $primary-color;
-    color: white;
-
-    &:hover {
-      background: $primary-color-hover;
-    }
-  }
-
-  &.btn-ghost {
-    background: transparent;
-    color: $neutral-600;
-
-    &:hover {
-      color: $neutral-900;
-      background: $neutral-100;
-    }
+@media (max-width: 560px) {
+  .browse-banner { padding: 2.5rem 1.25rem 4.5rem; }
+  .browse-body { padding: 0 1.25rem; }
+  .search-bar {
+    flex-direction: column; border-radius: $radius-lg;
+    .search-city-select { border-left: none; border-top: 1px solid $line; max-width: 100%; padding: 0.6rem 1rem; }
+    .btn-search { justify-content: center; }
   }
 }

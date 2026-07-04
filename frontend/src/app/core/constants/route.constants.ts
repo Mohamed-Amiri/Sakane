@@ -78,47 +78,47 @@ export const ROUTE_PATHS = {
  * Page titles for routes (used in meta tags)
  */
 export const ROUTE_TITLES = {
-  [ROUTE_PATHS.HOME]: 'Accueil | LocaSpace',
-  [ROUTE_PATHS.ABOUT]: 'À propos | LocaSpace',
-  [ROUTE_PATHS.CONTACT]: 'Contact | LocaSpace',
-  [ROUTE_PATHS.TERMS]: 'Conditions d\'utilisation | LocaSpace',
-  [ROUTE_PATHS.PRIVACY]: 'Politique de confidentialité | LocaSpace',
-  [ROUTE_PATHS.FAQ]: 'FAQ | LocaSpace',
+  [ROUTE_PATHS.HOME]: 'Accueil | Sakane',
+  [ROUTE_PATHS.ABOUT]: 'À propos | Sakane',
+  [ROUTE_PATHS.CONTACT]: 'Contact | Sakane',
+  [ROUTE_PATHS.TERMS]: 'Conditions d\'utilisation | Sakane',
+  [ROUTE_PATHS.PRIVACY]: 'Politique de confidentialité | Sakane',
+  [ROUTE_PATHS.FAQ]: 'FAQ | Sakane',
 
-  [ROUTE_PATHS.AUTH.LOGIN]: 'Connexion | LocaSpace',
-  [ROUTE_PATHS.AUTH.REGISTER]: 'Inscription | LocaSpace',
-  [ROUTE_PATHS.AUTH.FORGOT_PASSWORD]: 'Mot de passe oublié | LocaSpace',
-  [ROUTE_PATHS.AUTH.RESET_PASSWORD]: 'Réinitialisation du mot de passe | LocaSpace',
-  [ROUTE_PATHS.AUTH.VERIFY_EMAIL]: 'Vérification de l\'email | LocaSpace',
+  [ROUTE_PATHS.AUTH.LOGIN]: 'Connexion | Sakane',
+  [ROUTE_PATHS.AUTH.REGISTER]: 'Inscription | Sakane',
+  [ROUTE_PATHS.AUTH.FORGOT_PASSWORD]: 'Mot de passe oublié | Sakane',
+  [ROUTE_PATHS.AUTH.RESET_PASSWORD]: 'Réinitialisation du mot de passe | Sakane',
+  [ROUTE_PATHS.AUTH.VERIFY_EMAIL]: 'Vérification de l\'email | Sakane',
 
-  [ROUTE_PATHS.USER.PROFILE]: 'Profil | LocaSpace',
-  [ROUTE_PATHS.USER.SETTINGS]: 'Paramètres | LocaSpace',
-  [ROUTE_PATHS.USER.NOTIFICATIONS]: 'Notifications | LocaSpace',
-  [ROUTE_PATHS.USER.MESSAGES]: 'Messages | LocaSpace',
-  [ROUTE_PATHS.USER.FAVORITES]: 'Favoris | LocaSpace',
+  [ROUTE_PATHS.USER.PROFILE]: 'Profil | Sakane',
+  [ROUTE_PATHS.USER.SETTINGS]: 'Paramètres | Sakane',
+  [ROUTE_PATHS.USER.NOTIFICATIONS]: 'Notifications | Sakane',
+  [ROUTE_PATHS.USER.MESSAGES]: 'Messages | Sakane',
+  [ROUTE_PATHS.USER.FAVORITES]: 'Favoris | Sakane',
 
-  [ROUTE_PATHS.PLACE.SEARCH]: 'Recherche | LocaSpace',
-  [ROUTE_PATHS.PLACE.CREATE]: 'Créer une annonce | LocaSpace',
-  [ROUTE_PATHS.PLACE.EDIT]: 'Modifier l\'annonce | LocaSpace',
+  [ROUTE_PATHS.PLACE.SEARCH]: 'Recherche | Sakane',
+  [ROUTE_PATHS.PLACE.CREATE]: 'Créer une annonce | Sakane',
+  [ROUTE_PATHS.PLACE.EDIT]: 'Modifier l\'annonce | Sakane',
 
-  [ROUTE_PATHS.BOOKING.LIST]: 'Mes réservations | LocaSpace',
-  [ROUTE_PATHS.BOOKING.CREATE]: 'Nouvelle réservation | LocaSpace',
-  [ROUTE_PATHS.BOOKING.CONFIRMATION]: 'Confirmation de réservation | LocaSpace',
+  [ROUTE_PATHS.BOOKING.LIST]: 'Mes réservations | Sakane',
+  [ROUTE_PATHS.BOOKING.CREATE]: 'Nouvelle réservation | Sakane',
+  [ROUTE_PATHS.BOOKING.CONFIRMATION]: 'Confirmation de réservation | Sakane',
 
-  [ROUTE_PATHS.OWNER.DASHBOARD]: 'Tableau de bord propriétaire | LocaSpace',
-  [ROUTE_PATHS.OWNER.PLACES]: 'Mes annonces | LocaSpace',
-  [ROUTE_PATHS.OWNER.BOOKINGS]: 'Réservations reçues | LocaSpace',
-  [ROUTE_PATHS.OWNER.EARNINGS]: 'Mes revenus | LocaSpace',
-  [ROUTE_PATHS.OWNER.ANALYTICS]: 'Analyses | LocaSpace',
+  [ROUTE_PATHS.OWNER.DASHBOARD]: 'Tableau de bord propriétaire | Sakane',
+  [ROUTE_PATHS.OWNER.PLACES]: 'Mes annonces | Sakane',
+  [ROUTE_PATHS.OWNER.BOOKINGS]: 'Réservations reçues | Sakane',
+  [ROUTE_PATHS.OWNER.EARNINGS]: 'Mes revenus | Sakane',
+  [ROUTE_PATHS.OWNER.ANALYTICS]: 'Analyses | Sakane',
 
-  [ROUTE_PATHS.ADMIN.DASHBOARD]: 'Tableau de bord admin | LocaSpace',
-  [ROUTE_PATHS.ADMIN.USERS]: 'Gestion des utilisateurs | LocaSpace',
-  [ROUTE_PATHS.ADMIN.VALIDATION]: 'Validation des lieux | LocaSpace',
-  [ROUTE_PATHS.ADMIN.STATISTICS]: 'Statistiques | LocaSpace',
+  [ROUTE_PATHS.ADMIN.DASHBOARD]: 'Tableau de bord admin | Sakane',
+  [ROUTE_PATHS.ADMIN.USERS]: 'Gestion des utilisateurs | Sakane',
+  [ROUTE_PATHS.ADMIN.VALIDATION]: 'Validation des lieux | Sakane',
+  [ROUTE_PATHS.ADMIN.STATISTICS]: 'Statistiques | Sakane',
 
-  [ROUTE_PATHS.ERROR.NOT_FOUND]: 'Page non trouvée | LocaSpace',
-  [ROUTE_PATHS.ERROR.FORBIDDEN]: 'Accès refusé | LocaSpace',
-  [ROUTE_PATHS.ERROR.SERVER_ERROR]: 'Erreur serveur | LocaSpace'
+  [ROUTE_PATHS.ERROR.NOT_FOUND]: 'Page non trouvée | Sakane',
+  [ROUTE_PATHS.ERROR.FORBIDDEN]: 'Accès refusé | Sakane',
+  [ROUTE_PATHS.ERROR.SERVER_ERROR]: 'Erreur serveur | Sakane'
 };
 
 /**
@@ -171,7 +171,7 @@ export const RouteUtils = {
    * @param path Route path
    * @param defaultTitle Default title if path not found
    */
-  getTitle: (path: string, defaultTitle = 'LocaSpace'): string => {
+  getTitle: (path: string, defaultTitle = 'Sakane'): string => {
     return ROUTE_TITLES[path] || defaultTitle;
   }
 };

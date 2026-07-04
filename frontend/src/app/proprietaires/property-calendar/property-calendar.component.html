@@ -1,4 +1,4 @@
-﻿<!-- EMERGENCY SIMPLE CALENDAR -->
+<!-- EMERGENCY SIMPLE CALENDAR -->
 <div style="min-height: 100vh; background: white; padding: 20px; font-family: Arial, sans-serif;">
   
   <!-- ALWAYS VISIBLE HEADER -->
@@ -57,13 +57,13 @@
       <!-- Calendar days -->
       <div *ngFor="let day of calendarDays" 
            style="background: white; padding: 15px 8px; text-align: center; border-radius: 6px; cursor: pointer; min-height: 50px; display: flex; flex-direction: column; justify-content: center; transition: all 0.2s;"
-           [style.background-color]="day.status === 'booked' ? '#28a745' : day.status === 'blocked' ? '#dc3545' : 'white'"
-           [style.color]="day.status === 'booked' || day.status === 'blocked' ? 'white' : '#333'"
+           [style.background-color]="day.status === 'booked' ? '#28a745' : day.status === 'blocked' ? '#dc3545' : day.status === 'pending' ? '#ffc107' : 'white'"
+           [style.color]="day.status === 'booked' || day.status === 'blocked' || day.status === 'pending' ? 'white' : '#333'"
            [style.opacity]="day.isCurrentMonth ? '1' : '0.3'"
            (click)="toggleDaySelection(day)"
            title="{{ day.date | date:'fullDate' }} - Status: {{ day.status }}">
         <div style="font-weight: bold; font-size: 1.1rem;">{{ day.day }}</div>
-        <div *ngIf="day.price && day.isCurrentMonth" style="font-size: 0.75rem; margin-top: 2px;">€{{ day.price }}</div>
+        <div *ngIf="day.price && day.isCurrentMonth" style="font-size: 0.75rem; margin-top: 2px;">{{ day.price | madCurrency }}</div>
       </div>
     </div>
   </div>
@@ -81,13 +81,18 @@
       <div style="color: #666;">Booked Days</div>
     </div>
     <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+      <div style="font-size: 2rem; color: #ffc107; margin-bottom: 10px;">🟡</div>
+      <div style="font-size: 1.5rem; font-weight: bold; color: #333; margin-bottom: 5px;">{{ getPendingDaysCount() }}</div>
+      <div style="color: #666;">Pending Days</div>
+    </div>
+    <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
       <div style="font-size: 2rem; color: #dc3545; margin-bottom: 10px;">🔴</div>
       <div style="font-size: 1.5rem; font-weight: bold; color: #333; margin-bottom: 5px;">{{ getBlockedDaysCount() }}</div>
       <div style="color: #666;">Blocked Days</div>
     </div>
     <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
       <div style="font-size: 2rem; color: #0A2540; margin-bottom: 10px;">💰</div>
-      <div style="font-size: 1.5rem; font-weight: bold; color: #333; margin-bottom: 5px;">€{{ getAveragePrice() }}</div>
+      <div style="font-size: 1.5rem; font-weight: bold; color: #333; margin-bottom: 5px;">{{ getAveragePrice() | madCurrency }}</div>
       <div style="color: #666;">Average Price</div>
     </div>
   </div>

@@ -2,14 +2,17 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Place } from '../services/locataires.service';
+import { LocatairesService, Place } from '../services/locataires.service';
 import { ReservationService } from '../services/reservation.service';
 import { AuthService } from '../../auth/auth.service';
+import { AvailabilityService } from '../services/availability.service';
+import { ToastService } from '../../shared/components/toast/toast.service';
+import { MadCurrencyPipe } from '../../shared/pipes/mad-currency.pipe';
 
 @Component({
     selector: 'app-booking-confirm',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, MadCurrencyPipe],
     templateUrl: './booking-confirm.component.html',
     styleUrls: ['./booking-confirm.component.scss']
 })
@@ -24,53 +27,66 @@ export class BookingConfirmComponent implements OnInit {
     guestEmail = '';
     guestPhone = '';
     specialRequests = '';
+    phoneError = '';
 
-    // Payment information (optional)
-    paymentMethod = 'card';
-    cardNumber = '';
-    expiryDate = '';
-    cvv = '';
+    // Payment method is always on-site
+    readonly paymentMethod = 'onsite';
 
     loading = false;
     isProcessing = false;
-    currentStep = 1; // 1: Guest Info, 2: Payment (optional), 3: Confirmation
+    currentStep = 1; // 1: Guest Info, 3: Confirmation (Payment step 2 removed)
     bookingNumber = ''; // Store booking number to avoid ExpressionChangedAfterItHasBeenCheckedError
 
     constructor(
         private route: ActivatedRoute,
         public router: Router, // Make router public for template access
         private reservationService: ReservationService,
+        private locatairesService: LocatairesService,
         private cdr: ChangeDetectorRef,
-        private authService: AuthService
+        private authService: AuthService,
+        private availabilityService: AvailabilityService,
+        private toastService: ToastService
     ) { }
 
     ngOnInit(): void {
         // Initialize booking number once to avoid ExpressionChangedAfterItHasBeenCheckedError
         this.bookingNumber = '#' + Date.now().toString().slice(-6);
+
+        // Prepopulate guest info if logged in
+        if (this.authService.currentUser) {
+            const u = this.authService.currentUser;
+            this.guestName = [u.firstName, u.lastName].filter(Boolean).join(' ');
+            this.guestEmail = u.email || '';
+        }
         
-        // Get booking data from query params
-        this.route.queryParams.subscribe(params => {
-            if (params['placeData']) {
-                try {
-                    const bookingData = JSON.parse(decodeURIComponent(params['placeData']));
-                    this.place = bookingData.place;
-                    this.checkInDate = bookingData.checkInDate;
-                    this.checkOutDate = bookingData.checkOutDate;
-                    this.guests = bookingData.guests;
-                    
-                    // Debug authentication status
-                    console.log('Component initialized - Auth status:', {
-                        isAuthenticated: this.authService.isAuthenticated,
-                        currentUser: this.authService.currentUser,
-                        tokenExists: !!localStorage.getItem('authToken') || !!sessionStorage.getItem('authToken')
-                    });
-                } catch (error) {
-                    console.error('Error parsing booking data:', error);
-                    this.router.navigate(['/locataire/search']);
-                }
+        // Get booking data from route param and query params
+        this.route.params.subscribe(params => {
+            const placeId = Number(params['id']);
+            if (placeId) {
+                this.loading = true;
+                this.locatairesService.getPlaceById(placeId).subscribe({
+                    next: (place) => {
+                        this.place = place;
+                        this.loading = false;
+                        
+                        // Debug authentication status
+                        this.cdr.detectChanges();
+                    },
+                    error: (error) => {
+                        console.error('Error loading place details:', error);
+                        this.loading = false;
+                        this.router.navigate(['/locataire/search']);
+                    }
+                });
             } else {
                 this.router.navigate(['/locataire/search']);
             }
+        });
+
+        this.route.queryParams.subscribe(params => {
+            this.checkInDate = params['checkIn'] || '';
+            this.checkOutDate = params['checkOut'] || '';
+            this.guests = Number(params['guests']) || 1;
         });
     }
 
@@ -84,7 +100,7 @@ export class BookingConfirmComponent implements OnInit {
         today.setHours(0,0,0,0);
         if (startDate <= today) {
             this.isProcessing = false;
-            alert('La date d\'arrivée doit être postérieure à aujourd\'hui');
+            this.toastService.error('La date d\'arrivée doit être postérieure à aujourd\'hui');
             return 0;
         }
         const timeDiff = endDate.getTime() - startDate.getTime();
@@ -93,12 +109,7 @@ export class BookingConfirmComponent implements OnInit {
 
     calculateTotalPrice(): number {
         if (!this.place) return 0;
-
-        const nights = this.calculateNights();
-        const subtotal = this.place.price * nights;
-        const serviceFee = 15;
-        const taxes = Math.round(subtotal * 0.1); // 10% taxes
-        return subtotal + serviceFee + taxes;
+        return this.place.price * this.calculateNights();
     }
 
     get subtotal(): number {
@@ -107,29 +118,23 @@ export class BookingConfirmComponent implements OnInit {
     }
 
     get serviceFee(): number {
-        return 15;
+        return 0;
     }
 
     get taxes(): number {
-        return Math.round(this.subtotal * 0.1); // 10% taxes
+        return 0;
     }
 
     nextStep(): void {
-        if (this.currentStep === 1) {
-            if (!this.guestName || !this.guestEmail) {
-                alert('Veuillez remplir les informations obligatoires');
-                return;
-            }
-            this.currentStep = 2;
-        } else if (this.currentStep === 2) {
-            this.confirmBooking();
+        if (!this.guestName || !this.guestEmail) {
+            this.toastService.error('Veuillez remplir les informations obligatoires');
+            return;
         }
+        this.confirmBooking();
     }
 
     previousStep(): void {
-        if (this.currentStep > 1) {
-            this.currentStep--;
-        }
+        this.router.navigate(['/locataire/search']);
     }
 
     skipPayment(): void {
@@ -141,8 +146,7 @@ export class BookingConfirmComponent implements OnInit {
 
         // Check authentication status with detailed logging
         if (!this.checkAuthenticationStatus()) {
-            console.log('Authentication failed - redirecting to login');
-            alert('Vous devez être connecté pour effectuer une réservation. Veuillez vous reconnecter.');
+            this.toastService.error('Vous devez être connecté pour effectuer une réservation. Veuillez vous reconnecter.');
             this.router.navigate(['/auth/login'], {
                 queryParams: { returnUrl: this.router.url }
             });
@@ -158,7 +162,7 @@ export class BookingConfirmComponent implements OnInit {
         // Additional validation for dates
         if (startDate >= endDate) {
             this.isProcessing = false;
-            alert('La date de départ doit être postérieure à la date d\'arrivée');
+            this.toastService.error('La date de départ doit être postérieure à la date d\'arrivée');
             return;
         }
 
@@ -166,20 +170,44 @@ export class BookingConfirmComponent implements OnInit {
         today.setHours(0,0,0,0);
         if (startDate <= today) {
             this.isProcessing = false;
-            alert('La date d\'arrivée doit être postérieure à aujourd\'hui');
+            this.toastService.error('La date d\'arrivée doit être postérieure à aujourd\'hui');
             return;
         }
 
-        console.log('Creating booking with dates:', {
-            startDate: startDate.toISOString(),
-            endDate: endDate.toISOString(),
-            place: this.place.id,
-            guests: this.guests,
-            totalPrice
-        });
 
+        // Verify availability before submission
+        this.availabilityService.getAvailability(this.place.id, startDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0]).subscribe({
+            next: (res) => {
+                const unavailableDates = res.unavailableDates || [];
+                let current = new Date(startDate);
+                let hasConflict = false;
+                while (current < endDate) {
+                    if (unavailableDates.includes(current.toISOString().split('T')[0])) {
+                        hasConflict = true;
+                        break;
+                    }
+                    current.setDate(current.getDate() + 1);
+                }
+
+                if (hasConflict) {
+                    this.isProcessing = false;
+                    this.toastService.error('Ces dates ne sont plus disponibles');
+                    this.router.navigate(['/locataire/place', this.place!.id]);
+                    return;
+                }
+
+                this.executeBooking(startDate, endDate, totalPrice);
+            },
+            error: (err) => {
+                this.isProcessing = false;
+                this.toastService.error('Erreur lors de la vérification des disponibilités');
+            }
+        });
+    }
+
+    private executeBooking(startDate: Date, endDate: Date, totalPrice: number): void {
         this.reservationService.createBooking({
-            place: this.place,
+            place: this.place!,
             startDate,
             endDate,
             guests: this.guests,
@@ -194,7 +222,6 @@ export class BookingConfirmComponent implements OnInit {
         }).subscribe({
             next: (booking) => {
                 this.isProcessing = false;
-                console.log('Booking created successfully:', booking);
                 // Defer step change to next tick to avoid NG0100
                 setTimeout(() => {
                     this.currentStep = 3;
@@ -212,20 +239,20 @@ export class BookingConfirmComponent implements OnInit {
                 
                 // More specific error handling
                 if (error.status === 401) {
-                    alert('Votre session a expiré. Veuillez vous reconnecter.');
+                    this.toastService.error('Votre session a expiré. Veuillez vous reconnecter.');
                     this.router.navigate(['/auth/login'], {
                         queryParams: { returnUrl: this.router.url }
                     });
                 } else if (error.status === 400) {
                     const errorMsg = error.error?.message || error.message || 'Données invalides';
-                    alert(`Erreur de validation: ${errorMsg}. Vérifiez les dates et les informations saisies.`);
+                    this.toastService.error(`Erreur de validation: ${errorMsg}. Vérifiez les dates et les informations saisies.`);
                 } else if (error.status === 409) {
-                    alert('Ces dates ne sont pas disponibles. Veuillez choisir d\'autres dates.');
+                    this.toastService.error('Ces dates ne sont pas disponibles. Veuillez choisir d\'autres dates.');
                 } else if (error.status === 500) {
-                    alert('Erreur serveur. Veuillez réessayer plus tard ou contactez le support.');
+                    this.toastService.error('Erreur serveur. Veuillez réessayer plus tard ou contactez le support.');
                 } else {
                     const errorMsg = error.message || 'Erreur inconnue';
-                    alert(`Erreur lors de la création de la réservation: ${errorMsg}`);
+                    this.toastService.error(`Erreur lors de la création de la réservation: ${errorMsg}`);
                 }
             }
         });
@@ -239,13 +266,22 @@ export class BookingConfirmComponent implements OnInit {
         }
     }
 
+    validatePhone(): void {
+        const moroccanPattern = /^(\+212|0)(6|7)\d{8}$/;
+        if (this.guestPhone && !moroccanPattern.test(this.guestPhone.replace(/\s/g, ''))) {
+            this.phoneError = 'Format invalide. Exemple: +212 6 12 34 56 78';
+        } else {
+            this.phoneError = '';
+        }
+    }
+
     formatDate(dateString: string): string {
-        return new Date(dateString).toLocaleDateString('fr-FR', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
+        if (!dateString) return '';
+        const d = new Date(dateString);
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${day}/${month}/${year}`;
     }
 
     getAmenityIcon(amenity: string): string {
@@ -279,12 +315,6 @@ export class BookingConfirmComponent implements OnInit {
         const user = this.authService.currentUser;
         const isAuthenticated = this.authService.isAuthenticated;
         
-        console.log('Authentication Status Check:', {
-            hasToken: !!token,
-            hasUser: !!user,
-            isAuthenticated: isAuthenticated,
-            token: token ? token.substring(0, 20) + '...' : 'none'
-        });
         
         return isAuthenticated && !!token && !!user;
     }

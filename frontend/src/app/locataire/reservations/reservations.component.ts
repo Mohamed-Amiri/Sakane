@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 import { LocatairesService, Booking } from '../services/locataires.service';
 import { ReservationService } from '../services/reservation.service';
 import { ReviewService } from '../services/review.service';
@@ -9,11 +10,13 @@ import { AddReviewDialogComponent } from '../../shared/add-review-dialog/add-rev
 import { ToastService } from '../../shared/components/toast/toast.service';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 import { SkeletonComponent } from '../../shared/components/skeleton/skeleton.component';
+import { MadCurrencyPipe } from '../../shared/pipes/mad-currency.pipe';
+import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.directive';
 
 @Component({
   selector: 'app-reservations',
   standalone: true,
-  imports: [CommonModule, RouterModule, CancelBookingDialogComponent, AddReviewDialogComponent, EmptyStateComponent, SkeletonComponent],
+  imports: [CommonModule, RouterModule, CancelBookingDialogComponent, AddReviewDialogComponent, EmptyStateComponent, SkeletonComponent, MadCurrencyPipe, ScrollRevealDirective],
   templateUrl: './reservations.component.html',
   styleUrls: ['./reservations.component.scss']
 })
@@ -46,7 +49,8 @@ export class ReservationsComponent implements OnInit {
     private reviewService: ReviewService,
     private toastService: ToastService,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private titleService: Title
   ) {}
 
   navigateToSearch(): void {
@@ -95,7 +99,6 @@ export class ReservationsComponent implements OnInit {
             const booking = this.bookings.find(b => b.id === change.id);
             return `Réservation ${booking?.place?.title || change.id}: ${this.getStatusLabel(change.status)}`;
           });
-          console.log('Status changes detected:', changeMessages);
         }
       },
       error: (error) => {
@@ -138,7 +141,6 @@ export class ReservationsComponent implements OnInit {
     
     this.reservationService.cancelBooking(booking.id).subscribe({
       next: () => {
-        console.log('Booking cancelled successfully:', booking.id);
         booking.status = 'cancelled';
         
         setTimeout(() => {
@@ -248,12 +250,12 @@ export class ReservationsComponent implements OnInit {
 
   getFilterIcon(filterValue: string): string {
     const icons: { [key: string]: string } = {
-      'all': '📋',
-      'pending': '⏳',
-      'confirmed': '✅',
-      'cancelled': '❌'
+      'all':       'ph-list',
+      'pending':   'ph-hourglass',
+      'confirmed': 'ph-check-circle',
+      'cancelled': 'ph-x-circle'
     };
-    return icons[filterValue] || '📋';
+    return icons[filterValue] || 'ph-list';
   }
 
   // ---- Add Review Logic ----

@@ -139,10 +139,10 @@
           </div>
 
           <div class="form-field form-group">
-            <label>Prix par nuit (€)</label>
+            <label>Prix par jour (DH)</label>
             <div class="input-with-icon">
               <input type="number" class="form-control" formControlName="price" min="10" max="10000">
-              <i class="ph ph-currency-eur input-icon"></i>
+              <i class="ph ph-currency-circle-dollar input-icon"></i>
             </div>
             <div class="form-error" *ngIf="propertyForm.get('price')?.touched && propertyForm.get('price')?.hasError('required')">Requis</div>
           </div>

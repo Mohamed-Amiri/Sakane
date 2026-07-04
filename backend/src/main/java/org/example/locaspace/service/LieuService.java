@@ -17,6 +17,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import org.example.locaspace.dto.lieu.AvailabilityResponse;
+import org.example.locaspace.dto.lieu.BookedRange;
+import org.example.locaspace.repository.ReservationRepository;
+import org.example.locaspace.repository.CalendarEventRepository;
+import org.example.locaspace.model.Reservation;
+import org.example.locaspace.model.CalendarEvent;
+import org.example.locaspace.model.enums.ReservationStatus;
 
 @Service
 @Transactional
@@ -24,11 +34,16 @@ public class LieuService {
     
     private final LieuRepository lieuRepository;
     private final AvisRepository avisRepository;
+    private final ReservationRepository reservationRepository;
+    private final CalendarEventRepository calendarEventRepository;
     
     @Autowired
-    public LieuService(LieuRepository lieuRepository, AvisRepository avisRepository) {
+    public LieuService(LieuRepository lieuRepository, AvisRepository avisRepository,
+                       ReservationRepository reservationRepository, CalendarEventRepository calendarEventRepository) {
         this.lieuRepository = lieuRepository;
         this.avisRepository = avisRepository;
+        this.reservationRepository = reservationRepository;
+        this.calendarEventRepository = calendarEventRepository;
     }
     
     // Create new lieu
@@ -45,6 +60,45 @@ public class LieuService {
     // Get lieu by ID
     public Optional<Lieu> getLieuById(Long id) {
         return lieuRepository.findById(id);
+    }
+
+    public AvailabilityResponse getAvailability(Long lieuId, LocalDate startDate, LocalDate endDate) {
+        Lieu lieu = lieuRepository.findById(lieuId).orElseThrow();
+        
+        List<Reservation> reservations = reservationRepository.findByLieu(lieu).stream()
+                .filter(r -> (r.getStatut() == ReservationStatus.CONFIRMEE || r.getStatut() == ReservationStatus.EN_ATTENTE) 
+                        && (r.getDateDebut().isBefore(endDate) && r.getDateFin().isAfter(startDate)))
+                .toList();
+
+        List<CalendarEvent> blockedEvents = calendarEventRepository.findInRange(lieu, startDate, endDate);
+
+        List<String> unavailableDates = new ArrayList<>();
+        List<BookedRange> bookedRanges = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+
+        for (Reservation r : reservations) {
+            bookedRanges.add(new BookedRange(r.getDateDebut().format(formatter), r.getDateFin().format(formatter), "booked"));
+            LocalDate current = r.getDateDebut();
+            while (current.isBefore(r.getDateFin())) {
+                unavailableDates.add(current.format(formatter));
+                current = current.plusDays(1);
+            }
+        }
+
+        for (CalendarEvent e : blockedEvents) {
+            bookedRanges.add(new BookedRange(e.getStartDate().format(formatter), e.getEndDate().format(formatter), "blocked"));
+            LocalDate current = e.getStartDate();
+            while (!current.isAfter(e.getEndDate())) {
+                unavailableDates.add(current.format(formatter));
+                current = current.plusDays(1);
+            }
+        }
+
+        return AvailabilityResponse.builder()
+                .lieuId(lieuId)
+                .unavailableDates(unavailableDates)
+                .bookedRanges(bookedRanges)
+                .build();
     }
     
     // Get lieux by owner

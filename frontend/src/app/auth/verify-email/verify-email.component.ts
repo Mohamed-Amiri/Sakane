@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { fadeInUpAnimation } from '../../shared/animations/fade.animation';
@@ -23,7 +23,7 @@ import { fadeInUpAnimation } from '../../shared/animations/fade.animation';
         <p class="email">{{ userEmail }}</p>
         
         <div class="instructions">
-          <p>Cliquez sur le lien dans l'email pour activer votre compte LocaSpace.</p>
+          <p>Cliquez sur le lien dans l'email pour activer votre compte Sakane.</p>
           <p>Si vous ne voyez pas l'email, vérifiez votre dossier spam.</p>
         </div>
         
@@ -229,7 +229,6 @@ export class VerifyEmailComponent implements OnInit {
     if (this.resendCooldown > 0) return;
 
     // Simulate API call to resend verification email
-    console.log('Resending verification email to:', this.userEmail);
     
     // Start cooldown
     this.resendCooldown = 60;

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay, tap, map } from 'rxjs/operators';
 
@@ -196,13 +196,11 @@ export class MessagingService {
 
   blockUser(userId: string): Observable<void> {
     // Implementation for blocking a user
-    console.log('Blocking user:', userId);
     return of(void 0).pipe(delay(300));
   }
 
   reportConversation(conversationId: string, reason: string): Observable<void> {
     // Implementation for reporting a conversation
-    console.log('Reporting conversation:', conversationId, 'Reason:', reason);
     return of(void 0).pipe(delay(300));
   }
 }

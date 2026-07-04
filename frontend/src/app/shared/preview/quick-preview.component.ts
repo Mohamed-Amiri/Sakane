@@ -2,11 +2,12 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Lieu } from '../../lieux/lieu.model';
+import { MadCurrencyPipe } from '../pipes/mad-currency.pipe';
 
 @Component({
   selector: 'app-quick-preview',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, MadCurrencyPipe],
   templateUrl: './quick-preview.component.html',
   styleUrls: ['./quick-preview.component.scss']
 })

@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { PlaceCardComponent, PlaceCardData } from '../shared/components/place-card/place-card.component';
 import { LieuService } from '../lieux/lieu.service';
 import { FooterComponent } from '../shared/footer/footer.component';
+import { ScrollRevealDirective } from '../shared/directives/scroll-reveal.directive';
+import { AuthService } from '../auth/auth.service';
 
 interface Category {
   name: string;
@@ -21,7 +23,8 @@ interface Category {
     RouterModule,
     FormsModule,
     PlaceCardComponent,
-    FooterComponent
+    FooterComponent,
+    ScrollRevealDirective
   ],
   templateUrl: './home.html',
   styleUrls: ['./home.scss']
@@ -51,7 +54,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   // Testimonials
   testimonials = [
     {
-      quote: "Grâce à LocaSpace, j'ai trouvé le lieu parfait pour mon shooting photo en quelques clics. Service client au top !",
+      quote: "Grâce à Sakane, j'ai trouvé le lieu parfait pour mon shooting photo en quelques clics. Service client au top !",
       author: 'Amina K.',
       city: 'Casablanca',
       initials: 'AK'
@@ -63,7 +66,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       initials: 'YL'
     },
     {
-      quote: "Louer mon bureau inoccupé sur LocaSpace a été une excellente source de revenus supplémentaires. Simple et efficace.",
+      quote: "Louer mon bureau inoccupé sur Sakane a été une excellente source de revenus supplémentaires. Simple et efficace.",
       author: 'Fatima Z.',
       city: 'Marrakech',
       initials: 'FZ'
@@ -100,10 +103,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     }, interval);
   }
 
-  constructor(private lieuService: LieuService) {}
+  constructor(
+    private lieuService: LieuService,
+    public authService: AuthService
+  ) {}
 
   ngOnInit() {
-    console.log('NG_ON_INIT_CATEGORIES:', this.categories);
     this.startCarousel();
     this.loadPopularPlaces();
     this.animateStats();
@@ -204,6 +209,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     }, 5000);
   }
 
+  pauseCarousel() {
+    if (this.carouselInterval) {
+      clearInterval(this.carouselInterval);
+    }
+  }
+
+  resumeCarousel() {
+    this.startCarousel();
+  }
+
   @HostListener('window:scroll')
   onWindowScroll() {
     const scrollOffset = window.pageYOffset;
@@ -215,7 +230,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   onSearch(searchData: {location: string, dates: string, guests: string}) {
-    console.log('Search data:', searchData);
   }
 
   toggleFavorite(id: number) {

@@ -1,120 +1,125 @@
-﻿<div class="search-container">
-  <!-- Modern Header Section -->
-  <div class="page-header">
-    <div class="header-content">
-      <h1 class="page-title">Recherchez un logement</h1>
-      <p class="page-subtitle">Découvrez des milliers de logements disponibles pour les locataires</p>
-      
-      <!-- Modern Search Bar -->
+<div class="search-container">
+
+  <!-- Navy banner with embedded search -->
+  <header class="browse-banner">
+    <div class="banner-inner">
+      <span class="eyebrow"><span class="eb-dot"></span>Explorer</span>
+      <h1>Recherchez un logement</h1>
+      <p>Villas, riads, bureaux et studios — partout au Maroc.</p>
+
       <div class="search-bar">
         <div class="search-input-wrapper">
-          <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M21 10C21 17 12 23 12 23S3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.3639 3.63604C20.0518 5.32387 21 7.61305 21 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <input type="text" placeholder="Où souhaitez-vous séjourner ?" class="search-input" [(ngModel)]="searchTerm" (ngModelChange)="searchPlaces()">
+          <i class="ph ph-map-pin search-icon"></i>
+          <input type="text" class="search-input" placeholder="Titre, quartier ou nom du lieu…"
+                 [(ngModel)]="searchTerm" (ngModelChange)="searchPlaces()">
         </div>
-        <button class="btn btn-primary" (click)="searchPlaces()">
+        <select class="search-city-select" [formControl]="$any(searchForm.controls['location'])" (change)="searchPlaces()">
+          <option value="">Toutes les villes</option>
+          <option *ngFor="let city of moroccanCities" [value]="city">{{city}}</option>
+        </select>
+        <button class="btn-search" (click)="searchPlaces()">
           <i class="ph ph-magnifying-glass"></i>
-          Rechercher
+          <span>Rechercher</span>
         </button>
       </div>
     </div>
-  </div>
+  </header>
 
-  <!-- Modern Filters Section -->
-  <div class="filters-section">
-    <div class="filters-header">
-      <h3>Affinez votre recherche</h3>
-      <button class="btn btn-ghost reset-btn" (click)="resetFilters()">
-        <i class="ph ph-arrow-counter-clockwise"></i>
-        Réinitialiser
-      </button>
-    </div>
-    
-    <form [formGroup]="searchForm" class="filters-form">
-      <!-- Price Range Filter -->
-      <div class="filter-card">
-        <div class="filter-header">
-          <h4>Budget Maximum</h4>
-        </div>
-        <div class="price-filter">
-          <div class="price-input">
-            <span class="currency">€</span>
-            <input type="range" [min]="0" [max]="10000" formControlName="maxPrice" class="price-slider">
-          </div>
-          <div class="price-display">{{searchForm.get('maxPrice')?.value || 10000 | currency:'EUR':'symbol':'1.0-0'}}</div>
-        </div>
+  <!-- Body: sidebar filters + results -->
+  <div class="browse-body scroll-reveal" appScrollReveal>
+
+    <!-- Filter sidebar -->
+    <aside class="filter-sidebar">
+      <div class="sidebar-head">
+        <h3>Filtres</h3>
+        <button class="reset-btn" (click)="resetFilters()">
+          <i class="ph ph-arrow-counter-clockwise"></i> Réinitialiser
+        </button>
       </div>
 
-      <!-- Rating Filter -->
-      <div class="filter-card">
-        <div class="filter-header">
+      <form [formGroup]="searchForm" class="filters-form">
+
+        <!-- Budget -->
+        <div class="filter-group">
+          <h4>Budget maximum</h4>
+          <div class="price-display">{{ searchForm.get('maxPrice')?.value || 50000 | number:'1.0-0' }} DH<span>/jour</span></div>
+          <input type="range" [min]="0" [max]="50000" formControlName="maxPrice" class="brand-slider">
+        </div>
+
+        <div class="group-divider"></div>
+
+        <!-- Rating -->
+        <div class="filter-group">
           <h4>Note minimum</h4>
-        </div>
-        <div class="rating-filter">
-          <ng-container *ngFor="let i of [1,2,3,4,5]">
-            <button 
-              type="button"
-              class="rating-btn"
-              [class.active]="searchForm.get('rating')?.value == i"
-              (click)="onRatingSelect(i); searchPlaces()">
-              <span class="rating-number">{{i}}</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="currentColor"/>
-              </svg>
+          <div class="rating-filter">
+            <button type="button" class="rating-btn"
+                    *ngFor="let i of [1,2,3,4,5]"
+                    [class.active]="searchForm.get('rating')?.value >= i"
+                    (click)="onRatingSelect(searchForm.get('rating')?.value === i ? 0 : i); searchPlaces()">
+              <i class="ph ph-star-fill"></i>
+              <span>{{ i }}</span>
             </button>
-          </ng-container>
+          </div>
         </div>
-      </div>
-      
-      <!-- Amenities Filter -->
-      <div class="filter-card">
-        <div class="filter-header">
+
+        <div class="group-divider"></div>
+
+        <!-- Amenities -->
+        <div class="filter-group">
           <h4>Équipements</h4>
-        </div>
-        <div class="amenities-grid">
-          <ng-container *ngFor="let amenity of availableAmenities">
-            <button 
-              type="button"
-              class="amenity-btn"
-              [class.active]="selectedAmenities.includes(amenity.id)"
-              (click)="toggleAmenity(amenity.id)">
-              <span>{{amenity.icon}} {{amenity.name}}</span>
+          <div class="chip-grid">
+            <button type="button" class="filter-chip"
+                    *ngFor="let amenity of availableAmenities"
+                    [class.active]="selectedAmenities.includes(amenity.id)"
+                    (click)="toggleAmenity(amenity.id)">
+              <i class="ph" [ngClass]="{
+                'ph-wifi-high': amenity.id === 'wifi',
+                'ph-car': amenity.id === 'parking',
+                'ph-swimming-pool': amenity.id === 'pool',
+                'ph-wind': amenity.id === 'ac',
+                'ph-cooking-pot': amenity.id === 'kitchen',
+                'ph-house-line': amenity.id === 'balcony',
+                'ph-plant': amenity.id === 'garden',
+                'ph-barbell': amenity.id === 'gym'
+              }"></i>
+              {{ amenity.name }}
             </button>
-          </ng-container>
+          </div>
         </div>
+      </form>
+    </aside>
+
+    <!-- Results -->
+    <main class="results-section">
+      <div class="results-header">
+        <h2 class="results-title">
+          {{ filteredPlaces.length }} espace{{ filteredPlaces.length > 1 ? 's' : '' }}
+          <span class="results-sub">trouvé{{ filteredPlaces.length > 1 ? 's' : '' }}</span>
+        </h2>
       </div>
-    </form>
-  </div>
 
-  <!-- Results Section -->
-  <div class="results-section">
-    <div class="results-header">
-      <h2 class="results-title">{{filteredPlaces.length}} logements trouvés</h2>
-    </div>
+      <!-- Loading -->
+      <div class="places-grid" *ngIf="isLoading">
+        <app-skeleton *ngFor="let _ of [1,2,3,4,5,6]" type="rectangle" height="360px"></app-skeleton>
+      </div>
 
-    <!-- Loading State -->
-    <div class="places-grid" *ngIf="isLoading">
-      <app-skeleton *ngFor="let _ of [1,2,3,4,5,6]" type="rectangle" height="360px"></app-skeleton>
-    </div>
+      <!-- Grid -->
+      <div class="places-grid" *ngIf="!isLoading">
+        <app-place-card
+          *ngFor="let place of filteredPlaces"
+          [place]="mapToPlaceCardData(place)"
+          (toggleFavorite)="toggleFavorite($event)">
+        </app-place-card>
+      </div>
 
-    <!-- Results Grid -->
-    <div class="places-grid" *ngIf="!isLoading">
-      <app-place-card 
-        *ngFor="let place of filteredPlaces" 
-        [place]="mapToPlaceCardData(place)"
-        (toggleFavorite)="toggleFavorite($event)">
-      </app-place-card>
-    </div>
-    
-    <!-- No Results Message -->
-    <app-empty-state *ngIf="!isLoading && filteredPlaces.length === 0"
-      icon="ph ph-magnifying-glass"
-      title="Aucun résultat trouvé"
-      description="Essayez de modifier vos filtres ou d'élargir votre recherche"
-      actionLabel="Réinitialiser les filtres"
-      (actionClick)="resetFilters()">
-    </app-empty-state>
+      <!-- Empty -->
+      <app-empty-state *ngIf="!isLoading && filteredPlaces.length === 0"
+        icon="ph ph-magnifying-glass"
+        title="Aucun résultat trouvé"
+        description="Essayez de modifier vos filtres ou d'élargir votre recherche"
+        actionLabel="Réinitialiser les filtres"
+        (actionClick)="resetFilters()">
+      </app-empty-state>
+    </main>
   </div>
 </div>

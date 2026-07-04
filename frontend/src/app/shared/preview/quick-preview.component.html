@@ -5,7 +5,7 @@
     <div class="info">
       <h3>{{ location.titre }}</h3>
       <p>{{ location.ville }}</p>
-      <p class="price">{{ location.prix | currency:'EUR' }} / nuit</p>
+      <p class="price">{{ location.prix | madCurrency }} / jour</p>
       <a [routerLink]="['/lieux', location.id]" class="btn btn-primary">Voir le détail</a>
     </div>
   </div>

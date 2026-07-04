@@ -1,4 +1,4 @@
-﻿<div class="favorites-container fade-in">
+<div class="favorites-container fade-in scroll-reveal" appScrollReveal>
   
   <div class="header-section">
     <div class="header-content">
@@ -19,8 +19,8 @@
 
   <!-- Loading State -->
   <div class="loading-state" *ngIf="loading">
-    <div class="spinner"></div>
-    <p>Chargement de vos favoris...</p>
+    <div class="custom-spinner"></div>
+    <p class="loading-text">Chargement de vos favoris...</p>
   </div>
 
   <!-- Content State -->
@@ -37,8 +37,8 @@
 
     <!-- Empty Filtered State -->
     <div class="empty-state" *ngIf="favorites.length > 0 && filteredFavorites.length === 0">
-      <div class="empty-icon">
-        <i class="ph ph-funnel"></i>
+      <div class="empty-icon-circle">
+        <i class="ph ph-funnel-x"></i>
       </div>
       <h2>Aucun résultat</h2>
       <p>Aucun favori ne correspond au filtre "{{ activeFilter }}".</p>
@@ -47,8 +47,8 @@
 
     <!-- Complete Empty State -->
     <div class="empty-state" *ngIf="favorites.length === 0">
-      <div class="empty-icon heart">
-        <i class="ph ph-heart"></i>
+      <div class="empty-icon-circle heart">
+        <i class="ph ph-heart-break"></i>
       </div>
       <h2>Aucun favori pour le moment</h2>
       <p>Vous n'avez pas encore sauvegardé d'espace. Parcourez nos offres et cliquez sur le cœur pour les ajouter ici.</p>

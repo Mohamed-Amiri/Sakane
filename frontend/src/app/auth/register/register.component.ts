@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, 
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { ToastService } from '../../shared/components/toast/toast.service';
+import { Title } from '@angular/platform-browser';
 
 interface Testimonial {
   quote: string;
@@ -34,7 +36,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   // Testimonials (shared with login)
   testimonials: Testimonial[] = [
     {
-      quote: "Grâce à LocaSpace, j'ai trouvé le lieu parfait pour mon événement en quelques clics. Service au top !",
+      quote: "Grâce à Sakane, j'ai trouvé le lieu parfait pour mon événement en quelques clics. Service au top !",
       name: 'Amina Karzazi',
       role: 'Organisatrice d\'événements',
       initials: 'AK'
@@ -46,7 +48,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
       initials: 'YL'
     },
     {
-      quote: "Louer mon bureau inoccupé sur LocaSpace a été une excellente source de revenus. Simple et efficace.",
+      quote: "Louer mon bureau inoccupé sur Sakane a été une excellente source de revenus. Simple et efficace.",
       name: 'Fatima Zahra',
       role: 'Propriétaire',
       initials: 'FZ'
@@ -58,12 +60,17 @@ export class RegisterComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private toast: ToastService,
+    private titleService: Title
+  ) {
+    this.titleService.setTitle('Inscription — Sakane');
+  }
 
   ngOnInit(): void {
     this.registerForm = this.fb.group({
-      fullName: ['', [Validators.required, Validators.minLength(3)]],
+      firstName: ['', [Validators.required, Validators.minLength(2)]],
+      lastName: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [
         Validators.required, 
@@ -141,8 +148,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
     }
   }
 
-  get fullName() {
-    return this.registerForm.get('fullName')!;
+  get firstName() {
+    return this.registerForm.get('firstName')!;
+  }
+
+  get lastName() {
+    return this.registerForm.get('lastName')!;
   }
 
   get email() {
@@ -175,17 +186,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
       this.errorMessage = '';
       
       const formValue = this.registerForm.value;
-      const nameParts = formValue.fullName.trim().split(' ');
-      let firstName = nameParts[0] || '';
-      let lastName = nameParts.slice(1).join(' ') || '';
-      
-      // Ensure both names have at least 2 characters as required by backend
-      if (firstName.length < 2) firstName = firstName.padEnd(2, 'x');
-      if (lastName.length < 2) lastName = lastName || firstName;
-      
+
       const registerData = {
-        firstName: firstName,
-        lastName: lastName,
+        firstName: formValue.firstName.trim(),
+        lastName: formValue.lastName.trim(),
         email: formValue.email,
         password: formValue.password,
         role: formValue.role
@@ -194,7 +198,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
       this.authService.register(registerData).subscribe({
         next: () => {
           this.isLoading = false;
-          alert('Compte créé avec succès ! Vous pouvez maintenant vous connecter.');
+          this.toast.success('Compte créé avec succès ! Connectez-vous pour continuer.');
           this.router.navigate(['/login']);
         },
         error: (error) => {

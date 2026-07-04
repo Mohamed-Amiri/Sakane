@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
@@ -79,7 +79,6 @@ export class ResetPasswordComponent implements OnInit {
       try {
         // In a real app, this would be an actual API call
         // this.authService.resetPassword(this.token, this.resetPasswordForm.value.password)
-        console.log('Reset password attempt:', { token: this.token, password: this.resetPasswordForm.value.password });
         
         // Show success message
         this.resetSuccess = true;

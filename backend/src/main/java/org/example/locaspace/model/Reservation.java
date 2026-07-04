@@ -3,13 +3,12 @@ package org.example.locaspace.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.locaspace.model.enums.ReservationStatus;
-
-import java.time.LocalDate;
-
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity @Table(name = "reservations")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
@@ -25,6 +24,24 @@ public class Reservation {
 
     @Enumerated(EnumType.STRING)
     private ReservationStatus statut;
+    private Integer guests;
+    private BigDecimal totalPrice;
+    private String guestName;
+    private String guestEmail;
+    private String guestPhone;
+
+    @Column(length = 1000)
+    private String specialRequests;
+
+    @Column(length = 1000)
+    private String ownerMessage;
+
+    @Column(length = 1000)
+    private String cancellationReason;
+    private LocalDateTime createdAt;
+    private LocalDateTime acceptedAt;
+    private LocalDateTime rejectedAt;
+    private LocalDateTime cancelledAt;
 
     @Builder.Default
     private boolean deleted = false;

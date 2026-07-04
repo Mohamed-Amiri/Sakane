@@ -80,7 +80,7 @@
   border: none;
 
   &:hover:not(:disabled) {
-    background: darken($color-sand, 5%);
+    background: color-mix(in srgb, #{$color-sand} 95%, black);
     transform: translateY(-1px);
   }
 }

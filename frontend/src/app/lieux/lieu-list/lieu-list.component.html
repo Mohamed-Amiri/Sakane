@@ -23,7 +23,7 @@
       </div>
     </div>
     <div class="filter-group">
-      <h4>Prix par nuit (Max: {{ filters.maxPrice | currency:'EUR' }})</h4>
+      <h4>Prix par jour (Max: {{ filters.maxPrice | madCurrency }})</h4>
       <input type="range" class="price-slider" min="50" max="5000" step="10" [(ngModel)]="filters.maxPrice" (input)="applyFilters()">
     </div>
     <div class="sidebar-footer">
@@ -54,7 +54,7 @@
           <div class="card-content">
             <h3>{{ lieu.titre }}</h3>
             <p class="location">{{ lieu.ville }}</p>
-            <span class="price">{{ lieu.prix | currency:'EUR' }} / nuit</span>
+            <span class="price">{{ lieu.prix | madCurrency }} / jour</span>
           </div>
         </div>
       </ng-container>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -660,22 +660,18 @@ export class AvailabilityCalendarComponent implements OnInit {
   }
 
   addAvailability() {
-    console.log('Add availability clicked');
     // Implement add availability logic
   }
 
   setAvailable() {
-    console.log('Set available clicked');
     // Implement set available logic
   }
 
   setUnavailable() {
-    console.log('Set unavailable clicked');
     // Implement set unavailable logic
   }
 
   exportCalendar() {
-    console.log('Export calendar clicked');
     // Implement export logic
   }
 } 

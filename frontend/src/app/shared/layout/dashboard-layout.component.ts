@@ -49,7 +49,7 @@ export class DashboardLayoutComponent implements OnInit {
         { label: 'Utilisateurs', route: '/admin/users', icon: 'ph ph-users-three' },
         { label: 'Espaces', route: '/admin/spaces', icon: 'ph ph-house' },
         { label: 'Réservations', route: '/admin/reservations', icon: 'ph ph-calendar-blank' },
-        { label: 'Revenus', route: '/admin/earnings', icon: 'ph ph-currency-eur' },
+        { label: 'Revenus', route: '/admin/earnings', icon: 'ph ph-currency-circle-dollar' },
         { label: 'Rapports', route: '/admin/reports', icon: 'ph ph-chart-bar' },
         { label: 'Paramètres', route: '/admin/settings', icon: 'ph ph-gear' }
       ];

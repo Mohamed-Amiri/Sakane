@@ -16,12 +16,12 @@ import { CommonModule } from '@angular/common';
         <div class="terms-content">
           <section class="terms-section">
             <h2>1. Acceptation des conditions</h2>
-            <p>En utilisant LocaSpace, vous acceptez d'être lié par ces conditions d'utilisation. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser notre service.</p>
+            <p>En utilisant Sakane, vous acceptez d'être lié par ces conditions d'utilisation. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser notre service.</p>
           </section>
 
           <section class="terms-section">
             <h2>2. Description du service</h2>
-            <p>LocaSpace est une plateforme de location d'espaces qui met en relation propriétaires et locataires. Nous fournissons un service de réservation en ligne pour divers types d'espaces.</p>
+            <p>Sakane est une plateforme de location d'espaces qui met en relation propriétaires et locataires. Nous fournissons un service de réservation en ligne pour divers types d'espaces.</p>
           </section>
 
           <section class="terms-section">
@@ -52,7 +52,7 @@ import { CommonModule } from '@angular/common';
 
           <section class="terms-section">
             <h2>7. Responsabilité</h2>
-            <p>LocaSpace agit comme intermédiaire entre propriétaires et locataires. Nous ne sommes pas responsables des dommages causés par l'utilisation des espaces loués.</p>
+            <p>Sakane agit comme intermédiaire entre propriétaires et locataires. Nous ne sommes pas responsables des dommages causés par l'utilisation des espaces loués.</p>
           </section>
 
           <section class="terms-section">

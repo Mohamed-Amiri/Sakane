@@ -3,10 +3,6 @@ package org.example.locaspace.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.locaspace.model.enums.LieuType;
-
-import java.math.BigDecimal;
-import java.util.List;
-
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -30,6 +26,23 @@ public class Lieu {
     private BigDecimal prix;
     private String adresse;
     private boolean valide;
+    private Integer maxGuests;
+    private Integer bedrooms;
+    private Integer bathrooms;
+    private String city;
+    private String neighborhood;
+
+    @Builder.Default
+    private Boolean active = true;
+
+    private Double latitude;
+    private Double longitude;
+
+    @Column(length = 1000)
+    private String houseRules;
+    private String checkInTime;
+    private String checkOutTime;
+    private Integer minimumNights;
 
     @Builder.Default
     private boolean deleted = false;
@@ -38,6 +51,11 @@ public class Lieu {
     @CollectionTable(name = "lieu_photos", joinColumns = @JoinColumn(name = "lieu_id"))
     @Column(name = "photo_url")
     private List<String> photos;
+
+    @ElementCollection
+    @CollectionTable(name = "lieu_amenities", joinColumns = @JoinColumn(name = "lieu_id"))
+    @Column(name = "amenity")
+    private List<String> amenities;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
