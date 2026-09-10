@@ -1,7 +1,11 @@
 package org.example.locaspace.service;
 
+import org.example.locaspace.exception.BadRequestException;
+import org.example.locaspace.exception.ResourceNotFoundException;
+import org.example.locaspace.exception.UnauthorizedException;
 import org.example.locaspace.model.CalendarEvent;
 import org.example.locaspace.model.Lieu;
+import org.example.locaspace.model.User;
 import org.example.locaspace.repository.CalendarEventRepository;
 import org.example.locaspace.repository.LieuRepository;
 import org.example.locaspace.repository.ReservationRepository;
@@ -27,12 +31,14 @@ public class CalendarService {
     @Autowired
     private ReservationRepository reservationRepository;
 
-    public List<CalendarEvent> getEvents(Long lieuId, LocalDate start, LocalDate end) {
-        Lieu lieu = lieuRepository.findById(lieuId).orElseThrow();
+    public List<CalendarEvent> getEvents(Long lieuId, LocalDate start, LocalDate end, User currentUser) {
+        Lieu lieu = lieuRepository.findById(lieuId)
+                .orElseThrow(() -> new ResourceNotFoundException("Lieu", "id", lieuId));
+        verifyOwnership(lieu, currentUser);
         List<CalendarEvent> events = new java.util.ArrayList<>(calendarEventRepository.findInRange(lieu, start, end));
 
         List<Reservation> reservations = reservationRepository.findByLieu(lieu).stream()
-                .filter(r -> (r.getStatut() == ReservationStatus.CONFIRMEE || r.getStatut() == ReservationStatus.EN_ATTENTE) 
+                .filter(r -> (r.getStatut() == ReservationStatus.CONFIRMEE || r.getStatut() == ReservationStatus.EN_ATTENTE)
                         && (r.getDateDebut().isBefore(end) && r.getDateFin().isAfter(start)))
                 .toList();
 
@@ -48,8 +54,21 @@ public class CalendarService {
         return events;
     }
 
-    public CalendarEvent blockDates(Long lieuId, LocalDate start, LocalDate end, String title) {
-        Lieu lieu = lieuRepository.findById(lieuId).orElseThrow();
+    public CalendarEvent blockDates(Long lieuId, LocalDate start, LocalDate end, String title, User currentUser) {
+        Lieu lieu = lieuRepository.findById(lieuId)
+                .orElseThrow(() -> new ResourceNotFoundException("Lieu", "id", lieuId));
+        verifyOwnership(lieu, currentUser);
+
+        if (start == null || end == null || end.isBefore(start)) {
+            throw new BadRequestException("Invalid date range for calendar block");
+        }
+
+        // Prevent blocking dates that overlap an existing pending/confirmed reservation
+        List<Reservation> conflicting = reservationRepository.findConflictingReservations(lieu, start, end);
+        if (!conflicting.isEmpty()) {
+            throw new BadRequestException("Cannot block dates that overlap an existing reservation");
+        }
+
         CalendarEvent event = CalendarEvent.builder()
                 .lieu(lieu)
                 .startDate(start)
@@ -60,8 +79,17 @@ public class CalendarService {
         return calendarEventRepository.save(event);
     }
 
-    public void deleteEvent(Long eventId) {
-        calendarEventRepository.deleteById(eventId);
+    public void deleteEvent(Long eventId, User currentUser) {
+        CalendarEvent event = calendarEventRepository.findById(eventId)
+                .orElseThrow(() -> new ResourceNotFoundException("CalendarEvent", "id", eventId));
+        verifyOwnership(event.getLieu(), currentUser);
+        calendarEventRepository.delete(event);
+    }
+
+    private void verifyOwnership(Lieu lieu, User currentUser) {
+        if (lieu.getOwner() == null || !lieu.getOwner().getId().equals(currentUser.getId())) {
+            throw new UnauthorizedException("You don't have permission to manage this lieu's calendar");
+        }
     }
 }
 

@@ -32,13 +32,6 @@ public class UserController {
         this.entityMapper = entityMapper;
     }
 
-    @PostMapping("/register")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserResponse> registerUser(@RequestBody User user) {
-        User createdUser = userService.registerUser(user);
-        return ResponseEntity.ok(entityMapper.toUserResponse(createdUser));
-    }
-
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserResponse> getProfile(Authentication authentication) {

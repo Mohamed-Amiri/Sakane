@@ -5,6 +5,7 @@ import org.example.locaspace.model.Lieu;
 import org.example.locaspace.model.Reservation;
 import org.example.locaspace.model.User;
 import org.example.locaspace.model.enums.ReservationStatus;
+import org.example.locaspace.repository.AvisRepository;
 import org.example.locaspace.repository.LieuRepository;
 import org.example.locaspace.repository.ReservationRepository;
 import org.example.locaspace.repository.NotificationRepository;
@@ -28,6 +29,9 @@ public class DashboardService {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private AvisRepository avisRepository;
 
     public OwnerDashboardStats getOwnerDashboardStats(User owner) {
         List<Lieu> ownerLieux = lieuRepository.findByOwner(owner);
@@ -58,12 +62,9 @@ public class DashboardService {
                 .map(r -> r.getTotalPrice() != null ? r.getTotalPrice() : BigDecimal.ZERO)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        double averageRating = ownerLieux.stream()
-                .filter(l -> l.getAvis() != null)
-                .flatMap(l -> l.getAvis().stream())
-                .mapToInt(a -> a.getNote())
-                .average()
-                .orElse(0.0);
+        // Single aggregate query instead of triggering a LAZY load of avis per lieu (N+1)
+        Double avg = avisRepository.findAverageNoteByOwner(owner);
+        double averageRating = avg != null ? avg : 0.0;
 
         long unreadNotifications = notificationRepository.countByRecipientAndLuFalse(owner);
 

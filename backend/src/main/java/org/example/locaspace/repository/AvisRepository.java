@@ -23,6 +23,10 @@ public interface AvisRepository extends JpaRepository<Avis, Long> {
     
     @Query("SELECT a FROM Avis a WHERE a.lieu.owner = :owner")
     List<Avis> findByLieuOwner(@Param("owner") User owner);
+
+    /** Average note across all reviews for every lieu owned by :owner. */
+    @Query("SELECT AVG(a.note) FROM Avis a WHERE a.lieu.owner = :owner")
+    Double findAverageNoteByOwner(@Param("owner") User owner);
     
     @Query("SELECT AVG(a.note) FROM Avis a WHERE a.lieu = :lieu")
     Double findAverageNoteByLieu(@Param("lieu") Lieu lieu);

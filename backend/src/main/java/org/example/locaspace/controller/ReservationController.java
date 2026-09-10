@@ -103,11 +103,8 @@ public class ReservationController {
                     .guestPhone(request.getGuestPhone())
                     .specialRequests(request.getSpecialRequests())
                     .ownerMessage(request.getOwnerMessage())
-                    .cancellationReason(request.getCancellationReason())
-                    .createdAt(request.getCreatedAt())
-                    .acceptedAt(request.getAcceptedAt())
-                    .rejectedAt(request.getRejectedAt())
-                    .cancelledAt(request.getCancelledAt())
+                    .cancellationReason(null)
+                    .createdAt(java.time.LocalDateTime.now())
                     .build();
 
             log.debug("Creating reservation...");
@@ -137,7 +134,7 @@ public class ReservationController {
     public ResponseEntity<Void> cancelReservation(@PathVariable Long id, Authentication authentication) {
         UserDetailsServiceImpl.UserPrincipal principal = (UserDetailsServiceImpl.UserPrincipal) authentication.getPrincipal();
         User tenant = userService.getUserById(principal.getId());
-        boolean ok = reservationService.cancelReservation(id, tenant);
+        boolean ok = reservationService.cancelReservation(id, tenant, false);
         return ok ? ResponseEntity.noContent().build() : ResponseEntity.status(403).build();
     }
 
@@ -145,11 +142,22 @@ public class ReservationController {
     @PutMapping("/{id}/status")
     @PreAuthorize("hasRole('PROPRIETAIRE')")
     public ResponseEntity<ReservationResponse> updateReservationStatus(@PathVariable Long id,
-                                                                        @RequestBody java.util.Map<String, String> body) {
+                                                                        @RequestBody java.util.Map<String, String> body,
+                                                                        Authentication authentication) {
+        if (body == null || body.get("status") == null || body.get("status").isBlank()) {
+            throw new org.example.locaspace.exception.BadRequestException("Status is required");
+        }
         String statusStr = body.get("status");
+        ReservationStatus status;
+        try {
+            status = ReservationStatus.valueOf(statusStr.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new org.example.locaspace.exception.BadRequestException("Invalid status: " + statusStr);
+        }
         String message = body.get("message");
-        ReservationStatus status = ReservationStatus.valueOf(statusStr.toUpperCase());
-        Reservation updated = reservationService.updateReservationStatus(id, status, message);
+        UserDetailsServiceImpl.UserPrincipal principal = (UserDetailsServiceImpl.UserPrincipal) authentication.getPrincipal();
+        User owner = userService.getUserById(principal.getId());
+        Reservation updated = reservationService.updateReservationStatus(id, status, message, owner);
         return ResponseEntity.ok(entityMapper.toReservationResponse(updated));
     }
 }

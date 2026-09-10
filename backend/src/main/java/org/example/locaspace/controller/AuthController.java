@@ -61,7 +61,7 @@ public class AuthController {
         User user = userRepository.findByEmail(userDetails.getUsername())
             .orElseThrow(() -> new BadRequestException("User not found"));
 
-        String frontendRole = mapBackendRoleToFrontend(user.getRole());
+        String roleName = user.getRole() != null ? user.getRole().name() : Role.LOCATAIRE.name();
 
         JwtResponse response = new JwtResponse(
             jwt,
@@ -70,7 +70,7 @@ public class AuthController {
             user.getNom(),
             roles
         );
-        response.setFrontendRole(frontendRole);
+        response.setFrontendRole(roleName);
 
         return ResponseEntity.ok(response);
     }
@@ -82,7 +82,7 @@ public class AuthController {
             throw new BadRequestException("Error: Email is already in use!");
         }
 
-        Role backendRole = mapFrontendRoleToBackend(signUpRequest.getRole());
+        Role backendRole = parseRole(signUpRequest.getRole());
 
         User user = User.builder()
             .nom(signUpRequest.getNom())
@@ -96,36 +96,15 @@ public class AuthController {
         return ResponseEntity.ok("User registered successfully!");
     }
 
-    private Role mapFrontendRoleToBackend(String frontendRole) {
-        if (frontendRole == null) {
+    private Role parseRole(String role) {
+        if (role == null) {
             return Role.LOCATAIRE;
         }
 
-        switch (frontendRole.toUpperCase()) {
-            case "TENANT":
-                return Role.LOCATAIRE;
-            case "OWNER":
-                return Role.PROPRIETAIRE;
-            case "ADMIN":
-                return Role.ADMIN;
-            default:
-                return Role.LOCATAIRE;
-        }
-    }
-
-    private String mapBackendRoleToFrontend(Role backendRole) {
-        if (backendRole == null) {
-            return "tenant";
-        }
-
-        switch (backendRole) {
-            case LOCATAIRE:
-                return "tenant";
-            case PROPRIETAIRE:
-            case ADMIN:
-                return "owner";
-            default:
-                return "tenant";
+        try {
+            return Role.valueOf(role.toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            return Role.LOCATAIRE;
         }
     }
 

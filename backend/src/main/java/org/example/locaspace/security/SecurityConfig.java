@@ -61,8 +61,7 @@ public class SecurityConfig {
         configuration.setAllowedOriginPatterns(Arrays.asList(
             "http://localhost:4200",
             "http://localhost:4000",
-            "http://localhost:60039",
-            "http://localhost:*"
+            "http://localhost:60039"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
@@ -86,8 +85,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/lieux/{id}/avis").permitAll()
                 .requestMatchers("/uploads/**").permitAll()
                 .requestMatchers("/api/users/me/**").authenticated()
-                .requestMatchers("/api/lieux/{id}/reservations").hasAnyRole("PROPRIETAIRE", "ADMIN")
-                .requestMatchers("/api/reservations/owner").hasAnyRole("PROPRIETAIRE", "ADMIN")
+                .requestMatchers("/api/lieux/{id}/reservations").hasRole("PROPRIETAIRE")
+                .requestMatchers("/api/reservations/owner").hasRole("PROPRIETAIRE")
                 .anyRequest().authenticated()
             );
 

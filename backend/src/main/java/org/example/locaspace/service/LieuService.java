@@ -48,7 +48,13 @@ public class LieuService {
     
     // Create new lieu
     public Lieu createLieu(Lieu lieu) {
-        lieu.setValide(true); 
+        lieu.setValide(true);
+        return lieuRepository.save(lieu);
+    }
+
+    // Persist an existing (already-managed or detached) Lieu without changing validation state.
+    // Used by owned-photo management endpoints that already verified ownership in the controller.
+    public Lieu saveLieu(Lieu lieu) {
         return lieuRepository.save(lieu);
     }
     
@@ -62,8 +68,16 @@ public class LieuService {
         return lieuRepository.findById(id);
     }
 
+    // Get lieu by ID for public (anonymous) access: only validated lieux are exposed
+    public Optional<Lieu> getPublicLieuById(Long id) {
+        return lieuRepository.findById(id)
+                .filter(Lieu::isValide);
+    }
+
     public AvailabilityResponse getAvailability(Long lieuId, LocalDate startDate, LocalDate endDate) {
-        Lieu lieu = lieuRepository.findById(lieuId).orElseThrow();
+        Lieu lieu = lieuRepository.findById(lieuId)
+                .filter(Lieu::isValide)
+                .orElseThrow(() -> new org.example.locaspace.exception.ResourceNotFoundException("Lieu", "id", lieuId));
         
         List<Reservation> reservations = reservationRepository.findByLieu(lieu).stream()
                 .filter(r -> (r.getStatut() == ReservationStatus.CONFIRMEE || r.getStatut() == ReservationStatus.EN_ATTENTE) 
@@ -117,18 +131,34 @@ public class LieuService {
                 lieu.setPrix(updatedLieu.getPrix());
                 lieu.setAdresse(updatedLieu.getAdresse());
                 lieu.setPhotos(updatedLieu.getPhotos());
+                lieu.setMaxGuests(updatedLieu.getMaxGuests());
+                lieu.setBedrooms(updatedLieu.getBedrooms());
+                lieu.setBathrooms(updatedLieu.getBathrooms());
+                lieu.setAmenities(updatedLieu.getAmenities());
+                lieu.setCity(updatedLieu.getCity());
+                lieu.setNeighborhood(updatedLieu.getNeighborhood());
+                if (updatedLieu.getActive() != null) {
+                    lieu.setActive(updatedLieu.getActive());
+                }
+                lieu.setLatitude(updatedLieu.getLatitude());
+                lieu.setLongitude(updatedLieu.getLongitude());
+                lieu.setHouseRules(updatedLieu.getHouseRules());
+                lieu.setCheckInTime(updatedLieu.getCheckInTime());
+                lieu.setCheckOutTime(updatedLieu.getCheckOutTime());
+                lieu.setMinimumNights(updatedLieu.getMinimumNights());
                 lieu.setValide(true); // Always validated now
                 return lieuRepository.save(lieu);
             })
             .orElse(null);
     }
     
-    // Delete lieu (owner or admin)
+    // Delete lieu (owner only)
     public boolean deleteLieu(Long id, User currentUser) {
         return lieuRepository.findById(id)
             .map(lieu -> {
-                // Check if user is owner
-                if (lieu.getOwner().getId().equals(currentUser.getId())) {
+                boolean isOwner = lieu.getOwner() != null
+                        && lieu.getOwner().getId().equals(currentUser.getId());
+                if (isOwner) {
                     lieuRepository.delete(lieu);
                     return true;
                 }

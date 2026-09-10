@@ -25,9 +25,9 @@ public class RegisterRequest {
              message = "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character")
     private String password;
     
-    @Pattern(regexp = "^(TENANT|OWNER|ADMIN)$", 
-             message = "Role must be either TENANT, OWNER, or ADMIN")
-    private String role = "TENANT"; // Default role
+    @Pattern(regexp = "^(LOCATAIRE|PROPRIETAIRE)$",
+             message = "Role must be either LOCATAIRE or PROPRIETAIRE")
+    private String role = "LOCATAIRE"; // Default role
     
     // Constructors
     public RegisterRequest() {}

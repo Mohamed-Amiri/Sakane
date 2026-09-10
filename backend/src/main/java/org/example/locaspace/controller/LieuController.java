@@ -60,16 +60,9 @@ public class LieuController {
             (UserDetailsServiceImpl.UserPrincipal) authentication.getPrincipal();
         User currentUser = userService.getUserById(userPrincipal.getId());
 
-        Lieu lieu = Lieu.builder()
-            .titre(lieuRequest.getTitre())
-            .description(lieuRequest.getDescription())
-            .type(parseLieuType(lieuRequest.getType()))
-            .prix(lieuRequest.getPrix())
-            .adresse(lieuRequest.getAdresse())
-            .photos(lieuRequest.getPhotos())
-            .owner(currentUser)
-            .valide(true)
-            .build();
+        Lieu lieu = entityMapper.toLieu(lieuRequest, parseLieuType(lieuRequest.getType()));
+        lieu.setOwner(currentUser);
+        lieu.setValide(true);
 
         Lieu savedLieu = lieuService.createLieu(lieu);
         LieuResponse response = entityMapper.toLieuResponse(savedLieu);
@@ -89,24 +82,32 @@ public class LieuController {
     public ResponseEntity<List<org.example.locaspace.model.CalendarEvent>> getCalendar(
             @PathVariable Long id,
             @RequestParam("startDate") String startDate,
-            @RequestParam("endDate") String endDate) {
+            @RequestParam("endDate") String endDate,
+            Authentication authentication) {
+        User currentUser = userService.getUserById(
+            ((org.example.locaspace.security.UserDetailsServiceImpl.UserPrincipal) authentication.getPrincipal()).getId());
         java.time.LocalDate start = java.time.LocalDate.parse(startDate.substring(0, 10));
         java.time.LocalDate end = java.time.LocalDate.parse(endDate.substring(0, 10));
-        return ResponseEntity.ok(calendarService.getEvents(id, start, end));
+        return ResponseEntity.ok(calendarService.getEvents(id, start, end, currentUser));
     }
 
     @PostMapping("/properties/{id}/calendar/block")
     @PreAuthorize("hasRole('PROPRIETAIRE')")
     public ResponseEntity<org.example.locaspace.model.CalendarEvent> blockDates(
             @PathVariable Long id,
-            @Valid @RequestBody CalendarBlockRequest request) {
-        return ResponseEntity.ok(calendarService.blockDates(id, request.getStartDate(), request.getEndDate(), request.getTitle()));
+            @Valid @RequestBody CalendarBlockRequest request,
+            Authentication authentication) {
+        User currentUser = userService.getUserById(
+            ((org.example.locaspace.security.UserDetailsServiceImpl.UserPrincipal) authentication.getPrincipal()).getId());
+        return ResponseEntity.ok(calendarService.blockDates(id, request.getStartDate(), request.getEndDate(), request.getTitle(), currentUser));
     }
 
     @DeleteMapping("/calendar/events/{eventId}")
     @PreAuthorize("hasRole('PROPRIETAIRE')")
-    public ResponseEntity<Void> deleteEvent(@PathVariable Long eventId) {
-        calendarService.deleteEvent(eventId);
+    public ResponseEntity<Void> deleteEvent(@PathVariable Long eventId, Authentication authentication) {
+        User currentUser = userService.getUserById(
+            ((org.example.locaspace.security.UserDetailsServiceImpl.UserPrincipal) authentication.getPrincipal()).getId());
+        calendarService.deleteEvent(eventId, currentUser);
         return ResponseEntity.noContent().build();
     }
 
@@ -133,7 +134,7 @@ public class LieuController {
         }
         merged.addAll(urls);
         lieu.setPhotos(merged);
-        lieuService.createLieu(lieu);
+        lieuService.saveLieu(lieu);
 
         return ResponseEntity.ok(urls);
     }
@@ -157,7 +158,7 @@ public class LieuController {
             java.util.List<String> updated = new java.util.ArrayList<>(lieu.getPhotos());
             updated.remove(url);
             lieu.setPhotos(updated);
-            lieuService.createLieu(lieu);
+            lieuService.saveLieu(lieu);
         }
         return ResponseEntity.noContent().build();
     }
@@ -178,13 +179,13 @@ public class LieuController {
         }
 
         lieu.setPhotos(orderedUrls);
-        lieuService.createLieu(lieu);
+        lieuService.saveLieu(lieu);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<LieuResponse> getLieu(@PathVariable Long id) {
-        Lieu lieu = lieuService.getLieuById(id)
+        Lieu lieu = lieuService.getPublicLieuById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Lieu", "id", id));
 
         LieuResponse response = entityMapper.toLieuResponse(lieu);
@@ -211,14 +212,7 @@ public class LieuController {
             (UserDetailsServiceImpl.UserPrincipal) authentication.getPrincipal();
         User currentUser = userService.getUserById(userPrincipal.getId());
 
-        Lieu updatedLieu = Lieu.builder()
-            .titre(lieuRequest.getTitre())
-            .description(lieuRequest.getDescription())
-            .type(parseLieuType(lieuRequest.getType()))
-            .prix(lieuRequest.getPrix())
-            .adresse(lieuRequest.getAdresse())
-            .photos(lieuRequest.getPhotos())
-            .build();
+        Lieu updatedLieu = entityMapper.toLieu(lieuRequest, parseLieuType(lieuRequest.getType()));
 
         Lieu savedLieu = lieuService.updateLieu(id, updatedLieu, currentUser);
         if (savedLieu == null) {

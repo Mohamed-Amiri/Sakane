@@ -7,6 +7,8 @@ import org.example.locaspace.model.Reservation;
 import org.example.locaspace.model.User;
 import org.example.locaspace.model.enums.ReservationStatus;
 import org.example.locaspace.model.enums.Role;
+import org.example.locaspace.exception.BadRequestException;
+import org.example.locaspace.exception.ResourceNotFoundException;
 import org.example.locaspace.repository.ReservationRepository;
 import org.example.locaspace.repository.LieuRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,11 +63,21 @@ public class ReservationService {
                 throw new IllegalStateException("Ces dates ne sont plus disponibles");
             }
             
-            // Validate dates
+            // Validate dates: start must be on or after today (consistent with @FutureOrPresent),
+            // and must be before the end date
             if (reservation.getDateDebut().isAfter(reservation.getDateFin()) ||
                 reservation.getDateDebut().isBefore(LocalDate.now())) {
                 throw new IllegalArgumentException("Invalid reservation dates");
             }
+
+            // createdAt is set by the controller; ensure it is never forged from the client side
+            if (reservation.getCreatedAt() == null) {
+                reservation.setCreatedAt(java.time.LocalDateTime.now());
+            }
+            // Server-controlled status-transition timestamps must start null
+            reservation.setAcceptedAt(null);
+            reservation.setRejectedAt(null);
+            reservation.setCancelledAt(null);
             
             reservation.setStatut(ReservationStatus.EN_ATTENTE); // Default status
             log.debug("ReservationService: Saving reservation...");
@@ -114,55 +126,75 @@ public class ReservationService {
         return reservationRepository.findByStatut(statut);
     }
     
-    // Update reservation status (owner or admin)
-    public Reservation updateReservationStatus(Long id, ReservationStatus newStatus, String messageOpt) {
-        return reservationRepository.findById(id)
-            .map(reservation -> {
-                // Simplified server-side status update; validation can be expanded
-                ReservationStatus oldStatus = reservation.getStatut();
-                if (isValidStatusTransition(oldStatus, newStatus, true, false)) {
-                    reservation.setStatut(newStatus);
-                    Reservation saved = reservationRepository.save(reservation);
-                    
-                    // Notify Tenant
-                    String title = "Mise à jour de votre réservation";
-                    String message = "Votre réservation pour " + reservation.getLieu().getTitre() + " est maintenant : " + newStatus;
-                    org.example.locaspace.model.Notification.NotificationType type = org.example.locaspace.model.Notification.NotificationType.SYSTEM;
-                    
-                    if (newStatus == ReservationStatus.CONFIRMEE) {
-                        type = org.example.locaspace.model.Notification.NotificationType.RESERVATION_CONFIRMED;
-                        message = "Bonne nouvelle ! Votre réservation pour " + reservation.getLieu().getTitre() + " a été confirmée.";
-                    } else if (newStatus == ReservationStatus.REFUSEE) {
-                        message = "Malheureusement, votre demande pour " + reservation.getLieu().getTitre() + " a été refusée.";
-                    }
-                    
-                    notificationService.createNotification(reservation.getLocataire(), title, message, type);
-                    
-                    return saved;
-                } else {
-                    throw new IllegalArgumentException("Invalid status transition");
-                }
-            })
-            .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
+    // Update reservation status (owner of the lieu only)
+    public Reservation updateReservationStatus(Long id, ReservationStatus newStatus, String messageOpt, User currentUser) {
+        Reservation reservation = reservationRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Reservation", "id", id));
+
+        // Verify the acting user owns the lieu of this reservation
+        Lieu lieu = reservation.getLieu();
+        if (lieu == null || lieu.getOwner() == null
+                || !lieu.getOwner().getId().equals(currentUser.getId())) {
+            throw new org.example.locaspace.exception.UnauthorizedException(
+                "You don't have permission to update this reservation");
+        }
+
+        ReservationStatus oldStatus = reservation.getStatut();
+        if (isValidStatusTransition(oldStatus, newStatus, true, false)) {
+            reservation.setStatut(newStatus);
+            if (newStatus == ReservationStatus.CONFIRMEE) {
+                reservation.setAcceptedAt(java.time.LocalDateTime.now());
+            } else if (newStatus == ReservationStatus.REFUSEE) {
+                reservation.setRejectedAt(java.time.LocalDateTime.now());
+            }
+            Reservation saved = reservationRepository.save(reservation);
+
+            // Notify Tenant
+            String title = "Mise à jour de votre réservation";
+            String message = "Votre réservation pour " + lieu.getTitre() + " est maintenant : " + newStatus;
+            org.example.locaspace.model.Notification.NotificationType type = org.example.locaspace.model.Notification.NotificationType.SYSTEM;
+
+            if (newStatus == ReservationStatus.CONFIRMEE) {
+                type = org.example.locaspace.model.Notification.NotificationType.RESERVATION_CONFIRMED;
+                message = "Bonne nouvelle ! Votre réservation pour " + lieu.getTitre() + " a été confirmée.";
+            } else if (newStatus == ReservationStatus.REFUSEE) {
+                message = "Malheureusement, votre demande pour " + lieu.getTitre() + " a été refusée.";
+            }
+
+            notificationService.createNotification(reservation.getLocataire(), title, message, type);
+
+            return saved;
+        } else {
+            throw new BadRequestException("Invalid status transition: " + oldStatus + " -> " + newStatus);
+        }
     }
-    
-    // Cancel reservation (tenant only, within cancellation period)
-    public boolean cancelReservation(Long id, User tenant) {
+
+    public boolean cancelReservation(Long id, User tenant, boolean isOwnerCancel) {
         return reservationRepository.findById(id)
             .map(reservation -> {
-                // Check if user is the tenant
-                if (!reservation.getLocataire().getId().equals(tenant.getId())) {
-                    return false;
+                // Owners can cancel confirmed reservations directly (no 24h rule)
+                if (isOwnerCancel) {
+                    Lieu lieu = reservation.getLieu();
+                    if (lieu == null || lieu.getOwner() == null
+                            || !lieu.getOwner().getId().equals(tenant.getId())) {
+                        throw new org.example.locaspace.exception.UnauthorizedException(
+                            "You don't have permission to cancel this reservation");
+                    }
+                } else {
+                    // Tenant cancel: check ownership
+                    if (!reservation.getLocataire().getId().equals(tenant.getId())) {
+                        return false;
+                    }
+                    // Check if cancellation is allowed (at least 24 hours before start date)
+                    if (reservation.getDateDebut().minusDays(1).isBefore(LocalDate.now())) {
+                        throw new IllegalStateException("Cannot cancel reservation less than 24 hours before start date");
+                    }
                 }
-                
-                // Check if cancellation is allowed (e.g., at least 24 hours before start date)
-                if (reservation.getDateDebut().minusDays(1).isBefore(LocalDate.now())) {
-                    throw new IllegalStateException("Cannot cancel reservation less than 24 hours before start date");
-                }
-                
+
                 reservation.setStatut(ReservationStatus.ANNULEE);
+                reservation.setCancelledAt(java.time.LocalDateTime.now());
                 reservationRepository.save(reservation);
-                
+
                 // Notify Owner
                 notificationService.createNotification(
                     reservation.getLieu().getOwner(),
@@ -170,7 +202,7 @@ public class ReservationService {
                     "Le locataire a annulé sa réservation pour " + reservation.getLieu().getTitre(),
                     org.example.locaspace.model.Notification.NotificationType.RESERVATION_CANCELLED
                 );
-                
+
                 return true;
             })
             .orElse(false);

@@ -52,8 +52,6 @@ public interface LieuRepository extends JpaRepository<Lieu, Long>, JpaSpecificat
                                        @Param("maxPrix") BigDecimal maxPrix,
                                        Pageable pageable);
     
-    List<Lieu> findByValideFalse(); // For admin validation
-    
     @Query("SELECT COUNT(l) FROM Lieu l WHERE l.owner = :owner")
     Long countByOwner(@Param("owner") User owner);
 }

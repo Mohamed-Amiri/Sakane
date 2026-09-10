@@ -3,12 +3,12 @@
     "target": "http://localhost:8082",
     "secure": false,
     "changeOrigin": true,
-    "logLevel": "info"
+    "logLevel": "silent"
   },
   "/uploads": {
     "target": "http://localhost:8082",
     "secure": false,
     "changeOrigin": true,
-    "logLevel": "info"
+    "logLevel": "silent"
   }
 }

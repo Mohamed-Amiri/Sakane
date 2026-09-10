@@ -12,8 +12,6 @@ import java.util.List;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import java.util.List;
-
 @Entity @Table(name = "users")
 @Getter @Setter
 @NoArgsConstructor

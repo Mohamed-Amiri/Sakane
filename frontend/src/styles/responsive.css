@@ -1,0 +1,158 @@
+/* ============================================================
+   Responsive — intentional layouts per breakpoint
+   (desktop ≥1025 · laptop ≤1024 · tablet ≤860 · phone ≤640)
+   ============================================================ */
+
+@media (max-width: 1024px) {
+  .search-layout { grid-template-columns: 232px 1fr; }
+  .detail-layout { grid-template-columns: minmax(0, 1fr) 340px; gap: var(--space-5); }
+  .dash-columns, .dash-columns--cal { grid-template-columns: 1fr; }
+  .auth-shell { grid-template-columns: 1fr 1.2fr; }
+  .stat-strip { grid-template-columns: 1fr 1fr; }
+  .stat:nth-child(3) { border-left: 0; }
+  .stat:nth-child(n+3) { border-top: 1px solid var(--color-border); }
+  .form-section { grid-template-columns: 180px 1fr; }
+}
+
+@media (max-width: 860px) {
+  /* Header collapses: primary nav hidden; toggle reveals secondary links */
+  .main-nav { display: none; }
+  .nav-toggle {
+    display: inline-grid; place-items: center;
+    width: 44px; height: 44px; border-radius: var(--radius-sm);
+    background: transparent; border: 1px solid var(--color-inverse-line);
+    color: var(--color-text-on-inverse); cursor: pointer;
+  }
+  .nav-toggle svg { width: 20px; height: 20px; }
+  .user-chip__name-wrap, .user-chip__caret { display: none; }
+  .user-chip { padding: 4px; }
+
+  /* Signed-in users get a bottom tab bar for primary destinations */
+  body.has-bottom-nav .bottom-nav { display: block; }
+  body.has-bottom-nav main { padding-bottom: calc(var(--bottom-nav-height) + var(--space-4)); }
+  body.has-bottom-nav .app-footer { padding-bottom: calc(var(--bottom-nav-height) + var(--space-4)); }
+  body.has-bottom-nav .toast-region { bottom: calc(var(--bottom-nav-height) + var(--space-3)); }
+
+  .auth-shell { grid-template-columns: 1fr; min-height: 0; }
+  .auth-side { display: none; }
+  .auth-main { padding-block: var(--space-6); }
+
+  .search-layout { grid-template-columns: 1fr; }
+  /* Filters collapse behind a toggle on small screens */
+  .filters-toggle { display: inline-flex; margin-bottom: var(--space-3); }
+  .filters-panel { position: static; display: none; }
+  .filters-panel.is-open { display: block; margin-bottom: var(--space-4); }
+
+  .feature-card { grid-template-columns: 1fr; }
+  .feature-card__media { min-height: 0; aspect-ratio: 16 / 9; }
+  .feature-card__body { padding: var(--space-4); }
+
+  .detail-layout { grid-template-columns: 1fr; gap: var(--space-5); margin-top: var(--space-5); }
+  .booking-panel { position: static; }
+  .detail-title-row h1 { font-size: var(--text-2xl); }
+
+  .profile-layout { grid-template-columns: 1fr; }
+  .form-section { grid-template-columns: 1fr; gap: var(--space-3); }
+
+  .search-bar { grid-template-columns: 1fr 1fr; gap: 2px; padding: 8px; border-radius: var(--radius-lg); }
+  .search-bar__field { border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+  .search-bar__field + .search-bar__field::before { display: none; }
+  .search-bar__field--kw, .search-bar__submit { grid-column: 1 / -1; }
+  .search-bar__submit { margin-top: 6px; min-height: 48px; }
+  .home-hero__inner { padding-block: var(--space-7) var(--space-6); }
+}
+
+@media (max-width: 640px) {
+  .container { padding-inline: var(--space-4); }
+  .page-section { padding-block: var(--space-5); }
+  .page-head { margin-bottom: var(--space-4); }
+  .page-head .btn { width: 100%; }
+
+  .home-hero__inner { padding-block: var(--space-6) var(--space-5); }
+  .home-hero p { font-size: var(--text-base); margin-bottom: var(--space-5); }
+  .search-bar { grid-template-columns: 1fr; }
+  .search-bar__field { grid-column: 1 / -1; }
+  .cat-grid { grid-template-columns: repeat(4, 1fr); gap: var(--space-2); }
+  .cat-tile figure { aspect-ratio: 1; }
+  .cat-tile span { left: 8px; bottom: 6px; font-size: var(--text-xs); }
+  .app-footer__cols { gap: var(--space-5); }
+  .owner-cta { padding: var(--space-5); }
+  .owner-cta .btn { width: 100%; }
+
+  .place-grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: var(--space-3); }
+
+  /* Gallery becomes a swipeable strip — every photo stays reachable */
+  .detail-gallery {
+    display: flex; height: auto; gap: var(--space-2); overflow-x: auto; scroll-snap-type: x mandatory;
+    border-radius: var(--radius-lg); padding-bottom: 2px; scrollbar-width: none;
+  }
+  .detail-gallery::-webkit-scrollbar { display: none; }
+  .detail-gallery figure { flex: 0 0 88%; aspect-ratio: 4 / 3; scroll-snap-align: start; border-radius: var(--radius-lg); }
+  .detail-gallery figure:first-child { grid-row: auto; }
+  .detail-gallery--single figure { flex-basis: 100%; }
+  .gallery-open { position: static; margin-top: var(--space-3); box-shadow: none; border: 1px solid var(--color-border-strong); background: var(--color-surface); width: 100%; justify-content: center; }
+
+  /* Phones: the booking module follows the title + facts instead of trailing the reviews.
+     The left column dissolves (display: contents) so its children and the aside share one flow. */
+  .detail-layout { display: flex; flex-direction: column; }
+  .detail-layout > div:first-child { display: contents; }
+  .detail-layout .detail-title-row { order: -3; }
+  .detail-layout .fact-chips { order: -2; margin-bottom: 0; }
+  .detail-layout aside { order: -1; margin-bottom: var(--space-2); }
+
+  .res-card { grid-template-columns: 96px 1fr; }
+  .res-card__media { width: 96px; height: 76px; }
+  .res-card__side { grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: space-between; }
+
+  .form-grid { grid-template-columns: 1fr; }
+  .choice-cards { grid-template-columns: 1fr; }
+  .booking-dates { grid-template-columns: 1fr; }
+  .demo-accounts__row { grid-template-columns: 1fr; }
+  .form-actions { flex-direction: column-reverse; align-items: stretch; }
+  .form-actions .btn { width: 100%; }
+
+  .modal { padding: var(--space-4); }
+  .modal__actions { flex-direction: column-reverse; }
+  .modal__actions .btn { width: 100%; }
+  .modal-overlay { padding: var(--space-3); align-items: end; }
+  .modal:not(.modal--lightbox) { max-height: 86vh; border-radius: var(--radius-lg) var(--radius-lg) var(--radius-md) var(--radius-md); }
+
+  /* Calendar: colour + underline + tag hidden → status stays in the accessible name */
+  .cal { padding: var(--space-3); }
+  .cal__day { height: 44px; font-size: var(--text-xs); padding: 3px 4px; }
+  .cal__tag { display: none; }
+  .cal__day--booked, .cal__day--pending, .cal__day--blocked { box-shadow: inset 0 -3px 0 currentColor; }
+  .cal__day--booked { color: var(--color-primary); }
+  .cal__day--pending { color: var(--color-attention); }
+  .cal__day--blocked { color: var(--color-text-muted); }
+
+  .toast-region { left: var(--space-3); right: var(--space-3); bottom: var(--space-3); max-width: none; }
+
+  .stat-strip { grid-template-columns: 1fr 1fr; }
+  .stat { padding: var(--space-3) var(--space-4); }
+  .stat--lead .stat__value { font-size: var(--text-2xl); }
+  .photo-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+  .upload-row .btn { width: 100%; }
+  .upload-row .input { width: 100%; }
+
+  /* Tables stack into labelled rows */
+  .table-wrap { border: 0; background: transparent; overflow: visible; }
+  .data-table--stack thead { display: none; }
+  .data-table--stack, .data-table--stack tbody, .data-table--stack tr, .data-table--stack td { display: block; }
+  .data-table--stack tr { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-3) var(--space-4); margin-bottom: var(--space-3); }
+  .data-table--stack td { padding: 6px 0; border: 0; display: flex; justify-content: space-between; gap: var(--space-3); align-items: center; text-align: left; }
+  .data-table--stack td.num { text-align: right; }
+  .data-table--stack td[data-label]::before { content: attr(data-label); font-size: var(--text-xs); font-weight: 700; letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--color-text-muted); flex: none; }
+  .data-table--stack td.cell-lead { display: block; padding-bottom: var(--space-2); border-bottom: 1px solid var(--color-border); margin-bottom: var(--space-1); }
+  .data-table--stack td.cell-actions { display: block; padding-top: var(--space-3); }
+  .data-table--stack .data-table__actions { justify-content: stretch; }
+  .data-table--stack .data-table__actions .btn { flex: 1; }
+  .data-table tbody tr:hover td { background: transparent; }
+}
+
+@media (max-width: 400px) {
+  .stat-strip { grid-template-columns: 1fr; }
+  .stat + .stat { border-left: 0; border-top: 1px solid var(--color-border); }
+  .cat-grid { grid-template-columns: repeat(2, 1fr); }
+  .cat-tile figure { aspect-ratio: 3 / 2; }
+}
