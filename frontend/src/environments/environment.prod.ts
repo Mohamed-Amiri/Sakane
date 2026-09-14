@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'http://localhost:8082'
+  apiBaseUrl: 'https://sakane-backend-api-dvdzhegkbphxe2f3.francecentral-01.azurewebsites.net'
 };
