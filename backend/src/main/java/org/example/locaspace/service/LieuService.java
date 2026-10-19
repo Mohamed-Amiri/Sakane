@@ -130,11 +130,11 @@ public class LieuService {
                 lieu.setType(updatedLieu.getType());
                 lieu.setPrix(updatedLieu.getPrix());
                 lieu.setAdresse(updatedLieu.getAdresse());
-                lieu.setPhotos(updatedLieu.getPhotos());
+                lieu.replacePhotos(updatedLieu.getPhotoUrls());
                 lieu.setMaxGuests(updatedLieu.getMaxGuests());
                 lieu.setBedrooms(updatedLieu.getBedrooms());
                 lieu.setBathrooms(updatedLieu.getBathrooms());
-                lieu.setAmenities(updatedLieu.getAmenities());
+                lieu.replaceAmenities(updatedLieu.getAmenityNames());
                 lieu.setCity(updatedLieu.getCity());
                 lieu.setNeighborhood(updatedLieu.getNeighborhood());
                 if (updatedLieu.getActive() != null) {

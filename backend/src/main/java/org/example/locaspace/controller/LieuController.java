@@ -128,12 +128,9 @@ public class LieuController {
         }
 
         List<String> urls = photoStorageService.storePropertyPhotos(id, photos);
-        List<String> merged = new java.util.ArrayList<>();
-        if (lieu.getPhotos() != null) {
-            merged.addAll(lieu.getPhotos());
-        }
+        List<String> merged = new java.util.ArrayList<>(lieu.getPhotoUrls());
         merged.addAll(urls);
-        lieu.setPhotos(merged);
+        lieu.replacePhotos(merged);
         lieuService.saveLieu(lieu);
 
         return ResponseEntity.ok(urls);
@@ -154,10 +151,9 @@ public class LieuController {
             throw new UnauthorizedException("You don't have permission to delete photos for this lieu");
         }
 
-        if (lieu.getPhotos() != null) {
-            java.util.List<String> updated = new java.util.ArrayList<>(lieu.getPhotos());
-            updated.remove(url);
-            lieu.setPhotos(updated);
+        java.util.List<String> updated = new java.util.ArrayList<>(lieu.getPhotoUrls());
+        if (updated.remove(url)) {
+            lieu.replacePhotos(updated);
             lieuService.saveLieu(lieu);
         }
         return ResponseEntity.noContent().build();
@@ -178,7 +174,7 @@ public class LieuController {
             throw new UnauthorizedException("You don't have permission to reorder photos for this lieu");
         }
 
-        lieu.setPhotos(orderedUrls);
+        lieu.reorderPhotos(orderedUrls);
         lieuService.saveLieu(lieu);
         return ResponseEntity.noContent().build();
     }

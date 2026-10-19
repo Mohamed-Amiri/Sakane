@@ -96,204 +96,110 @@ SELECT 'Appartement Haut Standing Casablanca', 'Appartement de standing avec equ
 WHERE NOT EXISTS (SELECT 1 FROM lieux WHERE titre = 'Appartement Haut Standing Casablanca');
 
 -- ---------- PHOTOS (Unsplash URLs - handled by ImgAttrsDirective for responsive srcset) ----------
--- Villa Spacieuse avec Piscine
-INSERT INTO lieu_photos (lieu_id, photo_url)
-SELECT l.id, 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=2070&auto=format&fit=crop'
-FROM lieux l WHERE l.titre = 'Villa Spacieuse avec Piscine'
-AND NOT EXISTS (SELECT 1 FROM lieu_photos lp WHERE lp.lieu_id = l.id AND lp.photo_url LIKE '%1564013799919%');
-INSERT INTO lieu_photos (lieu_id, photo_url)
-SELECT l.id, 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2075&auto=format&fit=crop'
-FROM lieux l WHERE l.titre = 'Villa Spacieuse avec Piscine'
-AND NOT EXISTS (SELECT 1 FROM lieu_photos lp WHERE lp.lieu_id = l.id AND lp.photo_url LIKE '%1600596542815%');
-INSERT INTO lieu_photos (lieu_id, photo_url)
-SELECT l.id, 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop'
-FROM lieux l WHERE l.titre = 'Villa Spacieuse avec Piscine'
-AND NOT EXISTS (SELECT 1 FROM lieu_photos lp WHERE lp.lieu_id = l.id AND lp.photo_url LIKE '%1600585154340%');
-
--- Appartement Moderne Centre-Ville
-INSERT INTO lieu_photos (lieu_id, photo_url)
-SELECT l.id, 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1980&auto=format&fit=crop'
-FROM lieux l WHERE l.titre = 'Appartement Moderne Centre-Ville'
-AND NOT EXISTS (SELECT 1 FROM lieu_photos lp WHERE lp.lieu_id = l.id AND lp.photo_url LIKE '%1502672260266%');
-INSERT INTO lieu_photos (lieu_id, photo_url)
-SELECT l.id, 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=2070&auto=format&fit=crop'
-FROM lieux l WHERE l.titre = 'Appartement Moderne Centre-Ville'
-AND NOT EXISTS (SELECT 1 FROM lieu_photos lp WHERE lp.lieu_id = l.id AND lp.photo_url LIKE '%1560448204%');
-
--- Riad Traditionnel Marrakech
-INSERT INTO lieu_photos (lieu_id, photo_url)
-SELECT l.id, 'https://images.unsplash.com/photo-1539020140153-e479b8c22e70?q=80&w=2070&auto=format&fit=crop'
-FROM lieux l WHERE l.titre = 'Riad Traditionnel Marrakech'
-AND NOT EXISTS (SELECT 1 FROM lieu_photos lp WHERE lp.lieu_id = l.id AND lp.photo_url LIKE '%1539020140153%');
-INSERT INTO lieu_photos (lieu_id, photo_url)
-SELECT l.id, 'https://images.unsplash.com/photo-1553830591-d8632a99e6ff?q=80&w=2070&auto=format&fit=crop'
-FROM lieux l WHERE l.titre = 'Riad Traditionnel Marrakech'
-AND NOT EXISTS (SELECT 1 FROM lieu_photos lp WHERE lp.lieu_id = l.id AND lp.photo_url LIKE '%1553830591%');
-
--- Studio Cosy Rabat
-INSERT INTO lieu_photos (lieu_id, photo_url)
-SELECT l.id, 'https://images.unsplash.com/photo-1536376072261-38c75010e6c9?q=80&w=2071&auto=format&fit=crop'
-FROM lieux l WHERE l.titre = 'Studio Cosy Rabat'
-AND NOT EXISTS (SELECT 1 FROM lieu_photos lp WHERE lp.lieu_id = l.id AND lp.photo_url LIKE '%1536376072261%');
-INSERT INTO lieu_photos (lieu_id, photo_url)
-SELECT l.id, 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1974&auto=format&fit=crop'
-FROM lieux l WHERE l.titre = 'Studio Cosy Rabat'
-AND NOT EXISTS (SELECT 1 FROM lieu_photos lp WHERE lp.lieu_id = l.id AND lp.photo_url LIKE '%1586023492125%');
-
--- Loft Industriel Casablanca
-INSERT INTO lieu_photos (lieu_id, photo_url)
-SELECT l.id, 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?q=80&w=2070&auto=format&fit=crop'
-FROM lieux l WHERE l.titre = 'Loft Industriel Casablanca'
-AND NOT EXISTS (SELECT 1 FROM lieu_photos lp WHERE lp.lieu_id = l.id AND lp.photo_url LIKE '%1493809842364%');
-INSERT INTO lieu_photos (lieu_id, photo_url)
-SELECT l.id, 'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?q=80&w=2076&auto=format&fit=crop'
-FROM lieux l WHERE l.titre = 'Loft Industriel Casablanca'
-AND NOT EXISTS (SELECT 1 FROM lieu_photos lp WHERE lp.lieu_id = l.id AND lp.photo_url LIKE '%1507089947368%');
-
--- Maison Plage Agadir
-INSERT INTO lieu_photos (lieu_id, photo_url)
-SELECT l.id, 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?q=80&w=2070&auto=format&fit=crop'
-FROM lieux l WHERE l.titre = 'Maison Plage Agadir'
-AND NOT EXISTS (SELECT 1 FROM lieu_photos lp WHERE lp.lieu_id = l.id AND lp.photo_url LIKE '%1499793983690%');
-INSERT INTO lieu_photos (lieu_id, photo_url)
-SELECT l.id, 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop'
-FROM lieux l WHERE l.titre = 'Maison Plage Agadir'
-AND NOT EXISTS (SELECT 1 FROM lieu_photos lp WHERE lp.lieu_id = l.id AND lp.photo_url LIKE '%1512917774080%');
-
--- Appartement Familial Rabat
-INSERT INTO lieu_photos (lieu_id, photo_url)
-SELECT l.id, 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=2070&auto=format&fit=crop'
-FROM lieux l WHERE l.titre = 'Appartement Familial Rabat'
-AND NOT EXISTS (SELECT 1 FROM lieu_photos lp WHERE lp.lieu_id = l.id AND lp.photo_url LIKE '%1522708323590%');
-
--- Chambre Hotel Fes
-INSERT INTO lieu_photos (lieu_id, photo_url)
-SELECT l.id, 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=2070&auto=format&fit=crop'
-FROM lieux l WHERE l.titre = 'Chambre Hotel Fes'
-AND NOT EXISTS (SELECT 1 FROM lieu_photos lp WHERE lp.lieu_id = l.id AND lp.photo_url LIKE '%1611892440504%');
-
--- Salle Evenement Tanger
-INSERT INTO lieu_photos (lieu_id, photo_url)
-SELECT l.id, 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2069&auto=format&fit=crop'
-FROM lieux l WHERE l.titre = 'Salle Evenement Tanger'
-AND NOT EXISTS (SELECT 1 FROM lieu_photos lp WHERE lp.lieu_id = l.id AND lp.photo_url LIKE '%1519167758481%');
-
--- Bureau Coworking Rabat
-INSERT INTO lieu_photos (lieu_id, photo_url)
-SELECT l.id, 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop'
-FROM lieux l WHERE l.titre = 'Bureau Coworking Rabat'
-AND NOT EXISTS (SELECT 1 FROM lieu_photos lp WHERE lp.lieu_id = l.id AND lp.photo_url LIKE '%1497366216548%');
-
--- Appartement Vue Mer Tanger
-INSERT INTO lieu_photos (lieu_id, photo_url)
-SELECT l.id, 'https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?q=80&w=2070&auto=format&fit=crop'
-FROM lieux l WHERE l.titre = 'Appartement Vue Mer Tanger'
-AND NOT EXISTS (SELECT 1 FROM lieu_photos lp WHERE lp.lieu_id = l.id AND lp.photo_url LIKE '%1489749798305%');
-
--- Villa Luxe Agadir
-INSERT INTO lieu_photos (lieu_id, photo_url)
-SELECT l.id, 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2053&auto=format&fit=crop'
-FROM lieux l WHERE l.titre = 'Villa Luxe Agadir'
-AND NOT EXISTS (SELECT 1 FROM lieu_photos lp WHERE lp.lieu_id = l.id AND lp.photo_url LIKE '%1600607687939%');
-INSERT INTO lieu_photos (lieu_id, photo_url)
-SELECT l.id, 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=2070&auto=format&fit=crop'
-FROM lieux l WHERE l.titre = 'Villa Luxe Agadir'
-AND NOT EXISTS (SELECT 1 FROM lieu_photos lp WHERE lp.lieu_id = l.id AND lp.photo_url LIKE '%1600566753190%');
-
--- Appartement Haut Standing Casablanca
-INSERT INTO lieu_photos (lieu_id, photo_url)
-SELECT l.id, 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=2070&auto=format&fit=crop'
-FROM lieux l WHERE l.titre = 'Appartement Haut Standing Casablanca'
-AND NOT EXISTS (SELECT 1 FROM lieu_photos lp WHERE lp.lieu_id = l.id AND lp.photo_url LIKE '%1600585154526%');
+-- Single set-based insert. The NOT EXISTS guard makes this safe to run repeatedly and
+-- never creates a duplicate (lieu_id, photo_url) pair. Positions define the display order.
+INSERT INTO lieu_photos (lieu_id, photo_url, position)
+SELECT l.id, p.photo_url, p.position
+FROM lieux l
+JOIN (
+    SELECT 'Villa Spacieuse avec Piscine' AS titre, 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=2070&auto=format&fit=crop' AS photo_url, 0 AS position
+    UNION ALL SELECT 'Villa Spacieuse avec Piscine', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2075&auto=format&fit=crop', 1
+    UNION ALL SELECT 'Villa Spacieuse avec Piscine', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop', 2
+    UNION ALL SELECT 'Appartement Moderne Centre-Ville', 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1980&auto=format&fit=crop', 0
+    UNION ALL SELECT 'Appartement Moderne Centre-Ville', 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=2070&auto=format&fit=crop', 1
+    UNION ALL SELECT 'Riad Traditionnel Marrakech', 'https://images.unsplash.com/photo-1539020140153-e479b8c22e70?q=80&w=2070&auto=format&fit=crop', 0
+    UNION ALL SELECT 'Riad Traditionnel Marrakech', 'https://images.unsplash.com/photo-1553830591-d8632a99e6ff?q=80&w=2070&auto=format&fit=crop', 1
+    UNION ALL SELECT 'Studio Cosy Rabat', 'https://images.unsplash.com/photo-1536376072261-38c75010e6c9?q=80&w=2071&auto=format&fit=crop', 0
+    UNION ALL SELECT 'Studio Cosy Rabat', 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1974&auto=format&fit=crop', 1
+    UNION ALL SELECT 'Loft Industriel Casablanca', 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?q=80&w=2070&auto=format&fit=crop', 0
+    UNION ALL SELECT 'Loft Industriel Casablanca', 'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?q=80&w=2076&auto=format&fit=crop', 1
+    UNION ALL SELECT 'Maison Plage Agadir', 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?q=80&w=2070&auto=format&fit=crop', 0
+    UNION ALL SELECT 'Maison Plage Agadir', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop', 1
+    UNION ALL SELECT 'Appartement Familial Rabat', 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=2070&auto=format&fit=crop', 0
+    UNION ALL SELECT 'Chambre Hotel Fes', 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=2070&auto=format&fit=crop', 0
+    UNION ALL SELECT 'Salle Evenement Tanger', 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2069&auto=format&fit=crop', 0
+    UNION ALL SELECT 'Bureau Coworking Rabat', 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop', 0
+    UNION ALL SELECT 'Appartement Vue Mer Tanger', 'https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?q=80&w=2070&auto=format&fit=crop', 0
+    UNION ALL SELECT 'Villa Luxe Agadir', 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2053&auto=format&fit=crop', 0
+    UNION ALL SELECT 'Villa Luxe Agadir', 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=2070&auto=format&fit=crop', 1
+    UNION ALL SELECT 'Appartement Haut Standing Casablanca', 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=2070&auto=format&fit=crop', 0
+) p ON p.titre = l.titre
+WHERE NOT EXISTS (
+    SELECT 1 FROM lieu_photos lp WHERE lp.lieu_id = l.id AND lp.photo_url = p.photo_url
+);
 
 -- ---------- AMENITIES ----------
--- Villa Spacieuse avec Piscine
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Piscine' FROM lieux l WHERE l.titre = 'Villa Spacieuse avec Piscine' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Piscine');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'WiFi' FROM lieux l WHERE l.titre = 'Villa Spacieuse avec Piscine' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'WiFi');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Jardin' FROM lieux l WHERE l.titre = 'Villa Spacieuse avec Piscine' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Jardin');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Parking' FROM lieux l WHERE l.titre = 'Villa Spacieuse avec Piscine' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Parking');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Climatisation' FROM lieux l WHERE l.titre = 'Villa Spacieuse avec Piscine' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Climatisation');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Cuisine equipee' FROM lieux l WHERE l.titre = 'Villa Spacieuse avec Piscine' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Cuisine equipee');
-
--- Appartement Moderne Centre-Ville
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'WiFi' FROM lieux l WHERE l.titre = 'Appartement Moderne Centre-Ville' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'WiFi');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Climatisation' FROM lieux l WHERE l.titre = 'Appartement Moderne Centre-Ville' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Climatisation');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Cuisine equipee' FROM lieux l WHERE l.titre = 'Appartement Moderne Centre-Ville' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Cuisine equipee');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Lave-linge' FROM lieux l WHERE l.titre = 'Appartement Moderne Centre-Ville' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Lave-linge');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'TV ecran plat' FROM lieux l WHERE l.titre = 'Appartement Moderne Centre-Ville' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'TV ecran plat');
-
--- Riad Traditionnel Marrakech
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'WiFi' FROM lieux l WHERE l.titre = 'Riad Traditionnel Marrakech' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'WiFi');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Patio' FROM lieux l WHERE l.titre = 'Riad Traditionnel Marrakech' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Patio');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Terrasse' FROM lieux l WHERE l.titre = 'Riad Traditionnel Marrakech' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Terrasse');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Cuisine equipee' FROM lieux l WHERE l.titre = 'Riad Traditionnel Marrakech' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Cuisine equipee');
-
--- Studio Cosy Rabat
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'WiFi' FROM lieux l WHERE l.titre = 'Studio Cosy Rabat' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'WiFi');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Cuisine equipee' FROM lieux l WHERE l.titre = 'Studio Cosy Rabat' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Cuisine equipee');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Climatisation' FROM lieux l WHERE l.titre = 'Studio Cosy Rabat' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Climatisation');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'TV ecran plat' FROM lieux l WHERE l.titre = 'Studio Cosy Rabat' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'TV ecran plat');
-
--- Loft Industriel Casablanca
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'WiFi' FROM lieux l WHERE l.titre = 'Loft Industriel Casablanca' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'WiFi');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Climatisation' FROM lieux l WHERE l.titre = 'Loft Industriel Casablanca' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Climatisation');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Cuisine equipee' FROM lieux l WHERE l.titre = 'Loft Industriel Casablanca' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Cuisine equipee');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Lave-linge' FROM lieux l WHERE l.titre = 'Loft Industriel Casablanca' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Lave-linge');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Parking' FROM lieux l WHERE l.titre = 'Loft Industriel Casablanca' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Parking');
-
--- Maison Plage Agadir
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'WiFi' FROM lieux l WHERE l.titre = 'Maison Plage Agadir' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'WiFi');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Jardin' FROM lieux l WHERE l.titre = 'Maison Plage Agadir' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Jardin');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Barbecue' FROM lieux l WHERE l.titre = 'Maison Plage Agadir' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Barbecue');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Parking' FROM lieux l WHERE l.titre = 'Maison Plage Agadir' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Parking');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Vue mer' FROM lieux l WHERE l.titre = 'Maison Plage Agadir' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Vue mer');
-
--- Appartement Familial Rabat
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'WiFi' FROM lieux l WHERE l.titre = 'Appartement Familial Rabat' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'WiFi');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Cuisine equipee' FROM lieux l WHERE l.titre = 'Appartement Familial Rabat' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Cuisine equipee');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Lave-linge' FROM lieux l WHERE l.titre = 'Appartement Familial Rabat' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Lave-linge');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Climatisation' FROM lieux l WHERE l.titre = 'Appartement Familial Rabat' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Climatisation');
-
--- Chambre Hotel Fes
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'WiFi' FROM lieux l WHERE l.titre = 'Chambre Hotel Fes' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'WiFi');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Petit-dejeuner inclus' FROM lieux l WHERE l.titre = 'Chambre Hotel Fes' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Petit-dejeuner inclus');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Climatisation' FROM lieux l WHERE l.titre = 'Chambre Hotel Fes' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Climatisation');
-
--- Salle Evenement Tanger
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'WiFi' FROM lieux l WHERE l.titre = 'Salle Evenement Tanger' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'WiFi');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Systeme son' FROM lieux l WHERE l.titre = 'Salle Evenement Tanger' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Systeme son');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Projecteur' FROM lieux l WHERE l.titre = 'Salle Evenement Tanger' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Projecteur');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Climatisation' FROM lieux l WHERE l.titre = 'Salle Evenement Tanger' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Climatisation');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Parking' FROM lieux l WHERE l.titre = 'Salle Evenement Tanger' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Parking');
-
--- Bureau Coworking Rabat
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'WiFi haut debit' FROM lieux l WHERE l.titre = 'Bureau Coworking Rabat' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'WiFi haut debit');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Imprimante' FROM lieux l WHERE l.titre = 'Bureau Coworking Rabat' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Imprimante');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Climatisation' FROM lieux l WHERE l.titre = 'Bureau Coworking Rabat' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Climatisation');
-
--- Appartement Vue Mer Tanger
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'WiFi' FROM lieux l WHERE l.titre = 'Appartement Vue Mer Tanger' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'WiFi');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Vue mer' FROM lieux l WHERE l.titre = 'Appartement Vue Mer Tanger' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Vue mer');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Terrasse' FROM lieux l WHERE l.titre = 'Appartement Vue Mer Tanger' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Terrasse');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Cuisine equipee' FROM lieux l WHERE l.titre = 'Appartement Vue Mer Tanger' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Cuisine equipee');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Climatisation' FROM lieux l WHERE l.titre = 'Appartement Vue Mer Tanger' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Climatisation');
-
--- Villa Luxe Agadir
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Piscine chauffee' FROM lieux l WHERE l.titre = 'Villa Luxe Agadir' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Piscine chauffee');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Spa' FROM lieux l WHERE l.titre = 'Villa Luxe Agadir' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Spa');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'WiFi' FROM lieux l WHERE l.titre = 'Villa Luxe Agadir' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'WiFi');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Jardin' FROM lieux l WHERE l.titre = 'Villa Luxe Agadir' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Jardin');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Parking' FROM lieux l WHERE l.titre = 'Villa Luxe Agadir' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Parking');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Personnel de maison' FROM lieux l WHERE l.titre = 'Villa Luxe Agadir' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Personnel de maison');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Vue mer' FROM lieux l WHERE l.titre = 'Villa Luxe Agadir' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Vue mer');
-
--- Appartement Haut Standing Casablanca
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'WiFi' FROM lieux l WHERE l.titre = 'Appartement Haut Standing Casablanca' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'WiFi');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Climatisation' FROM lieux l WHERE l.titre = 'Appartement Haut Standing Casablanca' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Climatisation');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Cuisine equipee' FROM lieux l WHERE l.titre = 'Appartement Haut Standing Casablanca' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Cuisine equipee');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Parking prive' FROM lieux l WHERE l.titre = 'Appartement Haut Standing Casablanca' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Parking prive');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'TV ecran plat' FROM lieux l WHERE l.titre = 'Appartement Haut Standing Casablanca' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'TV ecran plat');
-INSERT INTO lieu_amenities (lieu_id, amenity) SELECT l.id, 'Lave-linge' FROM lieux l WHERE l.titre = 'Appartement Haut Standing Casablanca' AND NOT EXISTS (SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = 'Lave-linge');
+-- Single set-based insert with the same idempotency guard as photos.
+INSERT INTO lieu_amenities (lieu_id, amenity, position)
+SELECT l.id, a.amenity, a.position
+FROM lieux l
+JOIN (
+    SELECT 'Villa Spacieuse avec Piscine' AS titre, 'Piscine' AS amenity, 0 AS position
+    UNION ALL SELECT 'Villa Spacieuse avec Piscine', 'WiFi', 1
+    UNION ALL SELECT 'Villa Spacieuse avec Piscine', 'Jardin', 2
+    UNION ALL SELECT 'Villa Spacieuse avec Piscine', 'Parking', 3
+    UNION ALL SELECT 'Villa Spacieuse avec Piscine', 'Climatisation', 4
+    UNION ALL SELECT 'Villa Spacieuse avec Piscine', 'Cuisine equipee', 5
+    UNION ALL SELECT 'Appartement Moderne Centre-Ville', 'WiFi', 0
+    UNION ALL SELECT 'Appartement Moderne Centre-Ville', 'Climatisation', 1
+    UNION ALL SELECT 'Appartement Moderne Centre-Ville', 'Cuisine equipee', 2
+    UNION ALL SELECT 'Appartement Moderne Centre-Ville', 'Lave-linge', 3
+    UNION ALL SELECT 'Appartement Moderne Centre-Ville', 'TV ecran plat', 4
+    UNION ALL SELECT 'Riad Traditionnel Marrakech', 'WiFi', 0
+    UNION ALL SELECT 'Riad Traditionnel Marrakech', 'Patio', 1
+    UNION ALL SELECT 'Riad Traditionnel Marrakech', 'Terrasse', 2
+    UNION ALL SELECT 'Riad Traditionnel Marrakech', 'Cuisine equipee', 3
+    UNION ALL SELECT 'Studio Cosy Rabat', 'WiFi', 0
+    UNION ALL SELECT 'Studio Cosy Rabat', 'Cuisine equipee', 1
+    UNION ALL SELECT 'Studio Cosy Rabat', 'Climatisation', 2
+    UNION ALL SELECT 'Studio Cosy Rabat', 'TV ecran plat', 3
+    UNION ALL SELECT 'Loft Industriel Casablanca', 'WiFi', 0
+    UNION ALL SELECT 'Loft Industriel Casablanca', 'Climatisation', 1
+    UNION ALL SELECT 'Loft Industriel Casablanca', 'Cuisine equipee', 2
+    UNION ALL SELECT 'Loft Industriel Casablanca', 'Lave-linge', 3
+    UNION ALL SELECT 'Loft Industriel Casablanca', 'Parking', 4
+    UNION ALL SELECT 'Maison Plage Agadir', 'WiFi', 0
+    UNION ALL SELECT 'Maison Plage Agadir', 'Jardin', 1
+    UNION ALL SELECT 'Maison Plage Agadir', 'Barbecue', 2
+    UNION ALL SELECT 'Maison Plage Agadir', 'Parking', 3
+    UNION ALL SELECT 'Maison Plage Agadir', 'Vue mer', 4
+    UNION ALL SELECT 'Appartement Familial Rabat', 'WiFi', 0
+    UNION ALL SELECT 'Appartement Familial Rabat', 'Cuisine equipee', 1
+    UNION ALL SELECT 'Appartement Familial Rabat', 'Lave-linge', 2
+    UNION ALL SELECT 'Appartement Familial Rabat', 'Climatisation', 3
+    UNION ALL SELECT 'Chambre Hotel Fes', 'WiFi', 0
+    UNION ALL SELECT 'Chambre Hotel Fes', 'Petit-dejeuner inclus', 1
+    UNION ALL SELECT 'Chambre Hotel Fes', 'Climatisation', 2
+    UNION ALL SELECT 'Salle Evenement Tanger', 'WiFi', 0
+    UNION ALL SELECT 'Salle Evenement Tanger', 'Systeme son', 1
+    UNION ALL SELECT 'Salle Evenement Tanger', 'Projecteur', 2
+    UNION ALL SELECT 'Salle Evenement Tanger', 'Climatisation', 3
+    UNION ALL SELECT 'Salle Evenement Tanger', 'Parking', 4
+    UNION ALL SELECT 'Bureau Coworking Rabat', 'WiFi haut debit', 0
+    UNION ALL SELECT 'Bureau Coworking Rabat', 'Imprimante', 1
+    UNION ALL SELECT 'Bureau Coworking Rabat', 'Climatisation', 2
+    UNION ALL SELECT 'Appartement Vue Mer Tanger', 'WiFi', 0
+    UNION ALL SELECT 'Appartement Vue Mer Tanger', 'Vue mer', 1
+    UNION ALL SELECT 'Appartement Vue Mer Tanger', 'Terrasse', 2
+    UNION ALL SELECT 'Appartement Vue Mer Tanger', 'Cuisine equipee', 3
+    UNION ALL SELECT 'Appartement Vue Mer Tanger', 'Climatisation', 4
+    UNION ALL SELECT 'Villa Luxe Agadir', 'Piscine chauffee', 0
+    UNION ALL SELECT 'Villa Luxe Agadir', 'Spa', 1
+    UNION ALL SELECT 'Villa Luxe Agadir', 'WiFi', 2
+    UNION ALL SELECT 'Villa Luxe Agadir', 'Jardin', 3
+    UNION ALL SELECT 'Villa Luxe Agadir', 'Parking', 4
+    UNION ALL SELECT 'Villa Luxe Agadir', 'Personnel de maison', 5
+    UNION ALL SELECT 'Villa Luxe Agadir', 'Vue mer', 6
+    UNION ALL SELECT 'Appartement Haut Standing Casablanca', 'WiFi', 0
+    UNION ALL SELECT 'Appartement Haut Standing Casablanca', 'Climatisation', 1
+    UNION ALL SELECT 'Appartement Haut Standing Casablanca', 'Cuisine equipee', 2
+    UNION ALL SELECT 'Appartement Haut Standing Casablanca', 'Parking prive', 3
+    UNION ALL SELECT 'Appartement Haut Standing Casablanca', 'TV ecran plat', 4
+    UNION ALL SELECT 'Appartement Haut Standing Casablanca', 'Lave-linge', 5
+) a ON a.titre = l.titre
+WHERE NOT EXISTS (
+    SELECT 1 FROM lieu_amenities la WHERE la.lieu_id = l.id AND la.amenity = a.amenity
+);
 
 -- ---------- RESERVATIONS ----------
 -- marie@example.com reservations
