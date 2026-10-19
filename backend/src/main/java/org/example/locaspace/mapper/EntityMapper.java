@@ -86,14 +86,14 @@ public class EntityMapper {
             lieu.getPrix(),
             lieu.getAdresse(),
             lieu.isValide(),
-            lieu.getPhotos(),
+            lieu.getPhotoUrls(),
             owner,
             averageRating,
             reviewCount,
             lieu.getMaxGuests(),
             lieu.getBedrooms(),
             lieu.getBathrooms(),
-            lieu.getAmenities(),
+            lieu.getAmenityNames(),
             lieu.getCity(),
             lieu.getNeighborhood(),
             lieu.getActive(),
@@ -111,17 +111,15 @@ public class EntityMapper {
             return null;
         }
 
-        return Lieu.builder()
+        Lieu lieu = Lieu.builder()
             .titre(request.getTitre())
             .description(request.getDescription())
             .type(type)
             .prix(request.getPrix())
             .adresse(request.getAdresse())
-            .photos(request.getPhotos())
             .maxGuests(request.getMaxGuests())
             .bedrooms(request.getBedrooms())
             .bathrooms(request.getBathrooms())
-            .amenities(request.getAmenities())
             .city(request.getCity())
             .neighborhood(request.getNeighborhood())
             .active(request.getActive())
@@ -132,6 +130,10 @@ public class EntityMapper {
             .checkOutTime(request.getCheckOutTime())
             .minimumNights(request.getMinimumNights())
             .build();
+
+        lieu.replacePhotos(request.getPhotos());
+        lieu.replaceAmenities(request.getAmenities());
+        return lieu;
     }
 
     public ReservationResponse toReservationResponse(Reservation reservation) {
@@ -162,14 +164,14 @@ public class EntityMapper {
                     reservation.getLieu().getPrix(),
                     safeString(reservation.getLieu().getAdresse(), ""),
                     reservation.getLieu().isValide(),
-                    safeList(reservation.getLieu().getPhotos()),
+                    reservation.getLieu().getPhotoUrls(),
                     null,
                     null,
                     null,
                     reservation.getLieu().getMaxGuests(),
                     reservation.getLieu().getBedrooms(),
                     reservation.getLieu().getBathrooms(),
-                    reservation.getLieu().getAmenities(),
+                    reservation.getLieu().getAmenityNames(),
                     reservation.getLieu().getCity(),
                     reservation.getLieu().getNeighborhood(),
                     reservation.getLieu().getActive(),
@@ -232,14 +234,14 @@ public class EntityMapper {
             lieu.getPrix(),
             lieu.getAdresse(),
             lieu.isValide(),
-            lieu.getPhotos(),
+            lieu.getPhotoUrls(),
             null,
             null,
             null,
             lieu.getMaxGuests(),
             lieu.getBedrooms(),
             lieu.getBathrooms(),
-            lieu.getAmenities(),
+            lieu.getAmenityNames(),
             lieu.getCity(),
             lieu.getNeighborhood(),
             lieu.getActive(),
@@ -271,10 +273,6 @@ public class EntityMapper {
 
     private String safeString(String value, String defaultValue) {
         return value != null ? value : defaultValue;
-    }
-
-    private List<String> safeList(List<String> value) {
-        return value;
     }
 
     private String formatLieuType(LieuType type) {
