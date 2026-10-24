@@ -1,0 +1,249 @@
+{
+  "buildBefore": "pass",
+  "buildAfter": "pass",
+  "unitTestsBefore": {
+    "passed": 36,
+    "failed": 0
+  },
+  "unitTestsAfter": {
+    "passed": 36,
+    "failed": 0
+  },
+  "routeViewportCapturesBefore": 51,
+  "routeViewportCapturesAfter": 51,
+  "finalBrowserChecks": {
+    "checks": [
+      {
+        "name": "/login 360x844",
+        "pass": true,
+        "details": {
+          "gap": 0,
+          "overflow": 0,
+          "frameHeight": 681.046875,
+          "footerBottom": 1024.265625
+        }
+      },
+      {
+        "name": "/login 861x900",
+        "pass": true,
+        "details": {
+          "gap": 0,
+          "overflow": 0,
+          "frameHeight": 836,
+          "footerBottom": 1082.765625
+        }
+      },
+      {
+        "name": "/login 1024x768",
+        "pass": true,
+        "details": {
+          "gap": 0,
+          "overflow": 0,
+          "frameHeight": 816,
+          "footerBottom": 1062.765625
+        }
+      },
+      {
+        "name": "/login 1280x1280",
+        "pass": true,
+        "details": {
+          "gap": 0,
+          "overflow": 0,
+          "frameHeight": 1033.234375,
+          "footerBottom": 1280
+        }
+      },
+      {
+        "name": "/login 1440x900",
+        "pass": true,
+        "details": {
+          "gap": 0,
+          "overflow": 0,
+          "frameHeight": 836,
+          "footerBottom": 1082.765625
+        }
+      },
+      {
+        "name": "/register 360x844",
+        "pass": true,
+        "details": {
+          "gap": 0,
+          "overflow": 0,
+          "frameHeight": 946.140625,
+          "footerBottom": 1289.359375
+        }
+      },
+      {
+        "name": "/register 861x900",
+        "pass": true,
+        "details": {
+          "gap": 0,
+          "overflow": 0,
+          "frameHeight": 836,
+          "footerBottom": 1082.765625
+        }
+      },
+      {
+        "name": "/register 1024x768",
+        "pass": true,
+        "details": {
+          "gap": 0,
+          "overflow": 0,
+          "frameHeight": 816,
+          "footerBottom": 1062.765625
+        }
+      },
+      {
+        "name": "/register 1280x1280",
+        "pass": true,
+        "details": {
+          "gap": 0,
+          "overflow": 0,
+          "frameHeight": 1033.234375,
+          "footerBottom": 1280
+        }
+      },
+      {
+        "name": "/register 1440x900",
+        "pass": true,
+        "details": {
+          "gap": 0,
+          "overflow": 0,
+          "frameHeight": 836,
+          "footerBottom": 1082.765625
+        }
+      },
+      {
+        "name": "Booking fits below sticky header",
+        "pass": true,
+        "details": {
+          "top": 80,
+          "bottom": 733.375,
+          "viewHeight": 1000,
+          "header": 0,
+          "text": "$350\n/ night\n5.0\n(1)\nCHECK-IN\nCHECK-OUT\n3 nights available\nGuests (max 8)\nSpecial requests (optional)\n$350 \u00d7 3 nights\n$1,050\nTotal\n$1,050\nRequest to book\n\nYou won't be charged \u2014 the owner confirms first."
+        }
+      },
+      {
+        "name": "Short desktop keeps normal booking flow",
+        "pass": true,
+        "details": {
+          "position": "static"
+        }
+      },
+      {
+        "name": "Mobile booking keyboard focus reachable",
+        "pass": true,
+        "details": {
+          "top": 396.265625,
+          "bottom": 448.265625,
+          "navTop": 783,
+          "hit": true,
+          "focus": true
+        }
+      },
+      {
+        "name": "Lightbox icon sizes",
+        "pass": true,
+        "details": [
+          [
+            20,
+            20
+          ],
+          [
+            20,
+            20
+          ],
+          [
+            20,
+            20
+          ]
+        ]
+      },
+      {
+        "name": "Lightbox Escape restores gallery focus",
+        "pass": true
+      },
+      {
+        "name": "Review 4-star display",
+        "pass": true,
+        "details": [
+          {
+            "selected": "false",
+            "filled": true,
+            "color": "rgb(109, 40, 217)"
+          },
+          {
+            "selected": "false",
+            "filled": true,
+            "color": "rgb(109, 40, 217)"
+          },
+          {
+            "selected": "false",
+            "filled": true,
+            "color": "rgb(109, 40, 217)"
+          },
+          {
+            "selected": "true",
+            "filled": true,
+            "color": "rgb(109, 40, 217)"
+          },
+          {
+            "selected": "false",
+            "filled": false,
+            "color": "rgb(174, 184, 204)"
+          }
+        ]
+      },
+      {
+        "name": "Create-place final action reachable",
+        "pass": true,
+        "details": {
+          "top": 399.703125,
+          "bottom": 443.703125,
+          "navTop": 783
+        }
+      },
+      {
+        "name": "Existing required errors visually associated",
+        "pass": true,
+        "details": [
+          {
+            "id": "pl-titre-error",
+            "linked": true
+          },
+          {
+            "id": "pl-desc-error",
+            "linked": true
+          },
+          {
+            "id": "pl-prix-error",
+            "linked": true
+          },
+          {
+            "id": "pl-adresse-error",
+            "linked": true
+          }
+        ]
+      },
+      {
+        "name": "Real owner notifications display",
+        "pass": true,
+        "details": {
+          "icons": 3,
+          "unread": 2,
+          "overflow": 0
+        }
+      }
+    ],
+    "errors": [],
+    "blocked": []
+  },
+  "deploymentChanged": false,
+  "liveRecordsModified": false,
+  "coverageLimits": [
+    "Chromium only, not physical device Safari/Firefox certification",
+    "Tenant populated favorites/trips/review-list source-reviewed only",
+    "No valid write submissions, uploads or destructive operations"
+  ]
+}

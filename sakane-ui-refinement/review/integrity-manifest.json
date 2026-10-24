@@ -1,0 +1,144 @@
+{
+  "originalFiles": 113,
+  "changedFileCount": 17,
+  "changedFiles": [
+    {
+      "path": "src/app/features/home/home.component.ts",
+      "beforeSha256": "9c06175b22e5ea1b94de3db0a7cb553e98b23ba84e2da3931d79f12471d67823",
+      "afterSha256": "fee1060be30a29e857e28daa05828f6f40fd82afc71f9021d8b6f39ff51aa933"
+    },
+    {
+      "path": "src/app/features/login/login.component.ts",
+      "beforeSha256": "7fcbcd0769ff0028ca165772dd83a79e8a9084650aa61f8d0af92749b85746fe",
+      "afterSha256": "797f85d6f9e05e2cce3e2a9309afe3108c396aefa47b9a10636385f7161697e0"
+    },
+    {
+      "path": "src/app/features/owner/inbox/inbox.component.ts",
+      "beforeSha256": "46d5dc1a10c46c5ac90fc0fa496d930bb304713a0011be6454bf82c34fbea119",
+      "afterSha256": "c03e34284a74d12a3cd97fab6721d2370ac1d8b6694c2c7126cf9a351e796aab"
+    },
+    {
+      "path": "src/app/features/owner/place-form/place-form.component.ts",
+      "beforeSha256": "5f235a460de1611f11713c4a06acbd314fe84f74b2cd89f8bdc2342b57506de1",
+      "afterSha256": "36a314c61f3099834847c74555874be19bbbf3480bc89e480729863cb168c634"
+    },
+    {
+      "path": "src/app/features/owner/places/places.component.ts",
+      "beforeSha256": "69b3f34a77a995e562f59195b0d7cd35f6eb9ef2da208d2d8967135cf12b9000",
+      "afterSha256": "c1eec44e65367361022353874c02d928de15d22cbd4c33cb32db472543be31ee"
+    },
+    {
+      "path": "src/app/features/place-detail/place-detail.component.ts",
+      "beforeSha256": "20551f8384bcca6dd533ec0c71c5c0da95ef7e2599394efa7a3d085aee15d7ab",
+      "afterSha256": "46d76d26e12ec2d9988682b5720ab37dc1a5564e984164a7d7a04854787c2d0f"
+    },
+    {
+      "path": "src/app/features/register/register.component.ts",
+      "beforeSha256": "d0e7e593ef48c80131f91dee433fcc13c3539cfe142a01572394ba5b56715cda",
+      "afterSha256": "d1b73d6cf55a8750398d16f5ce1381a86d3c56c3ac46db717dd6f39aa1cdb536"
+    },
+    {
+      "path": "src/app/features/tenant/favorites/favorites.component.ts",
+      "beforeSha256": "768752f4bc7b75e2ea5513674e7041341483db8ad3c9d72d959743a5dfb057b1",
+      "afterSha256": "1001748ff701341ef6f88467393b30465bdca6e13ad15625c9c127e8e39e8fba"
+    },
+    {
+      "path": "src/app/features/tenant/notifications/notifications.component.ts",
+      "beforeSha256": "00d6ba9d7d546002cd5d8301f952b5e5f851f338aae16c246f1977d1ef9638a5",
+      "afterSha256": "45cf39f66deb1a01ce6e5b288244015465a935f2f94c8f7ff99b4aa8c1e094dd"
+    },
+    {
+      "path": "src/app/features/tenant/profile/profile.component.ts",
+      "beforeSha256": "23458ae0281df4081cb3fceee26a95954631af172be592f0af79ce825fccf800",
+      "afterSha256": "fada4ce1ddd92eae96d8482622dc721661bc417d6828551f1e0cc314b485dd95"
+    },
+    {
+      "path": "src/app/features/tenant/review-form/review-form.component.ts",
+      "beforeSha256": "3aae8771e6d7b0a006e583bc31a905fd9dcaab2dd369595c79cad0f46ad03d5e",
+      "afterSha256": "cbcd849b6454913bb7fffa56c8d1f13b95be8d6ffe713be72001132c782e3325"
+    },
+    {
+      "path": "src/app/shared/lightbox/lightbox.component.ts",
+      "beforeSha256": "c86e933f51e7ab97228fd805632965e48107c8448eba9c62bb77103b4d9634a1",
+      "afterSha256": "38b97c56970813b379c3809c41c562be2a15ab5d21dd464dad2a4eff73da004c"
+    },
+    {
+      "path": "src/app/shared/skeleton/skeleton-cards.component.ts",
+      "beforeSha256": "dd29facd829bc2bac06f4e13c27600ed39cc971089244fc84aba413ee708daac",
+      "afterSha256": "8b62bd94d37ba0c9e601bc8ec7408ae106fee8871a372e635528fc1b1d314f88"
+    },
+    {
+      "path": "src/styles/base.css",
+      "beforeSha256": "d0ecda7779d875712052b3243cca300b360541513f4c44e4097d95fc6b3fd83c",
+      "afterSha256": "5dc997b6d2890cfa809214056122ffd26b31109ec7628412feec31e47423dc1c"
+    },
+    {
+      "path": "src/styles/components.css",
+      "beforeSha256": "a5039dc57e840a705bf09eeea763da86eaead5f0ebb060c4f7928adfdb4706ca",
+      "afterSha256": "f9c08250e34e296bb7a235af8d73020f6738c7ae880d53a902e94fbab8833171"
+    },
+    {
+      "path": "src/styles/pages.css",
+      "beforeSha256": "935d99bf5062fa63e68c40c376187754e0b62ece87f3d714f4e8ea98adf2eb45",
+      "afterSha256": "d6f0f6181292a3f8e77547f49c91c6a889edc49c7181b89f8ad69a7f717818df"
+    },
+    {
+      "path": "src/styles/responsive.css",
+      "beforeSha256": "385920ef30d4ee57f127731da1c8d0d794ac211a496ffa933c669235c6ee767d",
+      "afterSha256": "5d017744d1b4ef3885d3518ba7f6a4f0b718eb7887ed38f5a86966c6e1e6dec9"
+    }
+  ],
+  "protectedFilesByteIdentical": [
+    "angular.json",
+    "package-lock.json",
+    "package.json",
+    "proxy.conf.json",
+    "tsconfig.app.json",
+    "tsconfig.json",
+    "tsconfig.spec.json",
+    "vercel.json",
+    "src/app/app.config.ts",
+    "src/app/app.routes.ts",
+    "src/app/core/api/api-error-presenter.spec.ts",
+    "src/app/core/api/api-error-presenter.ts",
+    "src/app/core/api/avis.service.ts",
+    "src/app/core/api/calendar.service.ts",
+    "src/app/core/api/dashboard.service.ts",
+    "src/app/core/api/favorite.service.ts",
+    "src/app/core/api/lieu.service.spec.ts",
+    "src/app/core/api/lieu.service.ts",
+    "src/app/core/api/notification.service.ts",
+    "src/app/core/api/reservation.service.ts",
+    "src/app/core/api/user.service.ts",
+    "src/app/core/api/models/auth.models.ts",
+    "src/app/core/api/models/avis.models.ts",
+    "src/app/core/api/models/calendar.models.ts",
+    "src/app/core/api/models/dashboard.models.ts",
+    "src/app/core/api/models/error.models.ts",
+    "src/app/core/api/models/index.ts",
+    "src/app/core/api/models/lieu.models.ts",
+    "src/app/core/api/models/notification.models.ts",
+    "src/app/core/api/models/page.model.ts",
+    "src/app/core/api/models/reservation.models.ts",
+    "src/app/core/api/models/user.models.ts",
+    "src/app/core/auth/auth.guard.ts",
+    "src/app/core/auth/auth.service.spec.ts",
+    "src/app/core/auth/auth.service.ts",
+    "src/app/core/auth/error.interceptor.spec.ts",
+    "src/app/core/auth/error.interceptor.ts",
+    "src/app/core/auth/jwt.interceptor.spec.ts",
+    "src/app/core/auth/jwt.interceptor.ts",
+    "src/app/core/auth/role.guard.ts",
+    "src/app/core/ui/format.ts",
+    "src/app/core/ui/img-attrs.directive.ts",
+    "src/app/core/ui/notification-badge.service.ts",
+    "src/app/core/ui/photo-url.ts",
+    "src/app/core/ui/toast.service.ts",
+    "src/app/core/ui/types.spec.ts",
+    "src/app/core/ui/types.ts",
+    "src/environments/environment.prod.ts",
+    "src/environments/environment.ts",
+    "src/styles/tokens.css"
+  ],
+  "patchAppliesAndReproducesExactRevisedSource": true
+}
