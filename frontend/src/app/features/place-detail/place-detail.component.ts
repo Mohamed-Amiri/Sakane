@@ -226,11 +226,11 @@ interface BookingCost {
                   <div class="date-pair" [class.date-pair--invalid]="noteKind() === 'bad'">
                     <div class="date-pair__cell">
                       <label for="bk-start">Check-in</label>
-                      <input type="date" id="bk-start" name="startDate" [min]="todayIso()" [(ngModel)]="startDate" (change)="checkDates()" required />
+                      <input type="date" id="bk-start" [attr.aria-invalid]="noteKind() === 'bad' ? true : null" aria-describedby="availability-note" name="startDate" [min]="todayIso()" [(ngModel)]="startDate" (change)="checkDates()" required />
                     </div>
                     <div class="date-pair__cell">
                       <label for="bk-end">Check-out</label>
-                      <input type="date" id="bk-end" name="endDate" [min]="minEnd()" [(ngModel)]="endDate" (change)="checkDates()" required />
+                      <input type="date" id="bk-end" [attr.aria-invalid]="noteKind() === 'bad' ? true : null" aria-describedby="availability-note" name="endDate" [min]="minEnd()" [(ngModel)]="endDate" (change)="checkDates()" required />
                     </div>
                   </div>
                   <div id="availability-note" class="booking-note" [class.booking-note--ok]="noteKind() === 'ok'" [class.booking-note--bad]="noteKind() === 'bad'" role="status" aria-live="polite">
@@ -249,9 +249,9 @@ interface BookingCost {
                   </div>
                   <div class="form-field">
                     <label class="form-label" for="bk-guests">Guests @if (lieu()!.maxGuests) { <span class="optional">(max {{ lieu()!.maxGuests }})</span> }</label>
-                    <input class="input" type="number" id="bk-guests" name="guests" min="1" [max]="lieu()!.maxGuests ?? null" [(ngModel)]="guests" inputmode="numeric" />
+                    <input class="input" type="number" id="bk-guests" [attr.aria-invalid]="guestsError() ? true : null" [attr.aria-describedby]="guestsError() ? 'guests-error' : null" name="guests" min="1" [max]="lieu()!.maxGuests ?? null" [(ngModel)]="guests" inputmode="numeric" />
                     @if (guestsError()) {
-                      <p class="field-error">{{ guestsError() }}</p>
+                      <p class="field-error" id="guests-error">{{ guestsError() }}</p>
                     }
                   </div>
                   <div class="form-field">
@@ -264,7 +264,7 @@ interface BookingCost {
                       <div class="cost-total"><span>Total</span><span>{{ money(cost.total) }}</span></div>
                     </div>
                   }
-                  <button class="btn btn--primary btn--block btn--lg" type="submit" [disabled]="bookingLoading()">
+                  <button class="btn btn--primary btn--block btn--lg" type="submit" [disabled]="bookingLoading()" [class.is-loading]="bookingLoading()">
                     @if (bookingLoading()) {
                       <span class="spinner" aria-hidden="true"></span><span>Requesting…</span>
                     } @else {

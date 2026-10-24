@@ -41,7 +41,7 @@ const CAT_TILES: { label: string; type: string; url: string }[] = [
   template: `
     <section class="home-hero" aria-labelledby="hero-h">
       <div class="home-hero__bg" aria-hidden="true">
-        <img [appImg]="'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop'" [eager]="true" alt="" />
+        <img [appImg]="'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop'" [eager]="true" sizes="100vw" [widths]="[640, 960, 1440, 1920, 2560]" alt="" />
       </div>
       <div class="container home-hero__inner">
         <p class="kicker home-hero__eyebrow">Stays · Day offices · Event venues</p>
@@ -117,7 +117,7 @@ const CAT_TILES: { label: string; type: string; url: string }[] = [
           @if (featured()) {
             <article class="feature-card">
               <div class="feature-card__media">
-                <img [appImg]="featured()!.photos![0] || ''" [alt]="featured()!.titre" />
+                <img [appImg]="featured()!.photos![0] || ''" sizes="(max-width: 860px) calc(100vw - 48px), (max-width: 1180px) 54vw, 610px" [widths]="[480, 640, 960, 1280]" [alt]="featured()!.titre" />
               </div>
               <div class="feature-card__body">
                 <h3><a [routerLink]="['/places', featured()!.id]">{{ featured()!.titre }}</a></h3>

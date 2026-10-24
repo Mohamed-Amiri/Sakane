@@ -77,31 +77,31 @@ interface StagedPhoto {
                 <div>
                   <div class="form-field">
                     <label class="form-label" for="pl-titre">Title <span class="optional" id="titre-count"></span></label>
-                    <input id="pl-titre" class="input" formControlName="titre" minlength="5" maxlength="100" placeholder="e.g. Sunny loft near the medina" />
-                    <p class="form-hint">5–100 characters.</p>
-                    @if (fieldError('titre')) { <p class="field-error">{{ fieldError('titre') }}</p> }
+                    <input id="pl-titre" class="input" formControlName="titre" [attr.aria-invalid]="fieldError('titre') ? 'true' : 'false'" [attr.aria-describedby]="fieldError('titre') ? 'pl-titre-hint pl-titre-error' : 'pl-titre-hint'" minlength="5" maxlength="100" placeholder="e.g. Sunny loft near the medina" />
+                    <p class="form-hint" id="pl-titre-hint">5–100 characters.</p>
+                    @if (fieldError('titre')) { <p class="field-error" id="pl-titre-error">{{ fieldError('titre') }}</p> }
                   </div>
                   <div class="form-field">
                     <label class="form-label" for="pl-desc">Description <span class="optional" id="desc-count"></span></label>
-                    <textarea id="pl-desc" class="textarea" formControlName="description" minlength="20" maxlength="1000" rows="5" placeholder="The space, the neighbourhood, what makes it special…"></textarea>
-                    <p class="form-hint">20–1000 characters.</p>
-                    @if (fieldError('description')) { <p class="field-error">{{ fieldError('description') }}</p> }
+                    <textarea id="pl-desc" class="textarea" formControlName="description" [attr.aria-invalid]="fieldError('description') ? 'true' : 'false'" [attr.aria-describedby]="fieldError('description') ? 'pl-desc-hint pl-desc-error' : 'pl-desc-hint'" minlength="20" maxlength="1000" rows="5" placeholder="The space, the neighbourhood, what makes it special…"></textarea>
+                    <p class="form-hint" id="pl-desc-hint">20–1000 characters.</p>
+                    @if (fieldError('description')) { <p class="field-error" id="pl-desc-error">{{ fieldError('description') }}</p> }
                   </div>
                   <div class="form-grid">
                     <div class="form-field">
                       <label class="form-label" for="pl-type">Type</label>
-                      <select id="pl-type" class="select" formControlName="type">
+                      <select id="pl-type" class="select" formControlName="type" [attr.aria-invalid]="fieldError('type') ? 'true' : 'false'" [attr.aria-describedby]="fieldError('type') ? 'pl-type-error' : null">
                         @for (t of types; track t[0]) {
                           <option [value]="t[0]">{{ t[1] }}</option>
                         }
                       </select>
-                      @if (fieldError('type')) { <p class="field-error">{{ fieldError('type') }}</p> }
+                      @if (fieldError('type')) { <p class="field-error" id="pl-type-error">{{ fieldError('type') }}</p> }
                     </div>
                     <div class="form-field">
                       <label class="form-label" for="pl-prix">Price per night ($)</label>
-                      <input id="pl-prix" class="input" type="number" formControlName="prix" min="10" max="10000" inputmode="numeric" />
-                      <p class="form-hint">Between 10 and 10 000.</p>
-                      @if (fieldError('prix')) { <p class="field-error">{{ fieldError('prix') }}</p> }
+                      <input id="pl-prix" class="input" type="number" formControlName="prix" [attr.aria-invalid]="fieldError('prix') ? 'true' : 'false'" [attr.aria-describedby]="fieldError('prix') ? 'pl-prix-hint pl-prix-error' : 'pl-prix-hint'" min="10" max="10000" inputmode="numeric" />
+                      <p class="form-hint" id="pl-prix-hint">Between 10 and 10 000.</p>
+                      @if (fieldError('prix')) { <p class="field-error" id="pl-prix-error">{{ fieldError('prix') }}</p> }
                     </div>
                   </div>
                 </div>
@@ -115,9 +115,9 @@ interface StagedPhoto {
                 <div>
                   <div class="form-field">
                     <label class="form-label" for="pl-adresse">Address</label>
-                    <input id="pl-adresse" class="input" formControlName="adresse" minlength="10" maxlength="200" autocomplete="street-address" />
-                    <p class="form-hint">10–200 characters, including the city name.</p>
-                    @if (fieldError('adresse')) { <p class="field-error">{{ fieldError('adresse') }}</p> }
+                    <input id="pl-adresse" class="input" formControlName="adresse" [attr.aria-invalid]="fieldError('adresse') ? 'true' : 'false'" [attr.aria-describedby]="fieldError('adresse') ? 'pl-adresse-hint pl-adresse-error' : 'pl-adresse-hint'" minlength="10" maxlength="200" autocomplete="street-address" />
+                    <p class="form-hint" id="pl-adresse-hint">10–200 characters, including the city name.</p>
+                    @if (fieldError('adresse')) { <p class="field-error" id="pl-adresse-error">{{ fieldError('adresse') }}</p> }
                   </div>
                   <div class="form-grid">
                     <div class="form-field">

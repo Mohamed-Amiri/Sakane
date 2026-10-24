@@ -27,21 +27,13 @@ import { ReservationService } from '../../../core/api/reservation.service';
         <app-state-block kind="error" icon="warn" title="Could not load profile" message="Your profile could not be loaded." (retry)="load()" />
       } @else if (user()) {
         <div class="profile-layout">
-          <div class="card" id="profile-summary">
-            <div class="card__body cluster cluster--between">
-              <div class="cluster">
-                <span class="avatar avatar--lg" aria-hidden="true">{{ initials(user()!.nom) }}</span>
-                <div>
-                  <strong>{{ user()!.nom }}</strong>
-                  <br />
-                  <span class="text-secondary">{{ user()!.email }}</span>
-                  <br />
-                  <span class="badge">{{ roleLabel(user()!.role) }}</span>
-                </div>
-              </div>
-              <div class="text-right">
-                <p class="text-secondary text-sm m-0">{{ reservationCount() }} {{ reservationCount() === 1 ? 'reservation' : 'reservations' }}</p>
-              </div>
+          <div class="card profile-summary" id="profile-summary">
+            <div class="card__body">
+              <span class="avatar avatar--lg" aria-hidden="true">{{ initials(user()!.nom) }}</span>
+              <h2 class="profile-summary__name">{{ user()!.nom }}</h2>
+              <p class="profile-summary__email text-secondary">{{ user()!.email }}</p>
+              <span class="badge">{{ roleLabel(user()!.role) }}</span>
+              <p class="profile-summary__count text-secondary text-sm">{{ reservationCount() }} {{ reservationCount() === 1 ? 'reservation' : 'reservations' }}</p>
             </div>
           </div>
 

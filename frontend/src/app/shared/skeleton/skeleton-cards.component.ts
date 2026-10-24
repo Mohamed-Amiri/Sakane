@@ -6,16 +6,19 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @for (i of counter(); track i) {
-      <div class="skeleton-card" aria-hidden="true">
-        <div class="skeleton skeleton--media"></div>
-        <div class="skeleton-lines">
-          <div class="skeleton skeleton--line w-60"></div>
-          <div class="skeleton skeleton--line"></div>
-          <div class="skeleton skeleton--line w-40"></div>
+    <p class="sr-only" role="status">Loading places…</p>
+    <div class="place-grid">
+      @for (i of counter(); track i) {
+        <div class="skeleton-card" aria-hidden="true">
+          <div class="skeleton skeleton--media"></div>
+          <div class="skeleton-lines">
+            <div class="skeleton skeleton--line w-60"></div>
+            <div class="skeleton skeleton--line"></div>
+            <div class="skeleton skeleton--line w-40"></div>
+          </div>
         </div>
-      </div>
-    }
+      }
+    </div>
   `
 })
 export class SkeletonCardsComponent {

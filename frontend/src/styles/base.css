@@ -23,7 +23,13 @@ body {
 }
 body.has-modal { overflow: hidden; }
 
-main { flex: 1; }
+app-root { display: flex; flex-direction: column; min-height: 100vh; min-height: 100svh; flex: 1; }
+app-header, app-footer { display: block; flex: none; }
+app-header { position: sticky; top: 0; z-index: 100; }
+main { flex: 1; min-width: 0; }
+/* Explicit icon geometry also covers controls without a component-specific size. */
+app-icon { display: inline-flex; align-items: center; justify-content: center; flex: none; vertical-align: middle; }
+app-icon svg { display: block; width: 1em; height: 1em; }
 /* Guarded pages stay invisible until the route guard has run (no flash of protected UI) */
 main[data-guard] { visibility: hidden; }
 

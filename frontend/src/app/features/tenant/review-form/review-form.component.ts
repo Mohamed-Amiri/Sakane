@@ -6,12 +6,13 @@ import { AvisResponse } from '../../../core/api/models';
 import { Location } from '@angular/common';
 import { apiErrorMessage, validationErrorsFrom } from '../../../core/api/api-error-presenter';
 import { StateBlockComponent } from '../../../shared/state-block/state-block.component';
+import { IconComponent } from '../../../shared/icon/icon.component';
 
 @Component({
   selector: 'app-review-form',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, ReactiveFormsModule, StateBlockComponent],
+  imports: [RouterLink, ReactiveFormsModule, StateBlockComponent, IconComponent],
   template: `
     <section class="container container--narrow page-section">
       <h1 id="review-title">{{ isEdit() ? 'Edit your review' : 'Write a review' }}</h1>
@@ -33,19 +34,20 @@ import { StateBlockComponent } from '../../../shared/state-block/state-block.com
           <div class="form-field">
             <span class="form-label" id="rating-label">Your rating</span>
             <div class="cluster">
-              <div class="star-input" role="radiogroup" aria-label="Rating">
+              <div class="star-input" role="group" aria-labelledby="rating-label">
                 @for (i of [1,2,3,4,5]; track i) {
                   <button
                     class="star-btn"
                     type="button"
                     [class.is-filled]="i <= (form.controls.note.value || 0)"
                     [class.is-hover]="i <= hover()"
+                    [attr.aria-pressed]="i === form.controls.note.value"
                     [attr.aria-label]="i + ' star' + (i > 1 ? 's' : '')"
                     (click)="setNote(i)"
                     (mouseenter)="hover.set(i)"
                     (mouseleave)="hover.set(0)"
                   >
-                    ★
+                    <app-icon name="star" />
                   </button>
                 }
               </div>

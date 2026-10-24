@@ -4,6 +4,7 @@ import { NotificationService } from '../../../core/api/notification.service';
 import { NotificationResponse, NotificationType } from '../../../core/api/models';
 import { SkeletonRowsComponent } from '../../../shared/skeleton/skeleton-rows.component';
 import { StateBlockComponent } from '../../../shared/state-block/state-block.component';
+import { IconComponent } from '../../../shared/icon/icon.component';
 
 const TYPE_ICON: Record<NotificationType, string> = {
   RESERVATION_NEW: 'calendar',
@@ -16,7 +17,7 @@ const TYPE_ICON: Record<NotificationType, string> = {
   selector: 'app-notifications',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, SkeletonRowsComponent, StateBlockComponent],
+  imports: [RouterLink, SkeletonRowsComponent, StateBlockComponent, IconComponent],
   template: `
     <section class="container container--reading page-section">
       <div class="page-head">
@@ -43,11 +44,11 @@ const TYPE_ICON: Record<NotificationType, string> = {
         } @else {
           <div class="notif-list" id="notif-list" aria-live="polite">
             @for (n of rows()!; track n.id) {
-              <article class="notif" [class.is-unread]="!n.lu">
-                <span class="notif__icon" aria-hidden="true">{{ typeIcon(n.type) }}</span>
+              <article class="notif" [class.notif--unread]="!n.lu">
+                <span class="notif__icon" aria-hidden="true"><app-icon [name]="$any(typeIcon(n.type) === 'x' ? 'close' : typeIcon(n.type))" /></span>
                 <div class="notif__body">
-                  <strong>{{ n.title }}</strong>
-                  <p class="text-secondary mb-0">{{ n.message }}</p>
+                  <strong class="notif__title">{{ n.title }}</strong>
+                  <p class="notif__msg text-secondary mb-0">{{ n.message }}</p>
                 </div>
                 @if (!n.lu) {
                   <button class="btn btn--sm btn--ghost" type="button" (click)="markRead(n)">Mark read</button>

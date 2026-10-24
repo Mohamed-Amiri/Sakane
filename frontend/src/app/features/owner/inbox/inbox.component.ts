@@ -26,13 +26,14 @@ type TabKey = 'ALL' | 'EN_ATTENTE' | 'CONFIRMEE' | 'TERMINEE';
   ],
   template: `
     <section class="container page-section">
+      <app-owner-subnav />
+
       <div class="page-head">
         <div>
           <h1>Reservation requests</h1>
           <p class="page-head__sub">Pending requests can be confirmed or refused. Confirmed stays can be completed or cancelled. Refused, cancelled and completed are final.</p>
         </div>
       </div>
-      <app-owner-subnav />
 
       <div class="tabs" role="tablist" aria-label="Filter by status">
         @for (t of tabs; track t.key) {

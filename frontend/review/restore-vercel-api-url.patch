@@ -1,0 +1,10 @@
+diff --git a/src/environments/environment.prod.ts b/src/environments/environment.prod.ts
+--- a/src/environments/environment.prod.ts
++++ b/src/environments/environment.prod.ts
+@@ -1,4 +1,4 @@
+ export const environment = {
+   production: true,
+-  apiBaseUrl: 'https://sakane-backend-api-dvdzhegkbphxe2f3.francecentral-01.azurewebsites.net'
++  apiBaseUrl: 'https://sakane-v5ct.vercel.app'
+ };
+\ No newline at end of file

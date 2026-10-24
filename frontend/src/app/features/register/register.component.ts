@@ -15,10 +15,10 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, IconComponent, RouterLink, ImgAttrsDirective],
   template: `
-    <div class="auth-shell">
+    <div class="auth-shell auth-shell--register">
       <section class="auth-side" aria-hidden="true">
         <div class="auth-side__bg">
-          <img [appImg]="'https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?q=80&w=1200&auto=format&fit=crop'" alt="" />
+          <img [appImg]="'https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?q=80&w=1200&auto=format&fit=crop'" sizes="(max-width: 860px) 1px, (min-width: 2700px) 50vw, 1350px" [widths]="[640, 960, 1440, 1920, 2880]" alt="" />
         </div>
         <div class="auth-side__content">
           <span class="auth-side__brand">
@@ -51,30 +51,30 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             <div class="form-grid">
               <div class="form-field">
                 <label class="form-label" for="rg-fn">First name</label>
-                <input id="rg-fn" class="input" formControlName="firstName" autocomplete="given-name" />
+                <input id="rg-fn" class="input" formControlName="firstName" [attr.aria-invalid]="fieldError('firstName') ? true : null" [attr.aria-describedby]="fieldError('firstName') ? 'register-firstName-error' : null" autocomplete="given-name" />
                 @if (fieldError('firstName')) {
-                  <p class="field-error">{{ fieldError('firstName') }}</p>
+                  <p class="field-error" id="register-firstName-error">{{ fieldError('firstName') }}</p>
                 }
               </div>
               <div class="form-field">
                 <label class="form-label" for="rg-ln">Last name</label>
-                <input id="rg-ln" class="input" formControlName="lastName" autocomplete="family-name" />
+                <input id="rg-ln" class="input" formControlName="lastName" [attr.aria-invalid]="fieldError('lastName') ? true : null" [attr.aria-describedby]="fieldError('lastName') ? 'register-lastName-error' : null" autocomplete="family-name" />
                 @if (fieldError('lastName')) {
-                  <p class="field-error">{{ fieldError('lastName') }}</p>
+                  <p class="field-error" id="register-lastName-error">{{ fieldError('lastName') }}</p>
                 }
               </div>
             </div>
             <div class="form-field">
               <label class="form-label" for="rg-email">Email</label>
-              <input id="rg-email" class="input" type="email" formControlName="email" autocomplete="email" inputmode="email" />
+              <input id="rg-email" class="input" type="email" formControlName="email" [attr.aria-invalid]="fieldError('email') ? true : null" [attr.aria-describedby]="fieldError('email') ? 'register-email-error' : null" autocomplete="email" inputmode="email" />
               @if (fieldError('email')) {
-                <p class="field-error">{{ fieldError('email') }}</p>
+                <p class="field-error" id="register-email-error">{{ fieldError('email') }}</p>
               }
             </div>
             <div class="form-field">
               <label class="form-label" for="rg-pass">Password</label>
               <div class="input-affix">
-                <input id="rg-pass" class="input" [type]="showPassword() ? 'text' : 'password'" formControlName="password" autocomplete="new-password" aria-describedby="pw-rules" />
+                <input id="rg-pass" class="input" [type]="showPassword() ? 'text' : 'password'" formControlName="password" autocomplete="new-password" [attr.aria-invalid]="fieldError('password') ? true : null" [attr.aria-describedby]="fieldError('password') ? 'pw-rules register-password-error' : 'pw-rules'" />
                 <button
                   class="input-affix__toggle"
                   type="button"
@@ -86,7 +86,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 </button>
               </div>
               @if (fieldError('password')) {
-                <p class="field-error">{{ fieldError('password') }}</p>
+                <p class="field-error" id="register-password-error">{{ fieldError('password') }}</p>
               }
               <ul class="pw-rules" id="pw-rules" aria-label="Password requirements">
                 <li [class.ok]="!form.get('password')?.errors?.['minlength']">8–100 characters</li>

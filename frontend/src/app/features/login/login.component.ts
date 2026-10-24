@@ -19,10 +19,10 @@ const DEMO = [
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, RouterLink, IconComponent, ImgAttrsDirective],
   template: `
-    <div class="auth-shell">
+    <div class="auth-shell auth-shell--login">
       <section class="auth-side" aria-hidden="true">
         <div class="auth-side__bg">
-          <img [appImg]="'https://images.unsplash.com/photo-1539020140153-e479b8c22e70?q=80&w=1200&auto=format&fit=crop'" alt="" />
+          <img [appImg]="'https://images.unsplash.com/photo-1539020140153-e479b8c22e70?q=80&w=1200&auto=format&fit=crop'" sizes="(max-width: 860px) 1px, (min-width: 2700px) 50vw, 1350px" [widths]="[640, 960, 1440, 1920, 2880]" alt="" />
         </div>
         <div class="auth-side__content">
           <span class="auth-side__brand">
@@ -69,15 +69,15 @@ const DEMO = [
           <form id="login-form" class="form" novalidate [formGroup]="form" (ngSubmit)="onSubmit()">
             <div class="form-field">
               <label class="form-label" for="li-email">Email</label>
-              <input id="li-email" class="input" type="email" formControlName="email" autocomplete="email" inputmode="email" />
+              <input id="li-email" class="input" type="email" formControlName="email" [attr.aria-invalid]="fieldError('email') ? true : null" [attr.aria-describedby]="fieldError('email') ? 'login-email-error' : null" autocomplete="email" inputmode="email" />
               @if (fieldError('email')) {
-                <p class="field-error">{{ fieldError('email') }}</p>
+                <p class="field-error" id="login-email-error">{{ fieldError('email') }}</p>
               }
             </div>
             <div class="form-field">
               <label class="form-label" for="li-pass">Password</label>
               <div class="input-affix">
-                <input id="li-pass" class="input" [type]="showPassword() ? 'text' : 'password'" formControlName="password" autocomplete="current-password" />
+                <input id="li-pass" class="input" [type]="showPassword() ? 'text' : 'password'" formControlName="password" [attr.aria-invalid]="fieldError('password') ? true : null" [attr.aria-describedby]="fieldError('password') ? 'login-password-error' : null" autocomplete="current-password" />
                 <button
                   class="input-affix__toggle"
                   type="button"
@@ -89,7 +89,7 @@ const DEMO = [
                 </button>
               </div>
               @if (fieldError('password')) {
-                <p class="field-error">{{ fieldError('password') }}</p>
+                <p class="field-error" id="login-password-error">{{ fieldError('password') }}</p>
               }
             </div>
             <div class="form-field">

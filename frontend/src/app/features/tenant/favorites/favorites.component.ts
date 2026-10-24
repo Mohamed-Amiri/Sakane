@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { FavoriteService } from '../../../core/api/favorite.service';
 import { LieuResponse } from '../../../core/api/models';
 import { plural } from '../../../core/ui/format';
-import { SkeletonRowsComponent } from '../../../shared/skeleton/skeleton-rows.component';
+import { SkeletonCardsComponent } from '../../../shared/skeleton/skeleton-cards.component';
 import { StateBlockComponent } from '../../../shared/state-block/state-block.component';
 import { PlaceCardComponent } from '../../../shared/place-card/place-card.component';
 
@@ -13,7 +13,7 @@ import { PlaceCardComponent } from '../../../shared/place-card/place-card.compon
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     RouterLink,
-    SkeletonRowsComponent,
+    SkeletonCardsComponent,
     StateBlockComponent,
     PlaceCardComponent
   ],
@@ -45,7 +45,7 @@ import { PlaceCardComponent } from '../../../shared/place-card/place-card.compon
           </div>
         }
       } @else {
-        <app-skeleton-rows [count]="4" cssClass="skeleton--card" />
+        <app-skeleton-cards [count]="4" />
       }
     </section>
   `

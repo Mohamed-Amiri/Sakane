@@ -196,7 +196,7 @@
   transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 .btn:hover { text-decoration: none; }
-.btn:active:not(:disabled) { transform: scale(0.98); }
+
 .btn:disabled, .btn[aria-disabled="true"] { opacity: 0.55; cursor: not-allowed; }
 .btn svg { width: 18px; height: 18px; flex: none; }
 
@@ -335,9 +335,10 @@ legend { font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space
 .date-pair__cell + .date-pair__cell { border-left: 1px solid var(--color-border); }
 .date-pair__cell label { display: block; font-size: 0.68rem; font-weight: 700; letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--color-text-muted); }
 .date-pair__cell input {
-  width: 100%; border: 0; padding: 2px 0 0; background: transparent; font: inherit; font-size: var(--text-sm); color: var(--color-text); min-height: 28px;
+  width: 100%; border: 0; padding: 2px 0 0; background: transparent; font: inherit; font-size: var(--text-sm); color: var(--color-text); min-height: 40px;
 }
 .date-pair__cell input:focus { outline: none; }
+.date-pair__cell:focus-within { box-shadow: inset 0 0 0 2px var(--color-border-focus); }
 .date-pair--invalid { border-color: var(--color-danger); }
 
 /* ---------- Cards ---------- */
@@ -363,11 +364,11 @@ legend { font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space
   border-radius: var(--radius-lg);
   transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
 }
-.place-card:hover { border-color: var(--color-border-strong); box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+.place-card:hover { border-color: var(--color-border-strong); }
 .place-card:focus-within { border-color: var(--color-primary); }
 .place-card__media { position: relative; aspect-ratio: 4 / 3; background: var(--color-surface-sunken); overflow: hidden; }
 .place-card__media img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--duration-slow) var(--ease-out); }
-.place-card:hover .place-card__media img { transform: scale(1.04); }
+
 .place-card__type {
   position: absolute; left: var(--space-3); top: var(--space-3);
   background: rgba(11, 18, 32, 0.82); color: #fff;
@@ -381,7 +382,7 @@ legend { font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space
   display: grid; place-items: center; cursor: pointer; box-shadow: var(--shadow-sm);
   transition: color var(--transition-fast), transform var(--transition-fast);
 }
-.fav-btn:hover { color: var(--color-danger); transform: scale(1.05); }
+.fav-btn:hover { color: var(--color-danger); }
 .fav-btn[aria-pressed="true"] { color: var(--color-danger); }
 .fav-btn svg { width: 20px; height: 20px; }
 .fav-btn.is-pop svg { animation: heart-pop var(--duration-slow) var(--ease-spring); }
@@ -510,7 +511,7 @@ legend { font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space
 .modal__head h2 { margin: 0; }
 .modal__close {
   background: none; border: 0; cursor: pointer; color: var(--color-text-muted);
-  width: 40px; height: 40px; border-radius: var(--radius-sm); display: grid; place-items: center;
+  width: 44px; height: 44px; border-radius: var(--radius-sm); display: grid; place-items: center;
   font-size: 1.15rem; flex: none; margin: -6px -8px 0 0;
 }
 .modal__close:hover { background: var(--color-surface-sunken); color: var(--color-text); }
@@ -677,9 +678,9 @@ legend { font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space
   color: var(--color-border-strong); width: 44px; height: 44px;
   display: grid; place-items: center; transition: transform var(--transition-fast), color var(--transition-fast);
 }
-.star-input button:hover { transform: scale(1.1); }
+.star-input button:hover { color: var(--color-attention); }
 .star-input button svg { width: 26px; height: 26px; }
-.star-input button.is-on { color: var(--color-attention); }
+.star-input button.is-on, .star-input button.is-filled, .star-input button.is-hover { color: var(--color-attention); }
 
 /* ---------- Photo manager (owner) ---------- */
 .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: var(--space-3); }
@@ -772,7 +773,7 @@ legend { font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space
 .search-bar__field + .search-bar__field::before {
   content: ""; position: absolute; left: 0; top: 12px; bottom: 12px; width: 1px; background: var(--color-border);
 }
-.search-bar__field:focus-within { background: var(--color-primary-soft); }
+.search-bar__field:focus-within { background: var(--color-primary-soft); box-shadow: inset 0 0 0 2px var(--color-border-focus); }
 .search-bar__field:focus-within::before, .search-bar__field:focus-within + .search-bar__field::before { opacity: 0; }
 .search-bar__field label { display: block; font-size: 0.68rem; font-weight: 700; letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--color-text-muted); }
 .search-bar__input {
@@ -809,3 +810,20 @@ legend { font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space
 }
 .fact-chip svg { width: 16px; height: 16px; color: var(--color-accent); flex: none; }
 .fact-chip strong { color: var(--color-text); font-weight: 600; }
+
+/* Presentation repairs: stable cards, visible controls and useful loading geometry. */
+app-place-card { display: block; min-width: 0; }
+app-place-card .place-card { height: 100%; }
+.place-card__foot { flex-wrap: wrap; }
+app-skeleton-cards, app-skeleton-rows { display: block; min-width: 0; }
+.stat-strip > app-skeleton-rows { grid-column: 1 / -1; }
+.modal__close svg, .lightbox__nav svg, .photo-tile__tools svg { width: 20px; height: 20px; }
+.photo-tile__tools button { display: inline-grid; place-items: center; flex: none; }
+.lightbox__strip button:focus-visible { outline-color: #fff; outline-offset: -4px; }
+.notif__body { overflow-wrap: anywhere; }
+.notif__title { display: block; }
+/* Dashboard panels already group the items: rows need separators, not more cards. */
+.dash-columns .card__list { gap: 0; }
+.dash-columns .card__list .notif { border: 0; border-radius: 0; background: transparent; }
+.dash-columns .card__list .notif + .notif { border-top: 1px solid var(--color-border); }
+.dash-columns .card__list .notif--unread { box-shadow: inset 3px 0 var(--color-primary); background: var(--color-surface-hover); }

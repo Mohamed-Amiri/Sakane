@@ -15,7 +15,7 @@ function withWidth(url: string, width: number): string {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="lightbox__stage">
-      <img [src]="stageSrc()" alt="" />
+      <img [src]="stageSrc()" [alt]="(title || 'Place') + ' — photo ' + (index() + 1)" />
       @if (photos.length > 1) {
         <button class="lightbox__nav lightbox__nav--prev" type="button" aria-label="Previous photo" (click)="show(index() - 1)">
           <app-icon name="chevron-left" />
@@ -26,9 +26,9 @@ function withWidth(url: string, width: number): string {
       }
     </div>
     @if (photos.length > 1) {
-      <div class="lightbox__strip" role="tablist" aria-label="Photo thumbnails">
+      <div class="lightbox__strip" role="group" aria-label="Photo thumbnails">
         @for (photo of photos; track photo; let i = $index) {
-          <button type="button" role="tab" [attr.aria-current]="i === index() ? 'true' : 'false'" [attr.aria-label]="'Photo ' + (i + 1)" (click)="show(i)">
+          <button type="button" [attr.aria-current]="i === index() ? 'true' : 'false'" [attr.aria-label]="'Photo ' + (i + 1)" (click)="show(i)">
             <img [src]="photoUrl(withWidth(photo, 200))" alt="" loading="lazy" />
           </button>
         }

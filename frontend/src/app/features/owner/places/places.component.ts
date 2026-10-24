@@ -26,6 +26,8 @@ import { environment } from '../../../../environments/environment';
   ],
   template: `
     <section class="container page-section">
+      <app-owner-subnav />
+
       <div class="page-head">
         <div>
           <h1>My places</h1>
@@ -33,8 +35,6 @@ import { environment } from '../../../../environments/environment';
         </div>
         <a class="btn btn--primary" routerLink="/owner/places/new">+ New place</a>
       </div>
-
-      <app-owner-subnav />
 
       @if (error()) {
         <app-state-block
