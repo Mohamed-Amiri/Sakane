@@ -1,0 +1,7 @@
+target/
+data/
+uploads/
+*.zip
+*.log
+.git/
+.idea/
