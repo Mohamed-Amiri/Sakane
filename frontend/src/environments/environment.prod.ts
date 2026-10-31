@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://sakane-v5ct.vercel.app'
+  apiUrl: 'https://sakane-backend-10137586073.development.catalystappsail.com/api'
 };
