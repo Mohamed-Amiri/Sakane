@@ -2,9 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "outputDirectory": "dist/frontend/browser",
   "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+    { "source": "/api/:path*", "destination": "https://sakane-backend-10137586073.development.catalystappsail.com/api/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
+
 }
